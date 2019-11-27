@@ -39,7 +39,8 @@ MusicItem::MusicItem(int _id, const _CHAR _strName[]):
 	iOffset(0),
 	iSize(0),
 	f_Optimize(false),
-	strName(_strName)
+	strName(_strName),
+	label_id(_id)
 {
 	//Debug message　（うざい程出力するので注意。）
 	if(cOptionSW->cDebug & 0x01){
@@ -248,15 +249,48 @@ void	MusicItem::getAsm(MusicFile* MUS)
 	//Local変数
 	unsigned	int	i = 0;
 	list<	MusicItem*>::iterator	itItem;
+	bool	_flag;
+
+
+
 
 	if(code.size() > 0){
 		while(i < code.size()){
+			_flag = false;
 			if(i==0){
 				*MUS << "	.byte	$";
-			} else {
-				*MUS << " ,$";
 			}
-			*MUS << hex << setw(2) << setfill('0') << (int)(code[i] & 0xFF);
+			else
+			{
+				if ( (label != "") && (label != "_OFF_") )
+				{
+					switch (code[0]) 
+					{
+						case 0x02:
+						case 0x06:
+						case 0x10:
+						case 0x11:
+						case 0x12:	// Frequency envelop. 
+						case 0x13:
+						case 0x27:
+							*MUS << " ," << "<(" << label << " - *), >(" << label << " - (*-1))";
+							_flag = true;
+							i++;
+							break;
+						default:
+							*MUS << " ,$";
+							_flag = false;
+					}
+				
+				}
+				else 
+				{
+					*MUS << " ,$"; 
+				}
+			}
+			if (_flag == false) {
+				*MUS << hex << setw(2) << setfill('0') << (int)(code[i] & 0xFF);
+			}
 			i++;
 		}
 		*MUS << dec << endl;

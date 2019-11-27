@@ -21,6 +21,7 @@
 	.include	"nsddef.inc"
 	.include	"macro.inc"
 
+.segment "PRG_AUDIO_CODE"
 
 ;=======================================================================
 ;	void	__fastcall__	nsd_resume_bgm(void );
@@ -58,9 +59,9 @@
 	ldx	#nsd::TR_BGM1
 Loop:
 	;ü”g”İ’è‚ğ•K‚¸ŒÄ‚Ô‚æ‚¤‚ÉB
-	lda	#$FF
-	sta	__frequency,x
-	sta	__frequency + 1,x
+;	lda	#$FF
+;	sta	__frequency,x
+;	sta	__frequency + 1,x
 
 	inx						;[2]2
 	inx						;[2]4

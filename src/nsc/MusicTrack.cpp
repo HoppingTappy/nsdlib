@@ -573,6 +573,7 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 	unsigned	int	_no;
 	unsigned	int	_sub_offset;
 	unsigned	int	_com_offset;
+	string	_label;
 
 	//----------------------
 	//SE
@@ -591,6 +592,9 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 			}
 			_sub_offset = MUS->ptcSE[_no]->getOffset();	//指定サブルーチンが存在するオフセット
 			(*itSE)->set_Address(_sub_offset - _com_offset - 1);
+			_label = MUS->Header.Label.c_str();
+			_label += "SE" + to_string(_no);
+			(*itSE)->set_AddressLabel(_label);
 			itSE++;
 		}
 	}
@@ -612,6 +616,10 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 			}
 			_sub_offset = MUS->ptcSub[_no]->getOffset();	//指定サブルーチンが存在するオフセット
 			(*itSub)->set_Address(_sub_offset - _com_offset - 1);
+			_label = MUS->Header.Label.c_str();
+			_label += "SUB" + to_string(_no);
+			(*itSub)->set_AddressLabel(_label);
+
 			itSub++;
 		}
 	}
@@ -633,6 +641,9 @@ void	MusicTrack::Fix_Address(MusicFile* MUS)
 			}
 			_sub_offset = MUS->ptcEnv[_no]->getOffset();	//指定エンベロープが存在するオフセット
 			(*itEnv)->set_Address(_sub_offset - _com_offset - 1);
+			_label = MUS->Header.Label.c_str();
+			_label += "Envelope" + to_string(_no);
+			(*itEnv)->set_AddressLabel(_label);
 			itEnv++;
 		}
 	}
@@ -949,7 +960,6 @@ void	MusicTrack::SetRepeat_C_Start(MMLfile* MML)
 			MML->Err(_T("リピート回数は2～255の範囲で指定して下さい。"));
 		}
 	}
-
 	//一旦最適化をリセット
 	Reset_opt();
 
@@ -1482,6 +1492,21 @@ void	MusicTrack::SetEnvelop_En(unsigned int _no)
 		ptcEnv.push_back(_event);
 	}
 }
+void	MusicTrack::SetEnvelop_EN(unsigned int _no)
+{
+	mml_Address*		_event;
+
+	if ((_no != nsd.env_note_abs) || (f_opt_EN == false) || (sw_EN == false)) {
+		nsd.env_note_abs = _no;
+		sw_EN = true;
+		f_opt_EN = true;		//最適化フラグ
+		_event = new mml_Address(nsd_Envelop_Note_Abs, _T("Note Envelope Abs"));
+
+		_event->set_id(_no);
+		SetEvent(_event);
+		ptcEnv.push_back(_event);
+	}
+}
 
 //--------------------------------------------------------------
 void	MusicTrack::SetVoice(unsigned int _no)
@@ -1523,7 +1548,196 @@ void	MusicTrack::SetEnvelop_En()
 		SetEvent(new mml_Address(nsd_Envelop_Note, _T("Note Envelope Off")));
 	}
 }
+//--------------------------------------------------------------
+void	MusicTrack::SetEnvelop_EN()
+{
+	if ((f_opt_EN == false) || (sw_EN == true)) {
+		sw_EN = false;
+		f_opt_EN = true;		//最適化フラグ
+		SetEvent(new mml_Address(nsd_Envelop_Note_Abs, _T("Note Envelope Abs Off")));
+	}
+}
+//--------------------------------------------------------------
+void	MusicTrack::SetEnvelop_Flag(MMLfile* MML)
+{
+	unsigned	char	freqFlagBit = 0x01;
+	unsigned	char	noteFlagBit = 0x02;
+	unsigned	char	volumeFlagBit = 0x04;
+	unsigned	char	voiceFlagBit = 0x08;
 
+	unsigned	char	cData;
+
+	int		_VoiceFlag;
+	int		_VolumeFlag;
+	int		_FreqFlag;
+	int		_NoteFlag;
+	unsigned	char	_iValue;
+
+	_VoiceFlag = MML->GetInt();
+	if ((_VoiceFlag < 0) || (_VoiceFlag > 2)) {
+		MML->Err(_T("ポルタメントの第1パラメータは0～2の範囲で指定してください。"));
+	}
+
+	cData = MML->GetChar();
+	if (cData != ',') {
+		MML->Err(_T("EF コマンドのパラメータが足りません。４つ指定してください。"));
+	}
+
+	_VolumeFlag = MML->GetInt();
+	if ((_VolumeFlag < 0) || (_VolumeFlag > 2)) {
+		MML->Err(_T("EFの第2パラメータは0～2の範囲で指定してください。"));
+	}
+
+	cData = MML->GetChar();
+	if (cData != ',') {
+		MML->Err(_T("EF コマンドのパラメータが足りません。４つ指定してください。"));
+	}
+
+	_FreqFlag = MML->GetInt();
+	if ((_FreqFlag < 0) || (_FreqFlag > 2)) {
+		MML->Err(_T("EFの第3パラメータは0～2の範囲で指定してください。"));
+	}
+
+	cData = MML->GetChar();
+	if (cData != ',') {
+		MML->Err(_T("EF コマンドのパラメータが足りません。４つ指定してください。"));
+	}
+
+	_NoteFlag = MML->GetInt();
+	if ((_NoteFlag < 0) || (_NoteFlag > 2)) {
+		MML->Err(_T("EFの第4パラメータは0～2の範囲で指定してください。"));
+	}
+
+	_iValue = 0;
+
+	if (_VoiceFlag) {
+		_iValue |= voiceFlagBit;
+	}
+	if (_VolumeFlag) {
+		_iValue |= volumeFlagBit;
+	}
+	if (_FreqFlag) {
+		_iValue |= freqFlagBit;
+	}
+	if (_NoteFlag) {
+		_iValue |= noteFlagBit;
+	}
+
+	SetEvent(new mml_general(nsd_SubCommand, (char)nsd_sub_Env_Flag, (char)_iValue, _T("Env_Flag")));
+
+}
+//--------------------------------------------------------------
+void	MusicTrack::SetEnvelop_No_Sync_Evoi()
+{
+	unsigned	char	freqFlagBit = 0x01;
+	unsigned	char	noteFlagBit = 0x02;
+	unsigned	char	volumeFlagBit = 0x04;
+	unsigned	char	voiceFlagBit = 0x08;
+
+	unsigned	char	_iValue;
+
+	_iValue = voiceFlagBit;
+
+	SetEvent(new mml_general(nsd_SubCommand, (char)nsd_sub_Env_No_Sync_On, (char)_iValue, _T("Env_No_Sync_E@")));
+}
+//--------------------------------------------------------------
+void	MusicTrack::SetEnvelop_No_Sync_Evol()
+{
+	unsigned	char	freqFlagBit = 0x01;
+	unsigned	char	noteFlagBit = 0x02;
+	unsigned	char	volumeFlagBit = 0x04;
+	unsigned	char	voiceFlagBit = 0x08;
+
+	unsigned	char	_iValue;
+
+	_iValue = volumeFlagBit;
+
+	SetEvent(new mml_general(nsd_SubCommand, (char)nsd_sub_Env_No_Sync_On, (char)_iValue, _T("Env_No_Sync_Ev")));
+}
+//--------------------------------------------------------------
+void	MusicTrack::SetEnvelop_No_Sync_Em()
+{
+	unsigned	char	freqFlagBit = 0x01;
+	unsigned	char	noteFlagBit = 0x02;
+	unsigned	char	volumeFlagBit = 0x04;
+	unsigned	char	voiceFlagBit = 0x08;
+
+	unsigned	char	_iValue;
+
+	_iValue = freqFlagBit;
+
+	SetEvent(new mml_general(nsd_SubCommand, (char)nsd_sub_Env_No_Sync_On, (char)_iValue, _T("Env_No_Sync_Em")));
+}
+//--------------------------------------------------------------
+void	MusicTrack::SetEnvelop_No_Sync_En()
+{
+	unsigned	char	freqFlagBit = 0x01;
+	unsigned	char	noteFlagBit = 0x02;
+	unsigned	char	volumeFlagBit = 0x04;
+	unsigned	char	voiceFlagBit = 0x08;
+
+	unsigned	char	_iValue;
+
+	_iValue = noteFlagBit;
+
+	SetEvent(new mml_general(nsd_SubCommand, (char)nsd_sub_Env_No_Sync_On, (char)_iValue, _T("Env_No_Sync_En")));
+}
+//--------------------------------------------------------------
+void	MusicTrack::SetEnvelop_No_Sync_Off_Evoi()
+{
+	unsigned	char	freqFlagBit = 0x01;
+	unsigned	char	noteFlagBit = 0x02;
+	unsigned	char	volumeFlagBit = 0x04;
+	unsigned	char	voiceFlagBit = 0x08;
+
+	unsigned	char	_iValue;
+
+	_iValue ^= voiceFlagBit;
+
+	SetEvent(new mml_general(nsd_SubCommand, (char)nsd_sub_Env_No_Sync_Off, (char)_iValue, _T("Env_No_Sync_Off_E@")));
+}
+//--------------------------------------------------------------
+void	MusicTrack::SetEnvelop_No_Sync_Off_Evol()
+{
+	unsigned	char	freqFlagBit = 0x01;
+	unsigned	char	noteFlagBit = 0x02;
+	unsigned	char	volumeFlagBit = 0x04;
+	unsigned	char	voiceFlagBit = 0x08;
+
+	unsigned	char	_iValue;
+
+	_iValue ^= volumeFlagBit;
+
+	SetEvent(new mml_general(nsd_SubCommand, (char)nsd_sub_Env_No_Sync_Off, (char)_iValue, _T("Env_No_Sync_Off_Ev")));
+}
+//--------------------------------------------------------------
+void	MusicTrack::SetEnvelop_No_Sync_Off_Em()
+{
+	unsigned	char	freqFlagBit = 0x01;
+	unsigned	char	noteFlagBit = 0x02;
+	unsigned	char	volumeFlagBit = 0x04;
+	unsigned	char	voiceFlagBit = 0x08;
+
+	unsigned	char	_iValue;
+
+	_iValue ^= freqFlagBit;
+
+	SetEvent(new mml_general(nsd_SubCommand, (char)nsd_sub_Env_No_Sync_Off, (char)_iValue, _T("Env_No_Sync_Off_Em")));
+}
+//--------------------------------------------------------------
+void	MusicTrack::SetEnvelop_No_Sync_Off_En()
+{
+	unsigned	char	freqFlagBit = 0x01;
+	unsigned	char	noteFlagBit = 0x02;
+	unsigned	char	volumeFlagBit = 0x04;
+	unsigned	char	voiceFlagBit = 0x08;
+
+	unsigned	char	_iValue;
+
+	_iValue ^= noteFlagBit;
+
+	SetEvent(new mml_general(nsd_SubCommand, (char)nsd_sub_Env_No_Sync_Off, (char)_iValue, _T("Env_No_Sync_Off_En")));
+}
 //==============================================================
 //		音源固有パラメータ（スイープ）
 //--------------------------------------------------------------
@@ -1562,13 +1776,35 @@ void	MusicTrack::SetSweep(MMLfile* MML)
 void	MusicTrack::SetSweep(unsigned char _c)
 {
 	//設定
-	if((f_opt_Sweep == false) || ((unsigned char)iSweep != _c)){
-		iSweep		= _c;
-		f_opt_Sweep	= true;		//最適化フラグ
+	if ((f_opt_Sweep == false) || ((unsigned char)iSweep != _c)) {
+		iSweep = _c;
+		f_opt_Sweep = true;		//最適化フラグ
 		SetEvent(new mml_general(nsd_Sweep, _c, _T("Sweep")));
 	}
 }
+//==============================================================
+void	MusicTrack::SetGroove(MMLfile* MML, unsigned char iTempo)
+{
+	int		iValue;
+	int		iLength;
+	unsigned	char	cData;
 
+	iValue = -MML->GetInt();
+	if ( ( (iValue + iTempo) < 0) || ( (iValue + iTempo) > 255 ) ) {
+		MML->Err(_T("テンポ指定の範囲を超えましたGコマンドはテンポと足し引き0～255の範囲で指定してください。"));
+	}
+
+	cData = MML->GetChar();
+	if (cData != ',') {
+		MML->Back();
+		SetEvent(new mml_general(nsd_SubCommand, (char)nsd_sub_Groove, (char)iValue, (char)0x06, _T("Groove")));
+	}
+	else
+	{
+		iLength = calc_length(MML);
+		SetEvent(new mml_general(nsd_SubCommand, (char)nsd_sub_Groove, (char)iValue, (char)iLength, _T("Groove")));
+	}
+}
 //==============================================================
 //		@FC	FDS	
 //--------------------------------------------------------------

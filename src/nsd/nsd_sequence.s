@@ -79,26 +79,46 @@
 	lda	#$FF
 	sta	__frequency,x
 	sta	__frequency + 1,x
-
+.ifdef	ENVELOPE_MODE
+	lda	__env_flag,x
+	sta	__tmp
+	lsr	__tmp
+	bcs	@SkipFreq
+.endif
 	;Envelop Key on
 	lda	#$00
 	sta	__Envelop_F,x
 	lda	#$01
 	sta	__env_freq_ptr,x
+@SkipFreq:
+.ifdef	ENVELOPE_MODE
+	lsr	__tmp
+	bcs	@SkipNote
+.endif
 	sta	__env_note_ptr,x
-
+@SkipNote:
+.ifdef	ENVELOPE_MODE
+	lsr	__tmp
+	bcs	@SkipVolume
+.endif
 	lda	#$00
 	sta	__Envelop_V,x
 	lda	#$01
 	sta	__env_vol_ptr,x
 	cpx	#nsd::TR_BGM3		;-----------------------
 	beq	exit			;以降は、三角波では不要
+@SkipVolume:
+.ifdef	ENVELOPE_MODE
+	lsr	__tmp
+	bcs	@SkipVoice
+.endif
 	sta	__env_voi_ptr,x
 
 	;音色エンベロープ
 	lda	__gatemode,x		;●●●　最適化　●●●
 	and	#nsd_mode::voice	;音量エンベロープが無効だったら
 	bne	@L2			;ここでKeyOn時の音色にする。
+@SkipVoice:
 	lda	__env_voice,x		;
 	jmp	_nsd_snd_voice		;	ここは、 JMP で良い。
 					;	macroの呼び出し後、"rts"がある。
@@ -162,6 +182,12 @@ exit:
 
 	;---------------
 	;Frequency Envelop keyoff
+.ifdef	ENVELOPE_MODE
+	lda	__env_flag,x
+	sta	__tmp
+	lsr	__tmp
+	bcs	Freq_End
+.endif
 	lda	__env_frequency + 1,x
 .ifdef	DPCMBank
 	ora	__env_frequency,x
@@ -183,9 +209,12 @@ exit:
 	and	#$F0
 	sta	__Envelop_F,x
 Freq_End:
-
 	;---------------
 	;Note Envelop keyoff
+.ifdef	ENVELOPE_MODE
+	lsr	__tmp
+	bcs	Note_End
+.endif
 	lda	__env_note + 1,x
 .ifdef	DPCMBank
 	ora	__env_note,x
@@ -210,6 +239,10 @@ Note_End:
 
 	;---------------
 	;Volume Envelop keyoff
+.ifdef	ENVELOPE_MODE
+	lsr	__tmp
+	bcs	Volume_End
+.endif
 	lda	__env_volume + 1,x
 ;	beq	Volume_End		;基本的には有効だろうので、コメントアウトしておく。
 	sta	__ptr + 1
@@ -233,6 +266,10 @@ Volume_End:
 
 	;---------------
 	;Voice Envelop keyoff
+.ifdef	ENVELOPE_MODE
+	lsr	__tmp
+	bcs	Voice_End
+.endif
 	lda	__gatemode,x
 	and	#nsd_mode::voice
 	beq	Voice_End
@@ -276,6 +313,7 @@ exit:
 ;<<Output>>
 ;	a	sequence data
 ;=======================================================================
+.segment "PRG_AUDIO_CODE"
 .proc	nsd_load_sequence
 .ifdef	DPCMBank
 	tya
@@ -296,7 +334,18 @@ exit:
 	lda	__ptr
 
 .else
+.ifdef	Sequence_ptr_bss
+	ldy	__Sequence_ptr,x
+	sty	__ptr
+	ldy	__Sequence_ptr + 1,x
+	sty	__ptr + 1
+	ldy	#$00
+
+	lda	(__ptr),y
+
+.else
 	lda	(__Sequence_ptr,x)	;[6]	6*4+2 = 26clock (52clock)
+.endif
 .endif
 	inc	__Sequence_ptr,x	;[6]
 	bne	exit			;[2]
@@ -316,6 +365,7 @@ exit:	rts				;[6]
 ;	__tmp	sequence data
 ;	a	__tmp + 1
 ;=======================================================================
+.segment "PRG_AUDIO_CODE"
 .proc	nsd_load_ptr
 
 	lda	__Sequence_ptr,x	;
@@ -338,7 +388,12 @@ exit:	rts				;[6]
 	bcc	@l			;[2]9
 .endif
 	iny				;
+.ifdef	Sequence_ptr_bss
+	tya
+	sta	__Sequence_ptr + 1,x	;
+.else
 	sty	__Sequence_ptr + 1,x	;
+.endif
 @l:
 
 .ifdef	DPCMBank
@@ -373,6 +428,7 @@ exit:	rts				;[6]
 ;<<Output>>
 ;	__ptr	Real Address (8000 - BFFF) 100x xxxx xxxx xxxx
 ;=======================================================================
+.segment "PRG_AUDIO_CODE"
 .ifdef	DPCMBank
 .proc	_nsd_ptr_bank
 
@@ -410,9 +466,10 @@ exit:	rts				;[6]
 ;<<Output>>
 ;	nothing
 ;=======================================================================
+.segment "PRG_AUDIO_CODE"
 .proc	nsd_sequence
 
-.rodata
+.segment "PRG_AUDIO_DATA"
 
 length:	.byte	96
 	.byte	72
@@ -496,7 +553,7 @@ opaddr:	.addr	nsd_op00
 	.addr	nsd_op3E
 	.addr	nsd_op3F
 
-.code
+.segment "PRG_AUDIO_CODE"
 
 	;-------------------------------
 	;now play?	(check: Sequence_ptr == 0 ?)	** upper 1 byte only **
@@ -971,7 +1028,7 @@ nsd_op0C:
 	;SEかチェック
 	cpx	#nsd::TR_SE
 	bcs	Set_Tempo_SE
-
+Add_Tempo:
 	add	__Tempo
 	jmp	Set_Tempo
 
@@ -1065,7 +1122,7 @@ nsd_op11:
 	cpx	#nsd::TR_BGM5
 	beq	@Exit
 
-	lda	__tmp + 1
+;	lda	__tmp + 1
 	ora	__tmp
 .ifdef	DPCMBank
 	bne	@L
@@ -1094,7 +1151,7 @@ nsd_op12:
 	cpx	#nsd::TR_BGM5
 	beq	@Exit
 
-	lda	__tmp + 1
+;	lda	__tmp + 1
 	ora	__tmp
 .ifdef	DPCMBank
 	bne	@L
@@ -1123,13 +1180,20 @@ nsd_op13:
 	cpx	#nsd::TR_BGM5
 	beq	@Exit
 
-	lda	__tmp + 1
+;	lda	__tmp + 1
 	ora	__tmp
 .ifdef	DPCMBank
 	bne	@L
 	sta	__env_note,x
 .endif
 	beq	@Zero
+
+.ifdef	ENV_NOTE_ABS
+	lda	__chflag,x					; Skip if player is disabled
+	and	#(nsd_chflag::EnvelopNoteAbs ^ $FF)
+	sta	__chflag,x
+.endif
+
 @L:
 	lda	__ptr
 	add	__tmp
@@ -1140,6 +1204,7 @@ nsd_op13:
 
 	lda	#$01
 	sta	__env_note_ptr,x
+
 @Exit:
 	jmp	Sequence
 
@@ -1187,7 +1252,12 @@ nsd_op17:
 	sty	__ptr + 1		;	__ptr = __Sequence_ptr
 	bcc	@l			;[2]9
 	iny				;
+.ifdef	Sequence_ptr_bss
+	tya
+	sta	__Sequence_ptr + 1,x	;
+.else
 	sty	__Sequence_ptr + 1,x	;
+.endif
 @l:
 
 	cpx	#nsd::TR_BGM5
@@ -1595,7 +1665,41 @@ nsd_op26:
 	sta	PSG_Data
 .endif
 
+;=======================================================================
+;		opcode	0x27:	Note Abs envelop.
+;-----------------------------------------------------------------------
 nsd_op27:
+.ifdef	ENV_NOTE_ABS
+	jsr	nsd_load_ptr
+
+	cpx	#nsd::TR_BGM5
+	beq	@Exit
+
+;	lda	__tmp + 1
+	ora	__tmp
+.ifdef	DPCMBank
+	bne	@L
+	sta	__env_note,x
+.endif
+	beq	@Zero
+
+	lda	__chflag,x					; Skip if player is disabled
+	ora	#(nsd_chflag::EnvelopNoteAbs)
+	sta	__chflag,x
+
+@L:
+	lda	__ptr
+	add	__tmp
+	sta	__env_note,x
+	lda	__ptr + 1
+	adc	__tmp + 1
+@Zero:	sta	__env_note + 1,x
+
+	lda	#$01
+	sta	__env_note_ptr,x
+
+@Exit:
+.endif
 	jmp	Sequence
 
 ;=======================================================================
@@ -1642,16 +1746,16 @@ nsd_Set_Trans_One:
 ;=======================================================================
 ;		opcode	0x2F:	Sub opcode
 ;-----------------------------------------------------------------------
-.rodata
+.segment "PRG_AUDIO_DATA"
 _sub_op_adr:
 	.addr	nsd_op2F_00
 	.addr	nsd_op2F_01
 	.addr	nsd_op2F_02
 	.addr	nsd_op2F_03
-;	.addr	nsd_op2F_04
-;	.addr	nsd_op2F_05
-;	.addr	nsd_op2F_06
-;	.addr	nsd_op2F_07
+	.addr	nsd_op2F_04
+	.addr	nsd_op2F_05
+	.addr	nsd_op2F_06
+	.addr	nsd_op2F_07
 
 ;	.addr	nsd_op2F_08
 ;	.addr	nsd_op2F_09
@@ -1662,7 +1766,7 @@ _sub_op_adr:
 ;	.addr	nsd_op2F_0E
 ;	.addr	nsd_op2F_0F
 
-.code
+.segment "PRG_AUDIO_CODE"
 nsd_op2F:
 	jsr	nsd_load_sequence
 	tay
@@ -1759,13 +1863,58 @@ nsd_op2F_03:
 	jsr	nsd_load_sequence
 	add	__detune_fine,x
 	sta	__detune_fine,x
-
-nsd_op2F_04:
-nsd_op2F_05:
-nsd_op2F_06:
-nsd_op2F_07:
 	jmp	Sequence
 
+;=======================================================================
+;		opcode	0x2F 04:	Auto Groove
+;-----------------------------------------------------------------------
+nsd_op2F_04:
+.ifdef	AUTO_GROOVE
+	jsr	nsd_load_sequence
+	sta	__grv_value
+	
+	jsr	nsd_load_sequence
+	sta	__grv_length
+;	lda	#$00
+	sta	__grv_ctr
+	jmp	Sequence
+.endif
+
+;=======================================================================
+;		opcode	0x2F 04:	Auto Groove
+;-----------------------------------------------------------------------
+nsd_op2F_05:
+.ifdef	ENVELOPE_MODE
+	jsr	nsd_load_sequence
+	sta	__env_flag,x
+	jmp	Sequence
+.endif
+
+nsd_op2F_06:
+	jsr	nsd_load_sequence
+	ora	__env_flag,x
+	sta	__env_flag,x
+	jmp	Sequence
+
+nsd_op2F_07:
+	jsr	nsd_load_sequence
+	and	__env_flag,x
+	sta	__env_flag,x
+	jmp	Sequence
+
+;nsd_op2F_08:
+;	jsr	nsd_load_sequence
+;	cmp	#$00
+;	beq	@NoMode
+;	lda	__env_flag,x
+;	ora	#env_flag::note
+;	sta	__env_flag,x
+;	jmp	Sequence
+;@NoMode:
+;	lda	__env_flag,x
+;	and	#<~env_flag::note
+;	sta	__env_flag,x
+;	jmp	Sequence
 ;=======================================================================
 ;		opcode	0x30 - 0x37:	Voice of release (after key-off) 
 ;-----------------------------------------------------------------------

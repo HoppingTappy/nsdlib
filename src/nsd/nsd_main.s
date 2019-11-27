@@ -24,8 +24,12 @@
 	.include	"nsddef.inc"
 	.include	"macro.inc"
 
+.ifdef	MMC3_BANK
+	.export		_nsd_bank_switch
+.endif
 
-.code
+
+.segment "PRG_AUDIO_CODE"
 
 ;=======================================================================
 ;	void    __fastcall__    nsd_main(void );
@@ -77,3 +81,17 @@
 	;Exit
 Exit:	rts
 .endproc
+
+
+.ifdef	MMC3_BANK
+; ------------------------------------------------------------------------
+; _nsd_bank_switch
+; ------------------------------------------------------------------------
+.segment "PRG_AUDIO_CODE"
+.proc	_nsd_bank_switch
+	lda	#( %01000000 | $6)	; $C000~DFFF
+	sta	$8000
+	stx	$8001
+	rts
+.endproc
+.endif

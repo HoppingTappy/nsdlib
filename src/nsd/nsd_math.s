@@ -22,7 +22,7 @@
 	.include	"nsddef.inc"
 	.include	"macro.inc"
 
-
+.segment "PRG_AUDIO_CODE"
 ;=======================================================================
 ;	void	__fastcall__	_nsd_div192(unsigned int ax);
 ;-----------------------------------------------------------------------
@@ -36,7 +36,7 @@
 ;	x =	ax  /  192
 ;=======================================================================
 .proc	_nsd_div192
-.code
+
 	pha		; save a
 	txa
 	tay		; y = x
@@ -101,8 +101,7 @@ exit:
 ;	a =	a Å~ (x Å{ 1) ÅÄ 16
 ;=======================================================================
 .proc	_nsd_mul
-.code
-
+.ifndef	VOLUME_TABLE_MOD
 	and	#$0F
 	eor	#$FF
 	sta	__tmp
@@ -138,4 +137,39 @@ exit:
 ;@L5:
 exit:
 	rts
+
+.else
+;	and	#$0F
+	stx	__tmp
+_tmp_a:
+	shl	a, 4
+	ora	__tmp
+_already_a_or_x:
+	tax
+	lda	_nsd_volume_table,x
+	rts
+
+.segment	"PRG_AUDIO_DATA"
+_nsd_volume_table:
+; env	      0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0	; volume  0
+	.byte 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1	; volume  1
+	.byte 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2	; volume  2
+	.byte 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 3	; volume  3
+	.byte 0, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 4	; volume  4
+	.byte 0, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 5	; volume  5
+	.byte 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 4, 5, 5, 6	; volume  6
+	.byte 0, 1, 1, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7	; volume  7
+	.byte 0, 1, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 8	; volume  8
+	.byte 0, 1, 1, 1, 2, 3, 3, 4, 4, 5, 6, 6, 7, 7, 8, 9	; volume  9
+	.byte 0, 1, 1, 2, 2, 3, 4, 4, 5, 6, 6, 7, 8, 8, 9,10	; volume 10
+	.byte 0, 1, 1, 2, 2, 3, 4, 5, 5, 6, 7, 8, 8, 9,10,11	; volume 11
+	.byte 0, 1, 1, 2, 3, 4, 4, 5, 6, 7, 8, 8, 9,10,11,12	; volume 12
+	.byte 0, 1, 1, 2, 3, 4, 5, 6, 6, 7, 8, 9,10,11,12,13	; volume 13
+	.byte 0, 1, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14	; volume 14
+	.byte 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15	; volume 15
+
+_nsd_mul_already_a_or_x = _nsd_mul::_already_a_or_x
+.export	_nsd_mul_already_a_or_x
+.endif
 .endproc

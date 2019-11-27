@@ -49,6 +49,10 @@ SE::~SE()
 //==============================================================
 void	SE::getAsm(MusicFile* MUS)
 {
+#ifdef segmentOutput
+	*MUS << ".segment \"SE_SEQ_DATA\"\n" << MUS->Header.Label.c_str() << "SE" << m_id << ":" << endl;
+#else
 	*MUS << MUS->Header.Label.c_str() << "SE" << m_id << ":" << endl;
+#endif
 	TrackSet::getAsm(MUS);
 }

@@ -34,7 +34,7 @@
 ;<<Output>>
 ;	nothing
 ;=======================================================================
-.code
+.segment "PRG_AUDIO_CODE"
 .proc	_nsd_load: near
 
 	pha

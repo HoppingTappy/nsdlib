@@ -47,6 +47,10 @@ BGM::~BGM(void)
 //==============================================================
 void	BGM::getAsm(MusicFile* MUS)
 {
+#ifdef segmentOutput
+	*MUS << ".segment \"BGM_SEQ_DATA\"\n" << MUS->Header.Label.c_str() << "BGM" << m_id << ":" << endl;
+#else
 	*MUS << MUS->Header.Label.c_str() << "BGM" << m_id << ":" << endl;
+#endif
 	TrackSet::getAsm(MUS);
 }

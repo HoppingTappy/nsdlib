@@ -10,7 +10,16 @@
 ;
 ;=======================================================================
 
-
+.ifdef	ALL_ADDING_MOD
+	DIET_ZP			 = 0
+	FO_MOD			 = 0
+	ENV_NOTE_ABS		 = 0
+	VOLUME_TABLE_MOD	 = 0
+	MMC3_BANK		 = 0
+	AUTO_GROOVE		 = 0
+	ENVELOPE_MODE		 = 0
+;	Sequence_ptr_bss = 1
+.endif
 
 ;****************************************************************
 ;*	Sound I/O Device address defines			*
@@ -278,11 +287,17 @@ PSG_Envelope_Form	= $0D
 	_tmp		.word					;02 General value
 	channel		.byte					;04 channel (x resister)
 	flag		.byte					;05 flag
+.ifndef	Sequence_ptr_bss
 	Sequence_ptr	.word			nsd::Track	;06 Address of playing sequence
-.ifndef	HFX4
+.endif
+.if	.defined(HFX4) .or .defined(DIET_ZP)
+.else
 	LengthCnt	.tag	NSD_Length_Cnt	nsd::Track	;16 Length Counter
 .endif
+.ifndef	DIET_ZP
 	Envelop		.tag	NSD_Envelop	nsd::Track	;26 Envelop counter
+.endif
+
 .Endstruct
 
 ; 6 + ( 6 [Byte] * 28 [ch] ) = 174
@@ -296,21 +311,36 @@ PSG_Envelope_Form	= $0D
 	Jump		= $10	;
 	Priority	= $0C	;Priority of now SE
 	Disable		= $80	;Disable of sound driver
+.ifdef	FO_MOD
+	Fade		= $40
+.endif
+
 .endscope
+
+.ifdef	ENVELOPE_MODE
+.scope	env_flag
+	volume		= $04
+	note		= $02
+	freq		= $01
+	voice		= $08
+.endscope
+.endif
 
 ;Zero Page Works
 .define	__ptr		nsd_work_zp + NSD_work_zp::_ptr
 .define	__tmp		nsd_work_zp + NSD_work_zp::_tmp
 .define	__flag		nsd_work_zp + NSD_work_zp::flag
 .define	__channel	nsd_work_zp + NSD_work_zp::channel
+.ifndef	Sequence_ptr_bss
 .define	__Sequence_ptr	nsd_work_zp + NSD_work_zp::Sequence_ptr
-
+.endif
+.ifndef	DIET_ZP
 .define	__Envelop_V	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V	;upper 4bit Voice / lower 4bit:Volume
 .define	__Envelop_F	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::F	;upper 4bit:Note  / lower 4bit:Frequency
-
 ;.define	__flag		nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM3
 .define	__Tempo		nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::F + nsd::TR_BGM5
 .define	__Tempo_ctr	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM5
+.endif
 
 
 
@@ -391,9 +421,24 @@ PSG_Envelope_Form	= $0D
 .Endstruct
 
 .Struct		NSD_work
+.ifdef	FO_MOD
+	Fo_Value	.word
+	Fo_Add		.byte
+.endif
+.ifdef	AUTO_GROOVE
+	GRV_Value	.byte
+	GRV_Length	.byte
+	GRV_Counter	.byte
+.endif
 	Flag		.tag	NSD_Flag	nsd::Track	;flag
-.ifdef	HFX4
+.if	.defined(HFX4) .or .defined(DIET_ZP)
 	LengthCnt	.tag	NSD_Length_Cnt	nsd::Track	;16 Length Counter
+.endif
+.ifdef	Sequence_ptr_bss
+	Sequence_ptr	.word			nsd::Track	;06 Address of playing sequence
+.endif
+.ifdef	DIET_ZP
+	Envelop		.tag	NSD_Envelop	nsd::Track	;26 Envelop counter
 .endif
 	Length		.tag	NSD_length	nsd::Track	;note length [tick]
 	Gatetime	.tag	NSD_gatetime	nsd::Track	;gate time [tick]
@@ -415,7 +460,13 @@ PSG_Envelope_Form	= $0D
 	Frequency	.word			nsd::Track	;Setting frequency
 	SubRoutine	.word			nsd::Track	;Pointer of sub-routine return address
 	Repeat2		.word			nsd::Track	;Pointer of repeat2 goto point
-
+.ifdef	ENV_NOTE_ABS
+;	Envelop_Mode	.byte			nsd::Track
+;	Abs_Note	.word			nsd::Track
+.endif
+.ifdef	ENVELOPE_MODE
+	Env_Flag	.byte			nsd::Track
+.endif
 ;.ifdef	MMC5
 ;	MMC5_Frequency	.byte			nsd::MMC5_Track	;MMC5 frequency
 ;.endif
@@ -474,6 +525,9 @@ PSG_Envelope_Form	= $0D
 				;01	Key Off	: Release command
 				;10	Key Off	:  envelop
 				;11	Note On	: (envelop)
+.ifdef	ENV_NOTE_ABS
+	EnvelopNoteAbs = $40
+.endif
 .endscope
 
 .scope	nsd_mode
@@ -485,14 +539,33 @@ PSG_Envelope_Form	= $0D
 
 
 ;RAM Works
-.ifdef	HFX4
+.ifdef	FO_MOD
+.define	__fo_value	nsd_work + NSD_work::Fo_Value
+.define	__fo_add	nsd_work + NSD_work::Fo_Add
+.endif
+.ifdef	AUTO_GROOVE
+.define	__grv_value	nsd_work + NSD_work::GRV_Value
+.define	__grv_length	nsd_work + NSD_work::GRV_Length
+.define	__grv_ctr	nsd_work + NSD_work::GRV_Counter
+.endif
+
+.if	.defined(HFX4) .or .defined(DIET_ZP)
 .define	__Length_ctr	nsd_work + NSD_work::LengthCnt + NSD_Length_Cnt::counter
 .define	__Gate		nsd_work + NSD_work::LengthCnt + NSD_Length_Cnt::gate
 .else
 .define	__Length_ctr	nsd_work_zp + NSD_work_zp::LengthCnt + NSD_Length_Cnt::counter
 .define	__Gate		nsd_work_zp + NSD_work_zp::LengthCnt + NSD_Length_Cnt::gate
 .endif
-
+.ifdef Sequence_ptr_bss
+.define	__Sequence_ptr	nsd_work + NSD_work::Sequence_ptr
+.endif
+.ifdef DIET_ZP
+.define	__Envelop_V	nsd_work + NSD_work::Envelop + NSD_Envelop::V	;upper 4bit Voice / lower 4bit:Volume
+.define	__Envelop_F	nsd_work + NSD_work::Envelop + NSD_Envelop::F	;upper 4bit:Note  / lower 4bit:Frequency
+;.define	__flag		nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM3
+.define	__Tempo		nsd_work + NSD_work::Envelop + NSD_Envelop::F + nsd::TR_BGM5
+.define	__Tempo_ctr	nsd_work + NSD_work::Envelop + NSD_Envelop::V + nsd::TR_BGM5
+.endif
 .define	__chflag	nsd_work + NSD_work::Flag + NSD_Flag::flag
 .define	__gatemode	nsd_work + NSD_work::Flag + NSD_Flag::gatemode
 .define	__tai		nsd_work + NSD_work::Length + NSD_length::tai
@@ -528,7 +601,13 @@ PSG_Envelope_Form	= $0D
 .define	__env_vol_now	nsd_work + NSD_work::Volume + NSD_volume::volume_env
 .define	__env_freq_now	nsd_work + NSD_work::Env_F_Now + NSD_Env_F_Now::Frequency
 .define	__env_note_now	nsd_work + NSD_work::Env_F_Now + NSD_Env_F_Now::Note
-
+.ifdef ENV_NOTE_ABS
+;.define	__env_mode	nsd_work + NSD_work::Envelop_Mode
+;.define	__abs_note	nsd_work + NSD_work::Abs_Note
+.endif
+.ifdef	ENVELOPE_MODE
+.define	__env_flag	nsd_work + NSD_work::Env_Flag
+.endif
 ;---------------
 ;‡™PCM
 .define	__dpcm_info		nsd_work + NSD_work::Env_V_Ptr + nsd::TR_BGM5		;.word
@@ -673,6 +752,69 @@ BGM_Begin:
 		ldx	#I*2 + nsd::TR_BGM1
 		jsr	nsd_sequence
 	.endrepeat
+.ifdef	FO_MOD
+	lda	__fo_add
+;	lda	__flag
+;	and	#(nsd_flag::Fade)
+	beq	@foSkip
+
+	; Standard low byte addition
+	clc
+	adc	__fo_value+1
+	sta	__fo_value+1
+	
+	; Sign extend the high byte
+	lda	__fo_add
+	and	#$80    ; Extract the sign bit
+	beq	:+      ; If zero, add #$00 (+ carry)
+	lda	#$ff    ; Else, add $ff (+ carry)
+:
+	adc	__fo_value
+	sta	__fo_value
+
+	bne	:+
+	ldx	__fo_add
+	bpl	@foSkip
+	lda	#$00
+	sta	__fo_value+1
+	jmp	@fadeStop
+:
+	and	#$10
+	; #$10
+	beq	@foSkip
+	lda	#$ff
+	sta	__fo_value+1
+	dec	__fo_value
+
+@fadeStop:
+
+	lda	#$00
+	sta	__fo_add
+
+@foSkip:
+.endif
+
+.ifdef	AUTO_GROOVE
+	lda	__grv_value
+	beq	@end
+
+	dec	__grv_ctr
+	bne	@nzero
+
+	lda	__grv_value
+	eor	#$FF
+	add	#1
+	sta	__grv_value
+
+	add	__Tempo
+	sta	__Tempo
+
+	lda	__grv_length
+	sta	__grv_ctr
+
+@nzero:
+@end:
+.endif
 
 	lda	#nsd_flag::Jump
 	bit	__flag
@@ -696,6 +838,13 @@ BGM_SEQ_Exit:
 	  .endif
 	.endrepeat
 
+.ifdef FO_MOD
+	lda	__fo_value
+	bne	@end
+	lda	#$0F
+	sta	APU_CHANCTRL
+@end:
+.endif
 BGM_Exit:
 
 .endmacro

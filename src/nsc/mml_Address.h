@@ -28,6 +28,8 @@ public:
 	~mml_Address(void);
 
 				void	set_Address(unsigned int _addr);
+				void	set_AddressLabel(string _addr);
+				void	set_AddressLabel(char _addr);
 //	unsigned	int		get_Address(void);
 				void	set_id(unsigned int _id);
 	unsigned	int		get_id(void);

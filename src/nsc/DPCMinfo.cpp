@@ -552,12 +552,16 @@ void	DPCMinfo::getAsm(MusicFile* MUS)
 
 	if(m_id > 0){
 		//DPCMinfo
+#ifdef segmentOutput
+		*MUS << ".segment \"DPCM_INFO\"\n" << MUS->Header.Label.c_str() << "DPCMinfo" << ":" << endl;
+#else
 		*MUS << MUS->Header.Label.c_str() << "DPCMinfo" << ":" << endl;
+#endif
 		MusicItem::getAsm(MUS);
 
 		//DPCM
 		if((!ptcDPCM.empty()) && (MUS->Header.segmentPCM != "")) {
-			*MUS <<	"\n\n.segment	"	<<	'"'	<<	MUS->Header.segmentPCM	<<	'"' << endl;
+			*MUS <<	"\n\n.segment	"	<<	'"'	<<	MUS->Header.segmentPCM	<<	'"' << "\n" << MUS->Header.segmentPCM << "_START:" << endl;
 			itDPCM = ptcDPCM.begin();
 			while(itDPCM != ptcDPCM.end()){
 				itDPCM->second->getAsm(MUS);

@@ -27,7 +27,7 @@
 	.include	"macro.inc"
 
 
-.code
+.segment "PRG_AUDIO_CODE"
 
 ;=======================================================================
 ;	void	__fastcall__	nsd_init(void );

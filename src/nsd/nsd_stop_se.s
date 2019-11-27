@@ -29,7 +29,7 @@
 	.include	"macro.inc"
 
 
-.code
+.segment "PRG_AUDIO_CODE"
 ;=======================================================================
 ;	void	__fastcall__	nsd_stop_se(void );
 ;-----------------------------------------------------------------------
@@ -58,11 +58,13 @@ Loop:
 	beq	@L
 
 	jsr	_nsd_snd_keyoff		;[6]
-	jsr	_nsd_snd_volume		;[6]
+;	jsr	_nsd_snd_volume		;[6]
 @L:
 	lda	#$00			;[2]
 	sta	__Sequence_ptr,x	;[4]
 	sta	__Sequence_ptr + 1,x	;[4]
+
+	jsr	_nsd_snd_volume		;[6]
 
 	;to do VRC7
 	lda	#$FF			;[2]
@@ -71,7 +73,7 @@ Loop:
 	inx
 	inx
 	cpx	#nsd::TR_SE + nsd::SE_Track * 2
-	bcc	Loop	
+	bcc	Loop
 
 	rts
 .endproc

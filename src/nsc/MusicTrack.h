@@ -36,6 +36,7 @@ public:
 	int	env_voice;
 	int	env_frequency;
 	int	env_note;
+	int	env_note_abs;
 
 	//APU
 	int	sweep;
@@ -207,13 +208,15 @@ private:
 				bool	sw_Evol;		//
 				bool	sw_Em;			//
 				bool	sw_En;			//
+				bool	sw_EN;			//
 
-	//設定するかどうか（defailt = false）
+										//設定するかどうか（defailt = false）
 				bool	f_opt_Voi;		//
 				bool	f_opt_Evoi;		//
 				bool	f_opt_Evol;		//
 				bool	f_opt_Em;		//
 				bool	f_opt_En;		//
+				bool	f_opt_EN;		//
 				bool	f_opt_Key;		//
 				bool	f_opt_Sweep;	//
 				bool	f_opt_Sub;		//サブルーチン（パッチ用）
@@ -310,13 +313,29 @@ public:
 				void	SetEnvelop_Evol(unsigned int _no);
 				void	SetEnvelop_Em(unsigned int _no);
 				void	SetEnvelop_En(unsigned int _no);
+				void	SetEnvelop_EN(unsigned int _no);
 				void	SetVoice(unsigned int _no);		//E@ off
 				void	SetEnvelop_Evol();				//Ev off
 				void	SetEnvelop_Em();				//Em off
 				void	SetEnvelop_En();				//En off
+				void	SetEnvelop_EN();				//EN off
+
+				void	SetEnvelop_Flag(MMLfile * MML);
+
+				void	SetEnvelop_No_Sync_Evoi();
+				void	SetEnvelop_No_Sync_Evol();
+				void	SetEnvelop_No_Sync_En();
+				void	SetEnvelop_No_Sync_Em();
+
+				void	SetEnvelop_No_Sync_Off_Evoi();
+				void	SetEnvelop_No_Sync_Off_Evol();
+				void	SetEnvelop_No_Sync_Off_En();
+				void	SetEnvelop_No_Sync_Off_Em();
 
 				void	SetSweep(MMLfile* MML);
 				void	SetSweep(unsigned char _c);
+
+				void	SetGroove(MMLfile * MML, unsigned char iTempo);
 
 				void	SetFDSC(MMLfile* MML);			//@FC
 				void	SetFDSM(MMLfile* MML);			//@FM

@@ -29,6 +29,7 @@ mml_Address::mml_Address(unsigned char _code, const _CHAR _strName[]):
 	code[0] = _code;
 	code[1] = 0;
 	code[2] = 0;
+	label = "_OFF_";
 }
 
 //==============================================================
@@ -51,6 +52,7 @@ mml_Address::mml_Address(unsigned char _code, unsigned char _data, const _CHAR _
 	code[1] = _data;
 	code[2] = 0;
 	code[3] = 0;
+	label = "";
 }
 
 //==============================================================
@@ -92,7 +94,11 @@ void	mml_Address::set_Address(unsigned int _addr)
 	
 
 }
+void	mml_Address::set_AddressLabel( string _label)
+{
+	label = _label;
 
+}
 //==============================================================
 //		ƒAƒhƒŒƒX‚ÌŽæ“¾
 //--------------------------------------------------------------

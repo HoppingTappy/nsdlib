@@ -369,6 +369,10 @@ int	Envelop::sweep(MMLfile* MML)
 //==============================================================
 void	Envelop::getAsm(MusicFile* MUS)
 {
+#ifdef segmentOutput
+	*MUS << ".segment \"ENVELOPE_DATA\"\n" << MUS->Header.Label.c_str() << "Envelope" << m_id << ":" << endl;
+#else
 	*MUS << MUS->Header.Label.c_str() << "Envelope" << m_id << ":" << endl;
+#endif
 	MusicItem::getAsm(MUS);
 }

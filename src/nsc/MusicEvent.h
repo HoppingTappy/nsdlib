@@ -35,6 +35,7 @@
 #define	nsd_Envelop_Volume		0x11
 #define	nsd_Envelop_Frequency	0x12
 #define	nsd_Envelop_Note		0x13
+#define	nsd_Envelop_Note_Abs	0x27
 #define	nsd_Detune_Cent			0x14
 #define	nsd_Derune_Register		0x15
 #define	nsd_Sweep				0x16
@@ -93,7 +94,10 @@
 #define	nsd_sub_Jump_off		0x01
 #define	nsd_sub_Detune_Cent		0x02
 #define	nsd_sub_Derune_Register	0x03
-
+#define	nsd_sub_Groove			0x04
+#define	nsd_sub_Env_Flag		0x05
+#define	nsd_sub_Env_No_Sync_On	0x06
+#define	nsd_sub_Env_No_Sync_Off	0x07
 
 /****************************************************************/
 /*																*/

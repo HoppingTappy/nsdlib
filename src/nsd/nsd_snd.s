@@ -40,6 +40,14 @@
 	.include	"macro.inc"
 
 
+.ifdef	FO_MOD
+	.import		_nsd_mul
+	
+.ifdef	VOLUME_TABLE_MOD
+	.import		_nsd_mul_already_a_or_x
+.endif
+
+.endif
 
 .ifdef	DPCMBank
 	.import		_nsd_bank_change
@@ -55,7 +63,7 @@
 ;<<Output>>
 ;	nothing
 ;=======================================================================
-.code
+.segment "PRG_AUDIO_CODE"
 .proc	_nsd_snd_init
 
 	lda	#$00
@@ -208,7 +216,7 @@
 ;	nothing
 ;=======================================================================
 .proc	_nsd_snd_keyon
-.rodata
+.segment "PRG_AUDIO_DATA"
 JMPTBL:	.addr	_nsd_apu_ch1_keyon		;BGM ch1 Pulse
 	.addr	_nsd_apu_ch2_keyon		;BGM ch2 Pulse
 	.addr	_nsd_apu_ch3_keyon		;BGM ch3 Triangle
@@ -283,7 +291,7 @@ JMPTBL:	.addr	_nsd_apu_ch1_keyon		;BGM ch1 Pulse
 .endif
 
 ;---------------------------------------
-.code
+.segment "PRG_AUDIO_CODE"
 .ifdef	MASK
 	lda	__chflag,x
 	bmi	Exit
@@ -342,6 +350,11 @@ Exit:
 	bne	@L
 .endif
 
+.ifdef	FO_MOD
+	ldy	__fo_value
+	beq	@L
+.endif
+
 	;Hardware key on for ch3
 	lda	__env_volume + 1,x
 .ifdef	DPCMBank
@@ -391,6 +404,11 @@ Exit:
 	lda	#nsd_flag::Jump
 	bit	__flag
 	bne	@E
+
+.ifdef	FO_MOD
+	ldy	__fo_value
+	beq	@E
+.endif
 
 	lda	#$0F
 	sta	APU_CHANCTRL
@@ -622,7 +640,7 @@ Exit:
 ;	nothing
 ;=======================================================================
 .proc	_nsd_snd_keyoff
-.rodata
+.segment "PRG_AUDIO_DATA"
 JMPTBL:	.addr	Exit			;BGM ch1 Pulse		-- no process --
 	.addr	Exit			;BGM ch2 Pulse		-- no process --
 	.addr	_nsd_apu_ch3_keyoff	;BGM ch3 Triangle
@@ -696,7 +714,7 @@ JMPTBL:	.addr	Exit			;BGM ch1 Pulse		-- no process --
 .endif
 
 ;---------------------------------------
-.code
+.segment "PRG_AUDIO_CODE"
 	ldy	JMPTBL,x		;[]
 	sty	__ptr			;[]
 	ldy	JMPTBL + 1,x		;[]
@@ -837,7 +855,7 @@ _nsd_OPLL_keyoff_exit:
 ;	nothing
 ;=======================================================================
 .proc	_nsd_snd_voice
-.rodata
+.segment "PRG_AUDIO_DATA"
 JMPTBL:	.addr	_nsd_apu_ch1_voice	;BGM ch1 Pulse
 	.addr	_nsd_apu_ch2_voice	;BGM ch2 Pulse
 	.addr	Exit			;BGM ch3 Triangle	-- no process --
@@ -911,7 +929,7 @@ JMPTBL:	.addr	_nsd_apu_ch1_voice	;BGM ch1 Pulse
 .endif
 
 ;---------------------------------------
-.code
+.segment "PRG_AUDIO_CODE"
 	ldy	JMPTBL,x
 	sty	__ptr
 	ldy	JMPTBL + 1,x
@@ -1494,7 +1512,7 @@ _nsd_psg_ch3_voice:
 ;	■■■※最終的なレジスタの更新も行うので、毎フレーム必ず呼ぶこと！！
 ;=======================================================================
 .proc	_nsd_snd_volume
-.rodata
+.segment "PRG_AUDIO_DATA"
 JMPTBL:	.addr	_nsd_apu_ch1_volume	;BGM ch1 Pulse
 	.addr	_nsd_apu_ch2_volume	;BGM ch2 Pulse
 	.addr	_nsd_apu_ch3_volume	;BGM ch3 Triangle
@@ -1568,7 +1586,7 @@ JMPTBL:	.addr	_nsd_apu_ch1_volume	;BGM ch1 Pulse
 .endif
 
 ;---------------------------------------
-.code
+.segment "PRG_AUDIO_CODE"
 .ifdef	MASK
 	tay
 	lda	__chflag,x
@@ -1580,6 +1598,31 @@ JMPTBL:	.addr	_nsd_apu_ch1_volume	;BGM ch1 Pulse
 	tya
 @LL:
 .endif
+
+
+.ifdef	FO_MOD
+
+	ldy	__channel
+	cpy	#nsd::TR_SE
+	bcs	@skipFade
+
+	and	#$0f
+	sta	__tmp
+
+	lda	__fo_value
+	and	#$0f
+	asl
+	asl
+	asl
+	asl
+	ora	__tmp
+	stx	__tmp + 1
+	jsr	_nsd_mul_already_a_or_x
+	ldx	__tmp + 1
+@skipFade:
+.endif
+
+
 	ldy	JMPTBL,x		;
 	sty	__ptr			;
 	ldy	JMPTBL + 1,x		;
@@ -1684,7 +1727,6 @@ _nsd_apu_ch3_volume:
 	ldy	__Sequence_ptr + nsd::TR_SE_Tri + 1
 	bne	Exit
 .endif
-
 	cmp	#0
 	beq	_nsd_apu_ch3_Counter_Set
 	cmp	#4
@@ -2150,7 +2192,7 @@ _nsd_psg_ch3_volume:
 ;	nothing
 ;=======================================================================
 .proc	_nsd_snd_sweep
-.rodata
+.segment "PRG_AUDIO_DATA"
 JMPTBL:	.addr	_nsd_apu_ch1_sweep	;BGM ch1 Pulse
 	.addr	_nsd_apu_ch2_sweep	;BGM ch2 Pulse
 	.addr	_nsd_apu_ch3_time	;BGM ch3 Triangle
@@ -2224,7 +2266,7 @@ JMPTBL:	.addr	_nsd_apu_ch1_sweep	;BGM ch1 Pulse
 .endif
 
 ;---------------------------------------
-.code
+.segment "PRG_AUDIO_CODE"
 	ldy	JMPTBL,x
 	sty	__ptr
 	ldy	JMPTBL + 1,x
@@ -2438,7 +2480,7 @@ Exit:
 ;<<Output>>
 ;	nothing
 ;=======================================================================
-.rodata
+.segment "PRG_AUDIO_DATA"
 
 ;---------------------------------------
 ;APU, MMC5, VRC6, FME7 Frequency table
@@ -3050,11 +3092,11 @@ Freq_N163_50:
 	.word	$7EA8
 .endif
 
-.code
+.segment "PRG_AUDIO_CODE"
 
 .proc	_nsd_snd_frequency
 
-.rodata
+.segment "PRG_AUDIO_DATA"
 
 JMPTBL:	.addr	_nsd_apu_ch1_frequency		;BGM ch1 Pulse
 	.addr	_nsd_apu_ch2_frequency		;BGM ch2 Pulse
@@ -3129,7 +3171,7 @@ JMPTBL:	.addr	_nsd_apu_ch1_frequency		;BGM ch1 Pulse
 .endif
 
 ;---------------------------------------
-.code
+.segment "PRG_AUDIO_CODE"
 	;-----------
 	;check the old frequency
 	ldy	__channel
@@ -3250,7 +3292,10 @@ Exit:
 	ldy	__Sequence_ptr + nsd::TR_SE_Tri + 1
 	bne	Exit
 .endif
-
+.ifdef	FO_MOD
+	ldy	__fo_value
+	beq	fadeOutZero
+.endif
 	jsr	Normal_frequency
 
 .ifdef	SE
@@ -3280,6 +3325,10 @@ Exit:
 	sta	__apu_frequency3
 
 Exit:
+	rts
+fadeOutZero:
+	lda	#$80
+	sta	APU_TRICTRL1
 	rts
 .endproc
 

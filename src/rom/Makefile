@@ -6,9 +6,9 @@
 
 export
 
-TOOL_PASS =	
-INC_PASS =	..\..\include\\
-LIB_PASS =	..\..\lib\\
+TOOL_PASS =	../../tools/cc65/
+INC_PASS =	../../include/
+LIB_PASS =	../../lib/
 
 include	$(INC_PASS)makefile.mk
 
@@ -72,21 +72,22 @@ PROJ_LIST =	$(PROJ).bin		\
 
 #---------------
 #; ÉAÉZÉìÉuÉâÇÃê›íË
+AMOD  = -D AUTO_GROOVE -D ENV_NOTE_ABS -D ENVELOPE_MODE
 
-ASE   = -D SE
-AFDS  = -D FDS
-AVRC6 = -D VRC6
-AVRC7 = -D VRC7
-AOPLL = -D OPLL
-AMMC5 = -D MMC5
-AN163 = -D N163
-APSG  = -D PSG
+ASE   = -D SE $(AMOD)
+AFDS  = -D FDS $(AMOD)
+AVRC6 = -D VRC6 $(AMOD)
+AVRC7 = -D VRC7 $(AMOD)
+AOPLL = -D OPLL $(AMOD)
+AMMC5 = -D MMC5 $(AMOD)
+AN163 = -D N163 $(AMOD)
+APSG  = -D PSG $(AMOD)
 
-AHFE4 =         -D VRC6         -D VRC7 -D MMC5 -D N163 -D PSG -D NULL -D DPCMBank -D HFE4
-AALL  =         -D VRC6         -D VRC7 -D MMC5 -D N163 -D PSG -D NULL -D DPCMBank
-AOALL =         -D VRC6 -D OPLL         -D MMC5 -D N163 -D PSG -D NULL -D DPCMBank
-AALL2 = -D FDS  -D VRC6         -D VRC7 -D MMC5 -D N163 -D PSG -D NULL -D DPCMBank
-AHFX4 = -D FDS  -D VRC6 -D OPLL -D VRC7 -D MMC5 -D N163 -D PSG -D NULL -D DPCMBank -D HFX4
+AHFE4 =         -D VRC6         -D VRC7 -D MMC5 -D N163 -D PSG -D NULL -D DPCMBank -D HFE4 $(AMOD)
+AALL  =         -D VRC6         -D VRC7 -D MMC5 -D N163 -D PSG -D NULL -D DPCMBank $(AMOD)
+AOALL =         -D VRC6 -D OPLL         -D MMC5 -D N163 -D PSG -D NULL -D DPCMBank $(AMOD)
+AALL2 = -D FDS  -D VRC6         -D VRC7 -D MMC5 -D N163 -D PSG -D NULL -D DPCMBank $(AMOD)
+AHFX4 = -D FDS  -D VRC6 -D OPLL -D VRC7 -D MMC5 -D N163 -D PSG -D NULL -D DPCMBank -D HFX4 $(AMOD)
 
 
 $(PROJ_SE).bin :	ASFLAGS += $(ASE)

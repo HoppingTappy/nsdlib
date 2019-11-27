@@ -18,8 +18,8 @@
 	.exportzp	nsd_work_zp
 	.export		nsd_work
 
-.zeropage
-
+;.zeropage
+.segment "ZEROPAGE_S": zeropage
 nsd_work_zp:	.tag	NSD_work_zp	;zero-page area
 
 .bss

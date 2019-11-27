@@ -1,24 +1,22 @@
 
 rem --- nsd.lib ---
-cd nsd
-call _make
-copy *.lib ..\..\lib\
-cd..
+pushd nsd
+	call _make
+	copy *.lib ..\..\lib\
+popd
 
 rem --- nsc.exe ---
-cd nsc
-cd release
-copy *.exe ..\..\..\bin\
-cd..
-cd..
+pushd nsc\release
+	copy *.exe ..\..\..\bin\
+popd
 
 rem --- rom.bin ---
-cd rom
-call _make
-copy *.bin ..\..\bin\
-cd..
+pushd rom
+	call _make
+	copy *.bin ..\..\bin\
+popd
 
 rem --- nsdl.chm ---
-cd help
-copy *.chm ..\..\doc\
-cd..
+pushd help
+	copy *.chm ..\..\doc\
+popd

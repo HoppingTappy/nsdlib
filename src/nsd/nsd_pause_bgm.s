@@ -26,6 +26,7 @@
 	.include	"macro.inc"
 
 
+.segment "PRG_AUDIO_CODE"
 
 ;=======================================================================
 ;	void	__fastcall__	nsd_pause_bgm(void );

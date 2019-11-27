@@ -30,6 +30,8 @@ protected:
 				size_t		iSize;
 	unsigned	int			iOffset;		//SNDファイルポインタ
 				bool		f_Optimize;		//最適化フラグ
+				int			label_id;
+				string		label;
 
 
 //メンバー関数

@@ -50,11 +50,11 @@ LDFLAGS = -C $(CFG_FILE) -L$(LIB_PASS) -v -m $(MAP_FILE) -vm -o
 
 #---------------
 #;  File delete
-RM      = del
+#RM      = del
 
 #---------------
 #;  File copy
-CP      = copy
+#CP      = copy
 
 
 

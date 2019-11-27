@@ -94,11 +94,25 @@ enum	Command_ID_mml {
 	mml_Envelop_Volume,
 	mml_Envelop_Frequency,
 	mml_Envelop_Note,
+	mml_Envelop_Note_Abs,
 
 	mml_Envelop_Off_Voice,
 	mml_Envelop_Off_Volume,
 	mml_Envelop_Off_Frequency,
 	mml_Envelop_Off_Note,
+	mml_Envelop_Off_Note_Abs,
+
+	mml_Envelop_Flag,
+
+	mml_Envelop_No_Sync_Voice,
+	mml_Envelop_No_Sync_Volume,
+	mml_Envelop_No_Sync_Frequency,
+	mml_Envelop_No_Sync_Note,
+
+	mml_Envelop_No_Sync_Off_Voice,
+	mml_Envelop_No_Sync_Off_Volume,
+	mml_Envelop_No_Sync_Off_Frequency,
+	mml_Envelop_No_Sync_Off_Note,
 
 	mml_Patch,
 	mml_Patch_Off,
@@ -135,6 +149,7 @@ enum	Command_ID_mml {
 	mml_Protament,
 	mml_Protament2,
 	mml_Sweep,
+	mml_Groove,
 
 	mml_Volume,
 	mml_Volume_Up,
@@ -278,11 +293,25 @@ const	static	Command_Info	Command[] = {
 		{	"Ev*",	mml_Envelop_Off_Volume		},
 		{	"Em*",	mml_Envelop_Off_Frequency	},
 		{	"En*",	mml_Envelop_Off_Note		},
+		{	"EN*",	mml_Envelop_Off_Note_Abs	},
 
 		{	"E@",	mml_Envelop_Voice		},
 		{	"Ev",	mml_Envelop_Volume		},
 		{	"Em",	mml_Envelop_Frequency	},
 		{	"En",	mml_Envelop_Note		},
+		{	"EN",	mml_Envelop_Note_Abs	},
+
+		{	"EF",	mml_Envelop_Flag },
+
+		{	"NSE@On",		mml_Envelop_No_Sync_Voice		},
+		{	"NSEvOn",		mml_Envelop_No_Sync_Volume		},
+		{	"NSEmOn",		mml_Envelop_No_Sync_Frequency	},
+		{	"NSEnOn",		mml_Envelop_No_Sync_Note		},
+
+		{	"NSE@*",	mml_Envelop_No_Sync_Off_Voice		},
+		{	"NSEv*",	mml_Envelop_No_Sync_Off_Volume		},
+		{	"NSEm*",	mml_Envelop_No_Sync_Off_Frequency	},
+		{	"NSEn*",	mml_Envelop_No_Sync_Off_Note		},
 
 		{	"エンベロープオフ",	mml_Envelop_Off_Volume		},
 		{	"エンベロープ",		mml_Envelop_Volume			},
@@ -336,6 +365,7 @@ const	static	Command_Info	Command[] = {
 		{	"ポルタメント",	mml_Protament			},
 		{	"{",			mml_Protament2			},
 		{	"s",			mml_Sweep				},
+		{	"G",			mml_Groove				},
 
 		{	"v",		mml_Volume				},
 		{	"音量",		mml_Volume				},
@@ -674,6 +704,11 @@ const	static	Command_Info	Command[] = {
 			//	nowTrack->SetEnvelop(nsd_Envelop_Note, MML, MML->offset_En);
 				break;
 
+			case(mml_Envelop_Note_Abs):
+				nowTrack->SetEnvelop_EN(MML->GetInt() + MML->offset_EN);
+				//	nowTrack->SetEnvelop(nsd_Envelop_Note, MML, MML->offset_En);
+				break;
+
 			case(mml_Envelop_Off_Voice):
 				MML->Err(_T("音色エンベロープは、@コマンドで無効にできます。"));
 				break;
@@ -691,6 +726,48 @@ const	static	Command_Info	Command[] = {
 			case(mml_Envelop_Off_Note):
 				nowTrack->SetEnvelop_En();
 			//	SetEvent(new mml_Address(nsd_Envelop_Note));
+				break;
+
+			case(mml_Envelop_Off_Note_Abs):
+				nowTrack->SetEnvelop_EN();
+				//	SetEvent(new mml_Address(nsd_Envelop_Note_Abs));
+				break;
+
+			case(mml_Envelop_Flag):
+				nowTrack->SetEnvelop_Flag(MML);
+				//	nowTrack->SetEnvelop(nsd_Envelop_Note, MML, MML->offset_En);
+				break;
+
+			case(mml_Envelop_No_Sync_Voice):
+				nowTrack->SetEnvelop_No_Sync_Evoi();
+				break;
+
+			case(mml_Envelop_No_Sync_Volume):
+				nowTrack->SetEnvelop_No_Sync_Evol();
+				break;
+
+			case(mml_Envelop_No_Sync_Frequency):
+				nowTrack->SetEnvelop_No_Sync_Em();
+				break;
+
+			case(mml_Envelop_No_Sync_Note):
+				nowTrack->SetEnvelop_No_Sync_En();
+				break;
+
+			case(mml_Envelop_No_Sync_Off_Voice):
+				nowTrack->SetEnvelop_No_Sync_Off_Evoi();
+				break;
+
+			case(mml_Envelop_No_Sync_Off_Volume):
+				nowTrack->SetEnvelop_No_Sync_Off_Evol();
+				break;
+
+			case(mml_Envelop_No_Sync_Off_Frequency):
+				nowTrack->SetEnvelop_No_Sync_Off_Em();
+				break;
+
+			case(mml_Envelop_No_Sync_Off_Note):
+				nowTrack->SetEnvelop_No_Sync_Off_En();
 				break;
 
 			case(mml_Patch):
@@ -834,6 +911,10 @@ const	static	Command_Info	Command[] = {
 
 			case(mml_Sweep):
 				nowTrack->SetSweep(MML);
+				break;
+
+			case(mml_Groove):
+				nowTrack->SetGroove(MML, (unsigned char)iTempo);
 				break;
 
 			case(mml_Volume):

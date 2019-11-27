@@ -26,7 +26,7 @@
 	.include	"macro.inc"
 
 
-.code
+.segment "PRG_AUDIO_CODE"
 
 ;=======================================================================
 ;	void	__fastcall__	nsd_stop_bgm(void );
@@ -45,6 +45,10 @@
 	lda	#nsd_flag::BGM
 	ora	__flag
 	sta	__flag			;BGM Disable
+
+	lda	__chflag + nsd::TR_BGM5
+	and	#<~nsd_chflag::KeyOff
+	sta	__chflag + nsd::TR_BGM5
 
 	;-----------------------
 	;Init the channel structure

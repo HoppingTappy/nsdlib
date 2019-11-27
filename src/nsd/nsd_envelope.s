@@ -30,7 +30,11 @@
 	.include	"nsddef.inc"
 	.include	"macro.inc"
 
-.code
+.ifdef	VOLUME_TABLE_MOD
+	.import		_nsd_mul_already_a_or_x
+.endif
+
+.segment "PRG_AUDIO_CODE"
 
 ;=======================================================================
 ;	void	nsd_envelop_proc(void);
@@ -146,6 +150,18 @@ Frequency:
 .endif
 	sta	__ptr + 1
 	ENV	__env_note, __env_note_ptr, __env_note_now, __Envelop_F, 4
+.ifdef	ENV_NOTE_ABS
+	sta	__tmp + 1
+	lda	__chflag,x					; Skip if player is disabled
+	and	#(nsd_chflag::EnvelopNoteAbs)
+	beq	@NoAbs
+
+	lda	__tmp + 1
+	beq	@NOENV
+	jmp	@Note_Exit
+@NoAbs:
+	lda	__tmp + 1
+.endif
 	cmp	#$40
 	bcc	@Sigh
 	ora	#$80
@@ -420,10 +436,12 @@ Volume:
 	cpx	#nsd::TR_SE_Tri
 	beq	@S
 .endif
+
 	sta	__tmp
 	lda	__volume,x
 	ldx	__tmp
 	jsr	_nsd_mul
+
 	ldx	__channel
 @S:	jmp	_nsd_snd_volume		;nsd_snd_volume(a);
 

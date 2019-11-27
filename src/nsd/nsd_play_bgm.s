@@ -29,7 +29,7 @@
 	.include	"macro.inc"
 
 
-.code
+.segment "PRG_AUDIO_CODE"
 
 ;=======================================================================
 ;	void	__fastcall__	nsd_play_bgm(void* bgm );
@@ -169,6 +169,15 @@ Loop_End:
 	and	__flag
 	sta	__flag			;BGM & Main Enable
 
+.ifdef	FO_MOD
+	lda	#$0f
+	sta	__fo_value
+	lda	#$ff
+	sta	__fo_value+1
+	lda	#$00
+	sta	__fo_add
+.endif
+
 	rts
 .endproc
 
@@ -280,7 +289,6 @@ Step5:
 	sta	__note,x
 	lda	#$2
 	sta	__gatemode,x
-
 	rts
 .endproc
 

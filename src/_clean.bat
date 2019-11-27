@@ -1,10 +1,10 @@
 
 rem --- nsd.lib ---
-cd nsd
-call _clean
-cd..
+pushd nsd
+	call _clean
+popd
 
 rem --- rom.bin ---
-cd rom
-call _clean
-cd..
+pushd rom
+	call _clean
+popd

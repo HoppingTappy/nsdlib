@@ -49,6 +49,7 @@ public:
 				int					offset_Ev;			//
 				int					offset_En;			//
 				int					offset_Em;			//
+				int					offset_EN;			//
 				int					iReleaseVolume;		//
 				int					iRepeatMode;		//
 				int					iTieMode;			//

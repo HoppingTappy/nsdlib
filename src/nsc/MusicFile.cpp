@@ -64,6 +64,7 @@ enum	Command_ID_MusicFile {
 	id_offset_Ei,
 	id_offset_Ev,
 	id_offset_En,
+	id_offset_EN,
 	id_offset_Em,
 	id_QMax,
 	id_rest,
@@ -151,6 +152,8 @@ const	static	Command_Info	Command[] = {
 		{	"#offsetEm",		id_offset_Em	},
 		{	"#OffsetEn",		id_offset_En	},
 		{	"#offsetEn",		id_offset_En	},
+		{	"#OffsetEN",		id_offset_EN	},
+		{	"#offsetEN",		id_offset_EN	},
 		{	"#Priority",		id_Priority		},
 		{	"#priority",		id_Priority		},
 		{	"#QMax",			id_QMax			},
@@ -318,6 +321,9 @@ const	static	Command_Info	Command[] = {
 				break;
 			case(id_offset_Em):
 				MML->offset_Em = MML->GetInt();
+				break;
+			case(id_offset_EN):
+				MML->offset_EN = MML->GetInt();
 				break;
 			case(id_Priority):
 				i = MML->GetInt();

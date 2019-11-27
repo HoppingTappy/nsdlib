@@ -1,4 +1,4 @@
-;
+.FEATURE	c_comments;
 ; NES definitions
 ;
 
