@@ -45,6 +45,7 @@ public:
 	//FDS
 	int	fds_frequency;
 	int	fds_sweepbias;
+	int	fds_sync_switch;
 
 	//N163
 	int	n163_num;
@@ -77,6 +78,7 @@ public:
 		apu_tri_time	= -1;
 		fds_frequency	= -1;
 		fds_sweepbias	= -1;
+		fds_sync_switch = -1;
 		n163_num		= -1;
 		n163_frequency	= -1;
 		psg_switch		= -1;
@@ -102,6 +104,7 @@ public:
 		apu_tri_time	=	work->apu_tri_time;
 		fds_frequency	=	work->fds_frequency;
 		fds_sweepbias	=	work->fds_sweepbias;
+		fds_sync_switch =	work->fds_sync_switch;
 		n163_num		=	work->n163_num;
 		n163_frequency	=	work->n163_frequency;
 		psg_switch		=	work->psg_switch;

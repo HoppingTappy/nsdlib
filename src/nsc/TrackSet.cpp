@@ -126,6 +126,8 @@ enum	Command_ID_mml {
 	mml_FDSM,
 	mml_FDSF,
 	mml_FDSV,
+	mml_FDSS_On,
+	mml_FDSS_Off,
 	mml_VRC7,
 	mml_N163,
 	mml_N163_Set,
@@ -329,6 +331,8 @@ const	static	Command_Info	Command[] = {
 		{	"@FM",	mml_FDSM				},
 		{	"@FF",	mml_FDSF				},
 		{	"@FV",	mml_FDSV				},
+		{	"@FSOn",		mml_FDSS_On			},
+		{	"@FS*",		mml_FDSS_Off		},
 		{	"@V",	mml_VRC7				},
 		{	"@NS",	mml_N163_Set			},
 		{	"@NL",	mml_N163_Load			},
@@ -809,6 +813,14 @@ const	static	Command_Info	Command[] = {
 
 			case(mml_FDSV):
 				Set_FDS_Volume(MML);
+				break;
+
+			case(mml_FDSS_On):
+				SetEvent(new mml_general(nsd_SubCommand, (const char)nsd_sub_Fds_Sync_On, _T("FDS Sync On")));
+				break;
+
+			case(mml_FDSS_Off):
+				SetEvent(new mml_general(nsd_SubCommand, (const char)nsd_sub_Fds_Sync_Off, _T("FDS Sync Off")));
 				break;
 
 			case(mml_VRC7):

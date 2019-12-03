@@ -18,6 +18,7 @@
 	MMC3_BANK		 = 0
 	AUTO_GROOVE		 = 0
 	ENVELOPE_MODE		 = 0
+	FDS_SYNC		 = 0
 ;	Sequence_ptr_bss = 1
 .endif
 
@@ -517,6 +518,9 @@ PSG_Envelope_Form	= $0D
 	Mask	= $80
 .endif
 	Sustain	= $20		;for VRC7
+.ifdef	FDS_SYNC
+	FdsSync	= $10		;for FDS
+.endif
 	KeyOn	= $10		;for VRC7
 	Envelop	= $10		;for PSG
 	FDSVOL	= $0C

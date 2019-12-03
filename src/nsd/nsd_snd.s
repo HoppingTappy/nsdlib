@@ -3477,10 +3477,25 @@ Detune:
 	dey				; ay = __detune_fine (sign expand)
 @L:	add	__tmp
 	sta	FDS_FTUNE
+.ifdef FDS_SYNC
+	sta	__tmp
+.endif
 	tya
 	adc	__tmp + 1
 	and	#$0F
 	sta	FDS_CTUNE		;__tmp += (signed int)__detune_cent
+.ifdef FDS_SYNC
+	sta	__fds_frequency
+
+	lda	__chflag,x
+	and	#nsd_chflag::FdsSync
+	beq	@noFdsSync
+	lda	__tmp
+	sta	FDS_Mod_FTUNE
+	lda	__fds_frequency
+	sta	FDS_Mod_CTUNE
+@noFdsSync:
+.endif
 
 	rts
 .endproc

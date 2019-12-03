@@ -98,6 +98,8 @@
 #define	nsd_sub_Env_Flag		0x05
 #define	nsd_sub_Env_No_Sync_On	0x06
 #define	nsd_sub_Env_No_Sync_Off	0x07
+#define	nsd_sub_Fds_Sync_On		0x08
+#define	nsd_sub_Fds_Sync_Off	0x09
 
 /****************************************************************/
 /*																*/

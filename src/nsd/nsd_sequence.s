@@ -1757,8 +1757,8 @@ _sub_op_adr:
 	.addr	nsd_op2F_06
 	.addr	nsd_op2F_07
 
-;	.addr	nsd_op2F_08
-;	.addr	nsd_op2F_09
+	.addr	nsd_op2F_08
+	.addr	nsd_op2F_09
 ;	.addr	nsd_op2F_0A
 ;	.addr	nsd_op2F_0B
 ;	.addr	nsd_op2F_0C
@@ -1902,19 +1902,19 @@ nsd_op2F_07:
 	sta	__env_flag,x
 	jmp	Sequence
 
-;nsd_op2F_08:
-;	jsr	nsd_load_sequence
-;	cmp	#$00
-;	beq	@NoMode
-;	lda	__env_flag,x
-;	ora	#env_flag::note
-;	sta	__env_flag,x
-;	jmp	Sequence
-;@NoMode:
-;	lda	__env_flag,x
-;	and	#<~env_flag::note
-;	sta	__env_flag,x
-;	jmp	Sequence
+.ifdef FDS_SYNC
+nsd_op2F_08:
+	lda	__chflag,x
+	ora	#nsd_chflag::FdsSync
+	sta	__chflag,x
+	jmp	Sequence
+nsd_op2F_09:
+	lda	__chflag,x
+	and	#<~nsd_chflag::FdsSync
+	sta	__chflag,x
+	jmp	Sequence
+
+.endif
 ;=======================================================================
 ;		opcode	0x30 - 0x37:	Voice of release (after key-off) 
 ;-----------------------------------------------------------------------
@@ -2011,38 +2011,5 @@ nsd_op3E:
 nsd_op3F:
 	lda	#84
 	bne	nsd_Set_Octave
-
-nsd_op2F_08:
-;	lda	#96
-;	bne	nsd_Set_Octave
-
-nsd_op2F_09:
-;	lda	#108
-;	bne	nsd_Set_Octave
-
-nsd_op2F_0A:
-;	lda	#120
-;	bne	nsd_Set_Octave
-
-nsd_op2F_0B:
-;	lda	#132
-;	bne	nsd_Set_Octave
-
-nsd_op2F_0C:
-;	lda	#144
-;	bne	nsd_Set_Octave
-
-nsd_op2F_0D:
-;	lda	#156
-;	bne	nsd_Set_Octave
-
-nsd_op2F_0E:
-;	lda	#168
-;	bne	nsd_Set_Octave
-
-nsd_op2F_0F:
-;	lda	#180
-;	bne	nsd_Set_Octave
-
 .endproc
 

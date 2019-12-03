@@ -72,7 +72,7 @@ PROJ_LIST =	$(PROJ).bin		\
 
 #---------------
 #; ÉAÉZÉìÉuÉâÇÃê›íË
-AMOD  = -D AUTO_GROOVE -D ENV_NOTE_ABS -D ENVELOPE_MODE
+AMOD  = -D AUTO_GROOVE -D ENV_NOTE_ABS -D ENVELOPE_MODE -D FDS_SYNC
 
 ASE   = -D SE $(AMOD)
 AFDS  = -D FDS $(AMOD)
