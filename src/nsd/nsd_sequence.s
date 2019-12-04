@@ -1574,10 +1574,15 @@ nsd_op23:
 	lda	__ptr
 	add	__tmp
 	sta	__ptr
-
+.ifdef FDS_SYNC
+	sta	__mod_wav_ptr
+.endif
 	lda	__ptr + 1
 	adc	__tmp + 1
 	sta	__ptr + 1		;__ptr テーブルのポインタ
+.ifdef FDS_SYNC
+	sta	__mod_wav_ptr + 1
+.endif
 
 	lda	__fds_frequency
 	ora	#$80

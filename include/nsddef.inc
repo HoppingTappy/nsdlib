@@ -431,6 +431,9 @@ PSG_Envelope_Form	= $0D
 	GRV_Length	.byte
 	GRV_Counter	.byte
 .endif
+.ifdef	FDS_SYNC
+	ModWavPtr	.word
+.endif
 	Flag		.tag	NSD_Flag	nsd::Track	;flag
 .if	.defined(HFX4) .or .defined(DIET_ZP)
 	LengthCnt	.tag	NSD_Length_Cnt	nsd::Track	;16 Length Counter
@@ -551,6 +554,10 @@ PSG_Envelope_Form	= $0D
 .define	__grv_value	nsd_work + NSD_work::GRV_Value
 .define	__grv_length	nsd_work + NSD_work::GRV_Length
 .define	__grv_ctr	nsd_work + NSD_work::GRV_Counter
+.endif
+
+.ifdef	FDS_SYNC
+.define	__mod_wav_ptr	nsd_work + NSD_work::ModWavPtr
 .endif
 
 .if	.defined(HFX4) .or .defined(DIET_ZP)

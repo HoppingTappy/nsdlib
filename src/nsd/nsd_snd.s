@@ -454,8 +454,47 @@ Exit:
 ;---------------------------------------
 .ifdef	FDS
 .proc	_nsd_fds_keyon
+.ifdef FDS_SYNC
+	lda	__chflag,x
+	and	#nsd_chflag::FdsSync
+	beq	@noFdsSync
+
+	lda	__fds_frequency
+	ora	#$80
+	sta	FDS_Mod_CTUNE
+	lda	__fds_frequency
+	sta	FDS_Mod_CTUNE
+@noFdsSync:
+.endif
 	lda	__fds_sweepbias
 	sta	FDS_Sweep_Bias
+
+;.ifdef FDS_SYNC
+;
+;	lda	__chflag,x
+;	and	#nsd_chflag::FdsSync
+;	beq	@noFdsSync
+;
+;	lda	__mod_wav_ptr
+;	sta	__ptr
+;	lda	__mod_wav_ptr+1
+;	sta	__ptr+1
+;
+;.ifdef	DPCMBank
+;	jsr	_nsd_ptr_bank
+;.endif
+;	ldy	#0
+;@L:
+;	lda	(__ptr),y
+;	sta	FDS_Mod_Append
+;	iny
+;	cpy	#32
+;	bne	@L
+;
+;	lda	__fds_frequency
+;	sta	FDS_Mod_CTUNE
+;@noFdsSync:
+;.endif
 	rts
 .endproc
 .endif

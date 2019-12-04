@@ -1,13 +1,9 @@
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27428.2005
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.87
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nsc", "nsc.vcxproj", "{CC01E61C-7825-4731-BD90-368AE8FFB7A0}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D2A95985-CA29-4403-BB65-74EFCC81336D}"
-	ProjectSection(SolutionItems) = preProject
-		nsc.vsd = nsc.vsd
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,6 +20,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {CF051EB7-A55B-4F67-B96A-6A378B71831F}
+		SolutionGuid = {A718D978-5536-4E08-9ADE-38DDE75D3B19}
 	EndGlobalSection
 EndGlobal
