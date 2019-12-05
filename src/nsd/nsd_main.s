@@ -83,15 +83,36 @@ Exit:	rts
 .endproc
 
 
-.ifdef	MMC3_BANK
+.ifdef BANK_SWITCH
+	.segment "PRG_AUDIO_CODE"
+	.proc	_nsd_bank_switch
+
+.endif
+
+.if	.defined(MMC3_BANK)
 ; ------------------------------------------------------------------------
 ; _nsd_bank_switch
+; x = bank number
 ; ------------------------------------------------------------------------
-.segment "PRG_AUDIO_CODE"
-.proc	_nsd_bank_switch
+.if	MMC3_BANK == 0
+	lda	#( %00000000 | $7)	; $A000~BFFF
+.elseif	MMC3_BANK == 1
 	lda	#( %01000000 | $6)	; $C000~DFFF
+.endif
 	sta	$8000
 	stx	$8001
 	rts
-.endproc
+
+.elseif	.defined(VRC6_BANK)
+; ------------------------------------------------------------------------
+; _nsd_bank_switch
+; $C000-$DFFF = x
+; ------------------------------------------------------------------------
+;	sta	$8000
+	stx	$C000
+	rts
+.endif
+
+.ifdef BANK_SWITCH
+	.endproc
 .endif

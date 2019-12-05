@@ -21,7 +21,9 @@
 	FDS_SYNC		 = 0
 ;	Sequence_ptr_bss = 1
 .endif
-
+.if	.defined(MMC3_BANK) .or .defined(VRC6_BANK)
+	BANK_SWITCH = 0
+.endif
 ;****************************************************************
 ;*	Sound I/O Device address defines			*
 ;****************************************************************
