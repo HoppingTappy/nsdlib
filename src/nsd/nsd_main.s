@@ -94,9 +94,9 @@ Exit:	rts
 ; _nsd_bank_switch
 ; x = bank number
 ; ------------------------------------------------------------------------
-.if	.const(MMC3_BANK) = 0
+.if	::MMC3_BANK = 0
 	lda	#( %00000000 | $7)	; $A000~BFFF
-.elseif	.const(MMC3_BANK) = 1
+.elseif	::MMC3_BANK = 1
 	lda	#( %01000000 | $6)	; $C000~DFFF
 .endif
 	sta	$8000
