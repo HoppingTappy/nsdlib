@@ -33,7 +33,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 [All] G[n],[n]  グルーブ指定
 [All] EN[n]     絶対値ノートエンベロープオン
-[All] EEN*      絶対値ノートエンベロープオフ
+[All] EN*      絶対値ノートエンベロープオフ
 [All] NSE@On    非同期エンベロープオン
 [All] NSEvOn    非同期エンベロープオン
 [All] NSEmOn    非同期エンベロープオン
