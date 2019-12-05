@@ -24,7 +24,7 @@
 	.include	"nsddef.inc"
 	.include	"macro.inc"
 
-.ifdef	MMC3_BANK
+.ifdef	BANK_SWITCH
 	.export		_nsd_bank_switch
 .endif
 
@@ -87,8 +87,6 @@ Exit:	rts
 	.segment "PRG_AUDIO_CODE"
 	.proc	_nsd_bank_switch
 
-.endif
-
 .if	.defined(MMC3_BANK)
 ; ------------------------------------------------------------------------
 ; _nsd_bank_switch
@@ -111,6 +109,7 @@ Exit:	rts
 ;	sta	$8000
 	stx	$C000
 	rts
+
 .elseif	.defined(N163_BANK)
 ; ------------------------------------------------------------------------
 ; _nsd_bank_switch
@@ -120,6 +119,5 @@ Exit:	rts
 	rts
 .endif
 
-.ifdef BANK_SWITCH
 	.endproc
 .endif

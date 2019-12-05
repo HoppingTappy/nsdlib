@@ -11,14 +11,14 @@
 ;=======================================================================
 
 .ifdef	ALL_ADDING_MOD
-	DIET_ZP			 = 0
-	FO_MOD			 = 0
-	ENV_NOTE_ABS		 = 0
-	VOLUME_TABLE_MOD	 = 0
-	MMC3_BANK		 = 0
-	AUTO_GROOVE		 = 0
-	ENVELOPE_MODE		 = 0
-	FDS_SYNC		 = 0
+	DIET_ZP			= 0
+	FO_MOD			= 0
+	ENV_NOTE_ABS		= 0
+	VOLUME_TABLE_MOD	= 0
+;	MMC3_BANK		= 1
+	AUTO_GROOVE		= 0
+	ENVELOPE_MODE		= 0
+	FDS_SYNC		= 0
 ;	Sequence_ptr_bss = 1
 .endif
 .if	.defined(MMC3_BANK) .or .defined(VRC6_BANK) .or .defined(N163_BANK)

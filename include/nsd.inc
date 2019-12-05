@@ -170,6 +170,6 @@
 	.import		nsd_work
 
 
-.ifdef	MMC3_BANK
+.ifdef	BANK_SWITCH
 	.import		_nsd_bank_switch
 .endif
