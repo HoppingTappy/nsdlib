@@ -32,15 +32,27 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 ## 追加コマンド
 
 [All] G[n],[n]  グルーブ指定
+
 [All] EN[n]     絶対値ノートエンベロープオン
+
 [All] EN*      絶対値ノートエンベロープオフ
+
 [All] NSE@On    非同期エンベロープオン
+
 [All] NSEvOn    非同期エンベロープオン
+
 [All] NSEmOn    非同期エンベロープオン
+
 [All] NSEnOn    非同期エンベロープオン
+
 [All] NSE@*     非同期エンベロープオフ
+
 [All] NSEv*     非同期エンベロープオフ
+
 [All] NSEm*     非同期エンベロープオフ
+
 [All] NSEn*     非同期エンベロープオフ
+
 [FDS] @FSOn     FDS同期モードオン
+
 [FDS] @FS*      FDS同期モードオン
