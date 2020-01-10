@@ -66,6 +66,9 @@
 .segment "PRG_AUDIO_CODE"
 .proc	_nsd_snd_init
 
+	lda	#(nsd_flag::BGM+nsd_flag::SE)
+	sta	__flag
+
 	lda	#$00
 
 	sta	APU_PULSE1CTRL		; Pulse #1 Control Register (W)
@@ -87,8 +90,6 @@
 ;	sta	APU_MODDA		; Delta Modulation D/A Register (W)
 ;	sta	APU_MODADDR		; Delta Modulation Address Register (W)
 ;	sta	APU_MODLEN		; Delta Modulation Data Length Register (W)
-
-	sta	__flag
 
 .ifdef	MASK
 	ldx	#nsd::TR_BGM1
