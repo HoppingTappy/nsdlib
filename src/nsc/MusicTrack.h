@@ -193,6 +193,10 @@ private:
 	unsigned	char	pt_oldNote;				//疑似エコー用リングバッファ　ポインタ
 
 	//----------------------------------
+	//
+				bool	disableKeyOn;			//キーオン無効状態
+
+	//----------------------------------
 	//パッチ
 				bool	f_Patch;				//パッチ処理中？
 	unsigned	int		i_Patch;
@@ -373,6 +377,8 @@ public:
 				void	ResetEcho();
 				void	EchoVolRet();
 				void	GenerateEcho(MMLfile* MML, int Length, int GateTime, bool	Slur);
+				void	SetEnableKeyOn();
+				void	SetDisableKeyOn();
 				char	calc_note(MMLfile*	MML,int note);
 				int		calc_length(MMLfile* MML);
 				int		calc_gate(MMLfile* MML);
