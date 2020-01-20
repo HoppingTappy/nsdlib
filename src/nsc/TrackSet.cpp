@@ -87,6 +87,9 @@ enum	Command_ID_mml {
 	mml_Echo_B,
 	mml_Echo_R,
 
+	mml_EnableKeyOn,
+	mml_DisableKeyOn,
+
 	mml_Jump,
 	mml_Jump_drv,
 
@@ -287,6 +290,9 @@ const	static	Command_Info	Command[] = {
 		{	"EC",			mml_Echo				},
 		{	"エコーオフ",	mml_Echo_Off			},
 		{	"エコー",		mml_Echo				},
+
+		{	"ENK",			mml_EnableKeyOn			},
+		{	"DSK",			mml_DisableKeyOn },
 
 		{	"J",			mml_Jump				},
 		{	"j",			mml_Jump_drv			},
@@ -678,6 +684,14 @@ const	static	Command_Info	Command[] = {
 
 			case(mml_Echo):
 				nowTrack->SetEcho(MML);
+				break;
+
+			case(mml_EnableKeyOn):
+				nowTrack->SetEnableKeyOn();
+				break;
+
+			case(mml_DisableKeyOn):
+				nowTrack->SetDisableKeyOn();
 				break;
 
 			case(mml_Jump):
