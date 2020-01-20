@@ -44,3 +44,5 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 [All] NSEn*     非同期エンベロープオフ  
 [FDS] @FSOn     FDS同期モードオン  
 [FDS] @FS*      FDS同期モードオン  
+[All] ENK       キーオン有効  
+[All] DSK       キーオン無効  
