@@ -218,7 +218,11 @@ PSG_Envelope_Form	= $0D
 
 	TR_N163		= TR_MMC5 + MMC5_Track * 2
 	.ifdef	N163
-		N163_Track	= 8		;
+		.if	::N163 = 0
+			N163	= 8
+		.endif
+		N163_Track	= ::N163		;
+;		.out .sprintf("N163=%d",::N163)
 	.else
 		N163_Track	= 0		;
 	.endif

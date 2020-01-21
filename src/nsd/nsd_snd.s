@@ -260,14 +260,9 @@ JMPTBL:	.addr	_nsd_apu_ch1_keyon		;BGM ch1 Pulse
 	.addr	_nsd_mmc5_ch2_keyon		;
 .endif
 .ifdef	N163
-	.addr	_nsd_keyon_exit
-	.addr	_nsd_keyon_exit
-	.addr	_nsd_keyon_exit
-	.addr	_nsd_keyon_exit
-	.addr	_nsd_keyon_exit
-	.addr	_nsd_keyon_exit
-	.addr	_nsd_keyon_exit
-	.addr	_nsd_keyon_exit
+	.repeat ::nsd::N163_Track
+		.addr	_nsd_keyon_exit
+	.endrepeat
 .endif
 .ifdef	PSG
 	.addr	_nsd_keyon_exit
@@ -723,14 +718,9 @@ JMPTBL:	.addr	Exit			;BGM ch1 Pulse		-- no process --
 	.addr	Exit
 .endif
 .ifdef	N163
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
-	.addr	Exit
+	.repeat ::nsd::N163_Track
+		.addr	Exit
+	.endrepeat
 .endif
 .ifdef	PSG
 	.addr	Exit
@@ -938,14 +928,9 @@ JMPTBL:	.addr	_nsd_apu_ch1_voice	;BGM ch1 Pulse
 	.addr	_nsd_mmc5_ch2_voice		;
 .endif
 .ifdef	N163
-	.addr	_nsd_n163_ch1_voice
-	.addr	_nsd_n163_ch2_voice
-	.addr	_nsd_n163_ch3_voice
-	.addr	_nsd_n163_ch4_voice
-	.addr	_nsd_n163_ch5_voice
-	.addr	_nsd_n163_ch6_voice
-	.addr	_nsd_n163_ch7_voice
-	.addr	_nsd_n163_ch8_voice
+	.repeat ::nsd::N163_Track,cnt
+		.addr	.ident(.concat("_nsd_n163_ch",.string(cnt+1),"_voice"))
+	.endrepeat
 .endif
 .ifdef	PSG
 	.addr	_nsd_psg_ch1_voice
@@ -1595,14 +1580,9 @@ JMPTBL:	.addr	_nsd_apu_ch1_volume	;BGM ch1 Pulse
 	.addr	_nsd_mmc5_ch2_volume
 .endif
 .ifdef	N163
-	.addr	_nsd_n163_ch1_volume
-	.addr	_nsd_n163_ch2_volume
-	.addr	_nsd_n163_ch3_volume
-	.addr	_nsd_n163_ch4_volume
-	.addr	_nsd_n163_ch5_volume
-	.addr	_nsd_n163_ch6_volume
-	.addr	_nsd_n163_ch7_volume
-	.addr	_nsd_n163_ch8_volume
+	.repeat ::nsd::N163_Track,cnt
+		.addr	.ident(.concat("_nsd_n163_ch",.string(cnt+1),"_volume"))
+	.endrepeat
 .endif
 .ifdef	PSG
 	.addr	_nsd_psg_ch1_volume
@@ -2275,14 +2255,9 @@ JMPTBL:	.addr	_nsd_apu_ch1_sweep	;BGM ch1 Pulse
 	.addr	Exit
 .endif
 .ifdef	N163
-	.addr	_nsd_n163_sample_length
-	.addr	_nsd_n163_sample_length
-	.addr	_nsd_n163_sample_length
-	.addr	_nsd_n163_sample_length
-	.addr	_nsd_n163_sample_length
-	.addr	_nsd_n163_sample_length
-	.addr	_nsd_n163_sample_length
-	.addr	_nsd_n163_sample_length
+	.repeat ::nsd::N163_Track
+		.addr	_nsd_n163_sample_length
+	.endrepeat
 .endif
 .ifdef	PSG
 	.addr	_nsd_psg_envelop
@@ -3180,14 +3155,9 @@ JMPTBL:	.addr	_nsd_apu_ch1_frequency		;BGM ch1 Pulse
 	.addr	_nsd_mmc5_ch2_frequency
 .endif
 .ifdef	N163
-	.addr	_nsd_n163_ch1_frequency
-	.addr	_nsd_n163_ch2_frequency
-	.addr	_nsd_n163_ch3_frequency
-	.addr	_nsd_n163_ch4_frequency
-	.addr	_nsd_n163_ch5_frequency
-	.addr	_nsd_n163_ch6_frequency
-	.addr	_nsd_n163_ch7_frequency
-	.addr	_nsd_n163_ch8_frequency
+	.repeat ::nsd::N163_Track,cnt
+		.addr	.ident(.concat("_nsd_n163_ch",.string(cnt+1),"_frequency"))
+	.endrepeat
 .endif
 .ifdef	PSG
 	.addr	_nsd_psg_ch1_frequency
