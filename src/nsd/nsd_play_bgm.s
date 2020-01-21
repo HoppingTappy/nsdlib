@@ -155,14 +155,9 @@ Loop_End:
 
 .ifdef	N163
 	lda	#$E0			;56(0x38) << 2
-	sta	__n163_frequency + 0
-	sta	__n163_frequency + 1
-	sta	__n163_frequency + 2
-	sta	__n163_frequency + 3
-	sta	__n163_frequency + 4
-	sta	__n163_frequency + 5
-	sta	__n163_frequency + 6
-	sta	__n163_frequency + 7
+	.repeat ::nsd::N163_Track,cnt
+		sta	__n163_frequency + cnt
+	.endrepeat
 .endif
 
 	lda	#<~(nsd_flag::BGM + nsd_flag::Disable)
