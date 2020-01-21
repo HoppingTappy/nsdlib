@@ -1374,10 +1374,10 @@ void	TrackSet::Set_Priority(MMLfile* MML)
 	if(fSE == false){
 		MML->Warning(_T("SEブロック以外では優先度指定はできません。無視します。"));
 	} else {
-		if( (i <= 3) && (i >=0) ){
+		if( (i <= 255) && (i >=0) ){
 			Priority = (char)i;
 		} else {
-			MML->Err(_T("効果音の優先度は、は0～3の範囲で指定して下さい。"));
+			MML->Err(_T("効果音の優先度は、は0～255の範囲で指定して下さい。"));
 		}
 	}
 
