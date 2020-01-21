@@ -72,6 +72,28 @@ Channel:
 
 	;-----------------------
 Priority:
+.ifdef PRIORITY_EXTEND
+	lda	(__ptr),y		;
+	iny
+	sta	__tmp			; __tmp  = 優先度
+;	sta	__priority_value		; __tmp  = 優先度
+
+	lda	#nsd_flag::SE
+	bit	__flag			;
+	bne	@S			;1(SE再生無し)だったら、再生可
+
+	ldx	#0			;0(SE再生中)だったら、優先度比較
+	lda	__priority_value
+	cmp	__tmp
+	bcc	@L			;優先度判定
+
+@S:
+	lda	__tmp
+	sta	__priority_value	;優先度更新
+	ldx	#1			;今回の効果音を優先する
+@L:
+	stx	__tmp			; ＝ 0 だったら前回の方が優先度高い。
+.else
 	lda	(__ptr),y		;
 	iny
 	and	#$03
@@ -96,11 +118,10 @@ Priority:
 	ldx	#1			;今回の効果音を優先する
 @L:
 	stx	__tmp			; ＝ 0 だったら前回の方が優先度高い。
-
+.endif
 	;-----------------------
 	;Init the channel structure
 	ldx	#nsd::TR_SE
-
 Loop:
 	cpx	__channel
 	bcs	Loop_End

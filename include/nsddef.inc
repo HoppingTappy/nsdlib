@@ -24,6 +24,8 @@
 .if	.defined(MMC3_BANK) .or .defined(VRC6_BANK) .or .defined(N163_BANK)
 	BANK_SWITCH = 0
 .endif
+
+	PRIORITY_EXTEND 	= 0
 ;****************************************************************
 ;*	Sound I/O Device address defines			*
 ;****************************************************************
@@ -312,7 +314,9 @@ PSG_Envelope_Form	= $0D
 	BGM		= $01	;Playing BGM
 	SE		= $02	;Playing SE
 	Jump		= $10	;
+.ifndef PRIORITY_EXTEND
 	Priority	= $0C	;Priority of now SE
+.endif
 	Disable		= $80	;Disable of sound driver
 .ifdef	FO_MOD
 	Fade		= $40
@@ -424,6 +428,10 @@ PSG_Envelope_Form	= $0D
 .Endstruct
 
 .Struct		NSD_work
+.ifdef PRIORITY_EXTEND
+	Priority_Value	.byte
+.endif
+
 .ifdef	FO_MOD
 	Fo_Value	.word
 	Fo_Add		.byte
@@ -548,6 +556,9 @@ PSG_Envelope_Form	= $0D
 
 
 ;RAM Works
+.ifdef	PRIORITY_EXTEND
+.define	__priority_value	nsd_work + NSD_work::Priority_Value
+.endif
 .ifdef	FO_MOD
 .define	__fo_value	nsd_work + NSD_work::Fo_Value
 .define	__fo_add	nsd_work + NSD_work::Fo_Add
