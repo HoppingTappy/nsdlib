@@ -1761,9 +1761,10 @@ _sub_op_adr:
 	.addr	nsd_op2F_05
 	.addr	nsd_op2F_06
 	.addr	nsd_op2F_07
-
+.ifdef FDS_SYNC
 	.addr	nsd_op2F_08
 	.addr	nsd_op2F_09
+.endif
 ;	.addr	nsd_op2F_0A
 ;	.addr	nsd_op2F_0B
 ;	.addr	nsd_op2F_0C
