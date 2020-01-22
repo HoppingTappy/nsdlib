@@ -18,7 +18,9 @@
 ;	MMC3_BANK		= 1
 	AUTO_GROOVE		= 0
 	ENVELOPE_MODE		= 0
-	FDS_SYNC		= 0
+	.ifdef FDS
+		FDS_SYNC		= 0
+	.endif
 ;	Sequence_ptr_bss = 1
 .endif
 .if	.defined(MMC3_BANK) .or .defined(VRC6_BANK) .or .defined(N163_BANK)
@@ -338,19 +340,19 @@ PSG_Envelope_Form	= $0D
 .endif
 
 ;Zero Page Works
-.define	__ptr		nsd_work_zp + NSD_work_zp::_ptr
-.define	__tmp		nsd_work_zp + NSD_work_zp::_tmp
-.define	__flag		nsd_work_zp + NSD_work_zp::flag
-.define	__channel	nsd_work_zp + NSD_work_zp::channel
+		__ptr	=		nsd_work_zp + NSD_work_zp::_ptr
+		__tmp	=		nsd_work_zp + NSD_work_zp::_tmp
+		__flag	=		nsd_work_zp + NSD_work_zp::flag
+		__channel	=	nsd_work_zp + NSD_work_zp::channel
 .ifndef	Sequence_ptr_bss
-.define	__Sequence_ptr	nsd_work_zp + NSD_work_zp::Sequence_ptr
+		__Sequence_ptr	=	nsd_work_zp + NSD_work_zp::Sequence_ptr
 .endif
 .ifndef	DIET_ZP
-.define	__Envelop_V	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V	;upper 4bit Voice / lower 4bit:Volume
-.define	__Envelop_F	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::F	;upper 4bit:Note  / lower 4bit:Frequency
-;.define	__flag		nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM3
-.define	__Tempo		nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::F + nsd::TR_BGM5
-.define	__Tempo_ctr	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM5
+		__Envelop_V	=	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V	;upper 4bit Voice / lower 4bit:Volume
+		__Envelop_F	=	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::F	;upper 4bit:Note  / lower 4bit:Frequency
+;		__flag	=		nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM3
+		__Tempo	=		nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::F + nsd::TR_BGM5
+		__Tempo_ctr	=	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM5
 .endif
 
 
@@ -561,164 +563,164 @@ PSG_Envelope_Form	= $0D
 
 ;RAM Works
 .ifdef	PRIORITY_EXTEND
-.define	__priority_value	nsd_work + NSD_work::Priority_Value
+		__priority_value	=	nsd_work + NSD_work::Priority_Value
 .endif
 .ifdef	FO_MOD
-.define	__fo_value	nsd_work + NSD_work::Fo_Value
-.define	__fo_add	nsd_work + NSD_work::Fo_Add
+		__fo_value		=	nsd_work + NSD_work::Fo_Value
+		__fo_add		=	nsd_work + NSD_work::Fo_Add
 .endif
 .ifdef	AUTO_GROOVE
-.define	__grv_value	nsd_work + NSD_work::GRV_Value
-.define	__grv_length	nsd_work + NSD_work::GRV_Length
-.define	__grv_ctr	nsd_work + NSD_work::GRV_Counter
+		__grv_value		=	nsd_work + NSD_work::GRV_Value
+		__grv_length		=	nsd_work + NSD_work::GRV_Length
+		__grv_ctr		=	nsd_work + NSD_work::GRV_Counter
 .endif
 
 .ifdef	FDS_SYNC
-.define	__mod_wav_ptr	nsd_work + NSD_work::ModWavPtr
+		__mod_wav_ptr		=	nsd_work + NSD_work::ModWavPtr
 .endif
 
 .if	.defined(HFX4) .or .defined(DIET_ZP)
-.define	__Length_ctr	nsd_work + NSD_work::LengthCnt + NSD_Length_Cnt::counter
-.define	__Gate		nsd_work + NSD_work::LengthCnt + NSD_Length_Cnt::gate
+		__Length_ctr		=	nsd_work + NSD_work::LengthCnt + NSD_Length_Cnt::counter
+		__Gate			=	nsd_work + NSD_work::LengthCnt + NSD_Length_Cnt::gate
 .else
-.define	__Length_ctr	nsd_work_zp + NSD_work_zp::LengthCnt + NSD_Length_Cnt::counter
-.define	__Gate		nsd_work_zp + NSD_work_zp::LengthCnt + NSD_Length_Cnt::gate
+		__Length_ctr		=	nsd_work_zp + NSD_work_zp::LengthCnt + NSD_Length_Cnt::counter
+		__Gate			=	nsd_work_zp + NSD_work_zp::LengthCnt + NSD_Length_Cnt::gate
 .endif
 .ifdef Sequence_ptr_bss
-.define	__Sequence_ptr	nsd_work + NSD_work::Sequence_ptr
+		__Sequence_ptr		=	nsd_work + NSD_work::Sequence_ptr
 .endif
 .ifdef DIET_ZP
-.define	__Envelop_V	nsd_work + NSD_work::Envelop + NSD_Envelop::V	;upper 4bit Voice / lower 4bit:Volume
-.define	__Envelop_F	nsd_work + NSD_work::Envelop + NSD_Envelop::F	;upper 4bit:Note  / lower 4bit:Frequency
-;.define	__flag		nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM3
-.define	__Tempo		nsd_work + NSD_work::Envelop + NSD_Envelop::F + nsd::TR_BGM5
-.define	__Tempo_ctr	nsd_work + NSD_work::Envelop + NSD_Envelop::V + nsd::TR_BGM5
+		__Envelop_V		=	nsd_work + NSD_work::Envelop + NSD_Envelop::V	;upper 4bit Voice / lower 4bit:Volume
+		__Envelop_F		=	nsd_work + NSD_work::Envelop + NSD_Envelop::F	;upper 4bit:Note  / lower 4bit:Frequency
+;		__flag			=	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM3
+		__Tempo			=	nsd_work + NSD_work::Envelop + NSD_Envelop::F + nsd::TR_BGM5
+		__Tempo_ctr		=	nsd_work + NSD_work::Envelop + NSD_Envelop::V + nsd::TR_BGM5
 .endif
-.define	__chflag	nsd_work + NSD_work::Flag + NSD_Flag::flag
-.define	__gatemode	nsd_work + NSD_work::Flag + NSD_Flag::gatemode
-.define	__tai		nsd_work + NSD_work::Length + NSD_length::tai
-.define	__length	nsd_work + NSD_work::Length + NSD_length::length
-.define	__gate_q	nsd_work + NSD_work::Gatetime + NSD_gatetime::q
-.define	__gate_u	nsd_work + NSD_work::Gatetime + NSD_gatetime::u
-.define __note		nsd_work + NSD_work::Note + NSD_note::note
-.define	__octave	nsd_work + NSD_work::Note + NSD_note::octave
-.define	__detune_cent	nsd_work + NSD_work::Detune + NSD_Detune::cent
-.define	__detune_fine	nsd_work + NSD_work::Detune + NSD_Detune::fine
-.define	__por_target	nsd_work + NSD_work::Por_Lv + NSD_Por_Lv::target
-.define	__por_depth	nsd_work + NSD_work::Por_Lv + NSD_Por_Lv::depth
-.define	__por_ctr	nsd_work + NSD_work::Por_Co + NSD_Por_Co::count
-.define	__por_rate	nsd_work + NSD_work::Por_Co + NSD_Por_Co::rate
-.define __por_now	nsd_work + NSD_work::Por_now
-.define	__trans		nsd_work + NSD_work::Trans + NSD_Trans::trans
-.define	__trans_one	nsd_work + NSD_work::Trans + NSD_Trans::onetime
-.define	__repeat_ctr	nsd_work + NSD_work::Repeat + NSD_Repeat::count1
-.define	__repeat_ctr2	nsd_work + NSD_work::Repeat + NSD_Repeat::count2
-.define	__volume	nsd_work + NSD_work::Volume + NSD_volume::volume
-.define	__frequency	nsd_work + NSD_work::Frequency
-.define	__subroutine	nsd_work + NSD_work::SubRoutine
-.define	__repeat2	nsd_work + NSD_work::Repeat2
-.define	__env_volume	nsd_work + NSD_work::Envelop_Volume
-.define	__env_voice	nsd_work + NSD_work::Envelop_Voice
-.define	__env_frequency	nsd_work + NSD_work::Envelop_Freq
-.define	__env_note	nsd_work + NSD_work::Envelop_Note
-.define	__env_vol_ptr	nsd_work + NSD_work::Env_V_Ptr + NSD_Env_V_Ptr::Volume
-.define	__env_voi_ptr	nsd_work + NSD_work::Env_V_Ptr + NSD_Env_V_Ptr::Voice
-.define	__env_freq_ptr	nsd_work + NSD_work::Env_F_Ptr + NSD_Env_F_Ptr::Frequency
-.define	__env_note_ptr	nsd_work + NSD_work::Env_F_Ptr + NSD_Env_F_Ptr::Note
+		__chflag		=	nsd_work + NSD_work::Flag + NSD_Flag::flag
+		__gatemode		=	nsd_work + NSD_work::Flag + NSD_Flag::gatemode
+		__tai	=			nsd_work + NSD_work::Length + NSD_length::tai
+		__length		=	nsd_work + NSD_work::Length + NSD_length::length
+		__gate_q		=	nsd_work + NSD_work::Gatetime + NSD_gatetime::q
+		__gate_u		=	nsd_work + NSD_work::Gatetime + NSD_gatetime::u
+		__note			=	nsd_work + NSD_work::Note + NSD_note::note
+		__octave		=	nsd_work + NSD_work::Note + NSD_note::octave
+		__detune_cent		=	nsd_work + NSD_work::Detune + NSD_Detune::cent
+		__detune_fine		=	nsd_work + NSD_work::Detune + NSD_Detune::fine
+		__por_target		=	nsd_work + NSD_work::Por_Lv + NSD_Por_Lv::target
+		__por_depth		=	nsd_work + NSD_work::Por_Lv + NSD_Por_Lv::depth
+		__por_ctr		=	nsd_work + NSD_work::Por_Co + NSD_Por_Co::count
+		__por_rate		=	nsd_work + NSD_work::Por_Co + NSD_Por_Co::rate
+		__por_now		=	nsd_work + NSD_work::Por_now
+		__trans			=	nsd_work + NSD_work::Trans + NSD_Trans::trans
+		__trans_one		=	nsd_work + NSD_work::Trans + NSD_Trans::onetime
+		__repeat_ctr		=	nsd_work + NSD_work::Repeat + NSD_Repeat::count1
+		__repeat_ctr2		=	nsd_work + NSD_work::Repeat + NSD_Repeat::count2
+		__volume		=	nsd_work + NSD_work::Volume + NSD_volume::volume
+		__frequency		=	nsd_work + NSD_work::Frequency
+		__subroutine		=	nsd_work + NSD_work::SubRoutine
+		__repeat2		=	nsd_work + NSD_work::Repeat2
+		__env_volume		=	nsd_work + NSD_work::Envelop_Volume
+		__env_voice		=	nsd_work + NSD_work::Envelop_Voice
+		__env_frequency		=	nsd_work + NSD_work::Envelop_Freq
+		__env_note		=	nsd_work + NSD_work::Envelop_Note
+		__env_vol_ptr		=	nsd_work + NSD_work::Env_V_Ptr + NSD_Env_V_Ptr::Volume
+		__env_voi_ptr		=	nsd_work + NSD_work::Env_V_Ptr + NSD_Env_V_Ptr::Voice
+		__env_freq_ptr		=	nsd_work + NSD_work::Env_F_Ptr + NSD_Env_F_Ptr::Frequency
+		__env_note_ptr		=	nsd_work + NSD_work::Env_F_Ptr + NSD_Env_F_Ptr::Note
 ;	voiceに関しては、その後の演算は無いので、更新されない場合はエンベロープ処理を終了する。
-.define	__env_vol_now	nsd_work + NSD_work::Volume + NSD_volume::volume_env
-.define	__env_freq_now	nsd_work + NSD_work::Env_F_Now + NSD_Env_F_Now::Frequency
-.define	__env_note_now	nsd_work + NSD_work::Env_F_Now + NSD_Env_F_Now::Note
+		__env_vol_now		=	nsd_work + NSD_work::Volume + NSD_volume::volume_env
+		__env_freq_now		=	nsd_work + NSD_work::Env_F_Now + NSD_Env_F_Now::Frequency
+		__env_note_now		=	nsd_work + NSD_work::Env_F_Now + NSD_Env_F_Now::Note
 .ifdef ENV_NOTE_ABS
-;.define	__env_mode	nsd_work + NSD_work::Envelop_Mode
-;.define	__abs_note	nsd_work + NSD_work::Abs_Note
+;		__env_mode		=	nsd_work + NSD_work::Envelop_Mode
+;		__abs_note		=	nsd_work + NSD_work::Abs_Note
 .endif
 .ifdef	ENVELOPE_MODE
-.define	__env_flag	nsd_work + NSD_work::Env_Flag
+		__env_flag		=	nsd_work + NSD_work::Env_Flag
 .endif
 ;---------------
 ;⊿PCM
-.define	__dpcm_info		nsd_work + NSD_work::Env_V_Ptr + nsd::TR_BGM5		;.word
+		__dpcm_info		=	nsd_work + NSD_work::Env_V_Ptr + nsd::TR_BGM5		;.word
 
 ;Sweep
-.define	__sweep_ch1		nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM3
-.define	__sweep_ch2		nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM3 + 1
-;.define	__sweep_ch1		nsd_work + NSD_work::Volume + NSD_volume::volume     + nsd::TR_BGM5
-;.define	__sweep_ch2		nsd_work + NSD_work::Volume + NSD_volume::volume_env + nsd::TR_BGM5
+		__sweep_ch1		=	nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM3
+		__sweep_ch2		=	nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM3 + 1
+;		__sweep_ch1	=		nsd_work + NSD_work::Volume + NSD_volume::volume     + nsd::TR_BGM5
+;		__sweep_ch2	=		nsd_work + NSD_work::Volume + NSD_volume::volume_env + nsd::TR_BGM5
 
 
 ;Voice
-;.define	__apu_tri_time		nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM5
-;.define	__apu_voice_set4	nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM5 + 1
-;.define	__se_voice_set1		nsd_work + NSD_work::Env_F_Ptr + NSD_Env_F_Ptr::Frequency  + nsd::TR_BGM5
-;.define	__se_voice_set2		nsd_work + NSD_work::Env_F_Ptr + NSD_Env_F_Ptr::Note       + nsd::TR_BGM5
-.define	__apu_voice_set1	nsd_work + NSD_work::Envelop_Volume + nsd::TR_BGM5
-.define	__apu_voice_set2	nsd_work + NSD_work::Envelop_Volume + nsd::TR_BGM5 + 1
-.define	__apu_tri_time		nsd_work + NSD_work::Envelop_Freq   + nsd::TR_BGM5
-.define	__apu_voice_set4	nsd_work + NSD_work::Envelop_Freq   + nsd::TR_BGM5 + 1
+;		__apu_tri_time	=		nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM5
+;		__apu_voice_set4	=	nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM5 + 1
+;		__se_voice_set1	=		nsd_work + NSD_work::Env_F_Ptr + NSD_Env_F_Ptr::Frequency  + nsd::TR_BGM5
+;		__se_voice_set2	=		nsd_work + NSD_work::Env_F_Ptr + NSD_Env_F_Ptr::Note       + nsd::TR_BGM5
+		__apu_voice_set1	=	nsd_work + NSD_work::Envelop_Volume + nsd::TR_BGM5
+		__apu_voice_set2	=	nsd_work + NSD_work::Envelop_Volume + nsd::TR_BGM5 + 1
+		__apu_tri_time		=	nsd_work + NSD_work::Envelop_Freq   + nsd::TR_BGM5
+		__apu_voice_set4	=	nsd_work + NSD_work::Envelop_Freq   + nsd::TR_BGM5 + 1
 
 .ifdef	SE
-.define	__se_voice_set1		nsd_work + NSD_work::Frequency      + nsd::TR_BGM5
+		__se_voice_set1		=	nsd_work + NSD_work::Frequency      + nsd::TR_BGM5
 .endif
-.define	__se_voice_set2		nsd_work + NSD_work::Frequency      + nsd::TR_BGM5 + 1
+		__se_voice_set2		=	nsd_work + NSD_work::Frequency      + nsd::TR_BGM5 + 1
 .ifdef	SE
-.define	__se_tri_time		nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM5
+		__se_tri_time		=	nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM5
 .endif
-.define	__se_voice_set4		nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM5 + 1
+		__se_voice_set4		=	nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM5 + 1
 
 ;Frequency	（プチノイズ防止）
-.define	__apu_frequency1	nsd_work + NSD_work::Por_Lv    + nsd::TR_BGM5		;.byte
-.define	__apu_frequency2	nsd_work + NSD_work::Por_Lv    + nsd::TR_BGM5 + 1	;.byte
-.define	__apu_frequency3	nsd_work + NSD_work::Por_Co    + nsd::TR_BGM5		;.byte
+		__apu_frequency1	=	nsd_work + NSD_work::Por_Lv    + nsd::TR_BGM5		;.byte
+		__apu_frequency2	=	nsd_work + NSD_work::Por_Lv    + nsd::TR_BGM5 + 1	;.byte
+		__apu_frequency3	=	nsd_work + NSD_work::Por_Co    + nsd::TR_BGM5		;.byte
 .ifdef	SE
-.define	__se_frequency1		nsd_work + NSD_work::Por_Co    + nsd::TR_BGM5 + 1	;.byte
+		__se_frequency1		=	nsd_work + NSD_work::Por_Co    + nsd::TR_BGM5 + 1	;.byte
 .endif
-.define	__se_frequency2		nsd_work + NSD_work::Por_now   + nsd::TR_BGM5		;.byte
+		__se_frequency2		=	nsd_work + NSD_work::Por_now   + nsd::TR_BGM5		;.byte
 .ifdef	SE
-.define	__se_frequency3		nsd_work + NSD_work::Por_now   + nsd::TR_BGM5 + 1	;.byte
+		__se_frequency3		=	nsd_work + NSD_work::Por_now   + nsd::TR_BGM5 + 1	;.byte
 .endif
 
 .ifdef	FDS
-.define	__fds_frequency		nsd_work + NSD_work::FDS_Frequency
-.define	__fds_sweepbias		nsd_work + NSD_work::FDS_SweepBias
+		__fds_frequency		=	nsd_work + NSD_work::FDS_Frequency
+		__fds_sweepbias		=	nsd_work + NSD_work::FDS_SweepBias
 .endif
 
 .ifdef	MMC5
-;.define	__mmc5_voice_set1	nsd_work + NSD_work::Envelop_Freq   + nsd::TR_BGM5	;.byte
-;.define	__mmc5_voice_set2	nsd_work + NSD_work::Envelop_Freq   + nsd::TR_BGM5 + 1	;.byte
-.define	__mmc5_voice_set1	nsd_work + NSD_work::MMC5_VoiceSet
-.define	__mmc5_voice_set2	nsd_work + NSD_work::MMC5_VoiceSet + 1
-.define	__mmc5_frequency1	nsd_work + NSD_work::MMC5_Frequency
-.define	__mmc5_frequency2	nsd_work + NSD_work::MMC5_Frequency + 1
+;		__mmc5_voice_set1	=	nsd_work + NSD_work::Envelop_Freq   + nsd::TR_BGM5	;.byte
+;		__mmc5_voice_set2	=	nsd_work + NSD_work::Envelop_Freq   + nsd::TR_BGM5 + 1	;.byte
+		__mmc5_voice_set1	=	nsd_work + NSD_work::MMC5_VoiceSet
+		__mmc5_voice_set2	=	nsd_work + NSD_work::MMC5_VoiceSet + 1
+		__mmc5_frequency1	=	nsd_work + NSD_work::MMC5_Frequency
+		__mmc5_frequency2	=	nsd_work + NSD_work::MMC5_Frequency + 1
 .endif
 
 .ifdef	VRC6
-.define	__vrc6_voice_set1	nsd_work + NSD_work::Envelop_Note   + nsd::TR_BGM5	;.byte
-.define	__vrc6_voice_set2	nsd_work + NSD_work::Envelop_Note   + nsd::TR_BGM5 + 1	;.byte
+		__vrc6_voice_set1	=	nsd_work + NSD_work::Envelop_Note   + nsd::TR_BGM5	;.byte
+		__vrc6_voice_set2	=	nsd_work + NSD_work::Envelop_Note   + nsd::TR_BGM5 + 1	;.byte
 .endif
 
 .ifdef	VRC7
-.define	__vrc7_voice_set	nsd_work + NSD_work::VRC7_VoiceSet
-.define	__vrc7_frequency	nsd_work + NSD_work::VRC7_Frequency
-.define	__vrc7_freq_old		nsd_work + NSD_work::VRC7_Freq_old
-.define	__vrc7_reg		nsd_work + NSD_work::VRC7_Reg
+		__vrc7_voice_set	=	nsd_work + NSD_work::VRC7_VoiceSet
+		__vrc7_frequency	=	nsd_work + NSD_work::VRC7_Frequency
+		__vrc7_freq_old	=		nsd_work + NSD_work::VRC7_Freq_old
+		__vrc7_reg	=		nsd_work + NSD_work::VRC7_Reg
 .endif
 
 .ifdef	OPLL
-.define	__opll_voice_set	nsd_work + NSD_work::OPLL_VoiceSet
-.define	__opll_frequency	nsd_work + NSD_work::OPLL_Frequency
-.define	__opll_freq_old		nsd_work + NSD_work::OPLL_Freq_old
-.define	__opll_reg		nsd_work + NSD_work::OPLL_Reg
-.define	__opll_ryhthm		nsd_work + NSD_work::OPLL_Rhythm
+		__opll_voice_set	=	nsd_work + NSD_work::OPLL_VoiceSet
+		__opll_frequency	=	nsd_work + NSD_work::OPLL_Frequency
+		__opll_freq_old		=	nsd_work + NSD_work::OPLL_Freq_old
+		__opll_reg		=	nsd_work + NSD_work::OPLL_Reg
+		__opll_ryhthm		=	nsd_work + NSD_work::OPLL_Rhythm
 .endif
 
 .ifdef	N163
-.define	__n163_num		nsd_work + NSD_work::N163_num
-.define	__n163_frequency	nsd_work + NSD_work::N163_Frequency
+		__n163_num		=	nsd_work + NSD_work::N163_num
+		__n163_frequency	=	nsd_work + NSD_work::N163_Frequency
 .endif
 
 .ifdef	PSG
-.define	__psg_switch		nsd_work + NSD_work::PSG_switch
+		__psg_switch		=	nsd_work + NSD_work::PSG_switch
 .endif
 
 
