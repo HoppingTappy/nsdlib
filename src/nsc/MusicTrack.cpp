@@ -40,6 +40,7 @@ MusicTrack::MusicTrack(MMLfile* MML, const _CHAR _strName[]):
 	echo_vol_ret(false),
 	echo_flag(false),
 	loop_flag(false),
+	disableKeyOn(false),
 	compile_flag(false),
 	pt_oldNote(0),
 	iKeyShift(0),
