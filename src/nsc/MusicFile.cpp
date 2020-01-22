@@ -327,8 +327,8 @@ const	static	Command_Info	Command[] = {
 				break;
 			case(id_Priority):
 				i = MML->GetInt();
-				if((i<0) || (i>3)){
-					MML->Err(_T("#priorityコマンドは、0～3の範囲で指定してください。"));
+				if((i<0) || (i>255)){
+					MML->Err(_T("#priorityコマンドは、0～255の範囲で指定してください。"));
 				} else {
 					MML->priority = (unsigned char)i;
 				}
