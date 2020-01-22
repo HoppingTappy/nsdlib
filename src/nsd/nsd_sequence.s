@@ -860,6 +860,41 @@ nsd_op00:
 
 
 @Exit:
+
+
+	lda	#0
+	stx	__tmp
+	ldx	#nsd::BGM_Track * 2 - 1
+@L_bgmCheck:
+	ora	__Sequence_ptr,x
+	bne	@bgmPlaying
+	dex
+
+	bpl	@L_bgmCheck
+
+	lda	#nsd_flag::BGM
+	ora	__flag
+	sta	__flag
+
+@bgmPlaying:
+
+	lda	#0
+	ldx	#(nsd::TR_SE + nsd::SE_Track) * 2 - 1
+@L_seCheck:
+	ora	__Sequence_ptr,x
+	bne	@sePlaying
+	dex
+
+	bpl	@L_seCheck
+
+	lda	#nsd_flag::SE
+	ora	__flag
+	sta	__flag
+
+@sePlaying:
+
+
+	ldx	__tmp
 	rts
 
 ;=======================================================================
