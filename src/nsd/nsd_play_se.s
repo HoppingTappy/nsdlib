@@ -76,6 +76,9 @@ Priority:
 	lda	(__ptr),y		;
 	iny
 	sta	__tmp			; __tmp  = 優先度
+.ifdef TRACK_PRIORITY
+	sta	__tmp + 1
+.endif
 ;	sta	__priority_value		; __tmp  = 優先度
 
 	lda	#nsd_flag::SE
@@ -131,7 +134,12 @@ Loop:
 
 	lda	__Sequence_ptr + 1,x
 	beq	@Done1			;トラックが使われてなかったら無条件で再生
-
+.ifdef TRACK_PRIORITY
+	lda	__tmp + 1
+	cmp	__priority,x
+	bcc	@Done1
+	beq	@Done1
+.endif
 	iny
 	iny
 	jmp	@None
@@ -145,6 +153,10 @@ Loop:
 	sta	__tmp
 	ora	(__ptr),y
 	beq	@L
+.ifdef TRACK_PRIORITY
+	lda	__tmp + 1
+	sta	__priority,x
+.endif
 	jsr	_nsd_play
 
 	lda	#$08

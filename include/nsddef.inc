@@ -27,7 +27,8 @@
 	BANK_SWITCH = 0
 .endif
 
-	PRIORITY_EXTEND 	= 0
+	PRIORITY_EXTEND		= 0
+	TRACK_PRIORITY		= 0
 ;****************************************************************
 ;*	Sound I/O Device address defines			*
 ;****************************************************************
@@ -433,6 +434,13 @@ PSG_Envelope_Form	= $0D
 	Note		.byte		;now envelop Note
 .Endstruct
 
+.if	.defined(ENVELOPE_MODE) .or .defined(TRACK_PRIORITY)
+	.Struct		NSD_Env_Flag
+		Env_flag	.byte		;
+		Priority	.byte		;
+	.Endstruct
+.endif
+
 .Struct		NSD_work
 .ifdef PRIORITY_EXTEND
 	Priority_Value	.byte
@@ -473,6 +481,9 @@ PSG_Envelope_Form	= $0D
 	Env_F_Now	.tag	NSD_Env_F_Now	nsd::Track	;Now value of envelop
 	Env_V_Ptr	.tag	NSD_Env_V_Ptr	nsd::Track	;Address of envelop / TR5:DPCM info
 	Env_F_Ptr	.tag	NSD_Env_F_Ptr	nsd::Track	;Address of envelop
+.if	.defined(ENVELOPE_MODE) .or .defined(TRACK_PRIORITY)
+	Env_Flag	.tag	NSD_Env_Flag	nsd::Track
+.endif
 	Envelop_Volume	.word			nsd::Track	;Pointer of envelop
 	Envelop_Voice	.word			nsd::Track	;Pointer of envelop
 	Envelop_Freq	.word			nsd::Track	;Pointer of envelop
@@ -484,9 +495,7 @@ PSG_Envelope_Form	= $0D
 ;	Envelop_Mode	.byte			nsd::Track
 ;	Abs_Note	.word			nsd::Track
 .endif
-.ifdef	ENVELOPE_MODE
-	Env_Flag	.byte			nsd::Track
-.endif
+
 ;.ifdef	MMC5
 ;	MMC5_Frequency	.byte			nsd::MMC5_Track	;MMC5 frequency
 ;.endif
@@ -635,8 +644,9 @@ PSG_Envelope_Form	= $0D
 ;		__env_mode		=	nsd_work + NSD_work::Envelop_Mode
 ;		__abs_note		=	nsd_work + NSD_work::Abs_Note
 .endif
-.ifdef	ENVELOPE_MODE
-		__env_flag		=	nsd_work + NSD_work::Env_Flag
+.if	.defined(ENVELOPE_MODE) .or .defined(TRACK_PRIORITY)
+		__env_flag		=	nsd_work + NSD_work::Env_Flag + NSD_Env_Flag::Env_flag
+		__priority		=	nsd_work + NSD_work::Env_Flag + NSD_Env_Flag::Priority
 .endif
 ;---------------
 ;‡™PCM
