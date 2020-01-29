@@ -97,8 +97,10 @@ Exit:	rts
 .elseif	::MMC3_BANK = 1
 	lda	#( %01000000 | $6)	; $C000~DFFF
 .endif
+	sei
 	sta	$8000
 	stx	$8001
+	cli
 	rts
 
 .elseif	.defined(VRC6_BANK)
