@@ -977,24 +977,24 @@ SE5:
 .endif
 ;---------------------------------------
 
-	lda	__Sequence_ptr + 1 + nsd::TR_SE_Pluse2
-	ora	__Sequence_ptr + 1 + nsd::TR_SE_Noise
-.ifdef	SE
-	ora	__Sequence_ptr + 1 + nsd::TR_SE_Pluse1
-	ora	__Sequence_ptr + 1 + nsd::TR_SE_Tri
-	ora	__Sequence_ptr + 1 + nsd::TR_SE_Dpcm
-.endif
-.ifdef	DPCMBank
-	ora	__Sequence_ptr + nsd::TR_SE_Pluse2
-	ora	__Sequence_ptr + nsd::TR_SE_Noise
-.ifdef	SE
-	ora	__Sequence_ptr + nsd::TR_SE_Pluse1
-	ora	__Sequence_ptr + nsd::TR_SE_Tri
-	ora	__Sequence_ptr + nsd::TR_SE_Dpcm
-.endif
-.endif
-
-	bne	SE_Exit
+;	lda	__Sequence_ptr + 1 + nsd::TR_SE_Pluse2
+;	ora	__Sequence_ptr + 1 + nsd::TR_SE_Noise
+;.ifdef	SE
+;	ora	__Sequence_ptr + 1 + nsd::TR_SE_Pluse1
+;	ora	__Sequence_ptr + 1 + nsd::TR_SE_Tri
+;	ora	__Sequence_ptr + 1 + nsd::TR_SE_Dpcm
+;.endif
+;.ifdef	DPCMBank
+;	ora	__Sequence_ptr + nsd::TR_SE_Pluse2
+;	ora	__Sequence_ptr + nsd::TR_SE_Noise
+;.ifdef	SE
+;	ora	__Sequence_ptr + nsd::TR_SE_Pluse1
+;	ora	__Sequence_ptr + nsd::TR_SE_Tri
+;	ora	__Sequence_ptr + nsd::TR_SE_Dpcm
+;.endif
+;.endif
+;
+;	bne	SE_Exit
 
 ;-----------------------------------------------------------
 ;
@@ -1026,9 +1026,9 @@ SE5:
 ;-----------------------------------------------------------
 
 	;SE Disable
-	lda	#nsd_flag::SE
-	ora	__flag
-	sta	__flag
+;	lda	#nsd_flag::SE
+;	ora	__flag
+;	sta	__flag
 SE_Exit:
 
 .endmacro
