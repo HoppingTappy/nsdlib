@@ -861,8 +861,11 @@ nsd_op00:
 
 @Exit:
 
+@checkBgmSeEnable:
+	lda	#$0
+	cpx	#nsd::TR_SE
+	bcs	@seTrack
 
-	lda	#0
 	stx	__tmp
 	ldx	#nsd::BGM_Track * 2 - 1
 @L_bgmCheck:
@@ -877,8 +880,10 @@ nsd_op00:
 	sta	__flag
 
 @bgmPlaying:
+	ldx	__tmp
+	rts
 
-	lda	#0
+@seTrack:
 	ldx	#(nsd::TR_SE + nsd::SE_Track) * 2 - 1
 @L_seCheck:
 	ora	__Sequence_ptr,x
@@ -892,8 +897,6 @@ nsd_op00:
 	sta	__flag
 
 @sePlaying:
-
-
 	ldx	__tmp
 	rts
 
