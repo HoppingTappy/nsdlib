@@ -781,6 +781,31 @@ nsd_op00:
 	lda	__chflag,x
 	and	#<~nsd_chflag::KeyOff
 	sta	__chflag,x
+
+@checkBgmSeEnable:
+	stx	__tmp
+	lda	#$0
+	cpx	#nsd::TR_SE
+	bcs	@seTrack
+
+	ldx	#nsd::BGM_Track * 2
+@L_bgmCheck:
+	ora	__Sequence_ptr-1,x
+	bne	@bgmPlaying
+	dex
+
+	bne	@L_bgmCheck
+
+	lda	#nsd_flag::BGM
+	ora	__flag
+	sta	__flag
+
+@bgmPlaying:
+	ldx	__tmp
+	rts
+
+@seTrack:
+
 ;
 ;	Sweep‚Ìó‘Ô‚ðŒ³‚É–ß‚·B
 ;
@@ -860,37 +885,17 @@ nsd_op00:
 
 
 @Exit:
-
-@checkBgmSeEnable:
 	lda	#$0
-	cpx	#nsd::TR_SE
-	bcs	@seTrack
-
 	stx	__tmp
-	ldx	#nsd::BGM_Track * 2 - 1
-@L_bgmCheck:
-	ora	__Sequence_ptr,x
-	bne	@bgmPlaying
-	dex
-
-	bpl	@L_bgmCheck
-
-	lda	#nsd_flag::BGM
-	ora	__flag
-	sta	__flag
-
-@bgmPlaying:
-	ldx	__tmp
-	rts
-
-@seTrack:
-	ldx	#(nsd::TR_SE + nsd::SE_Track) * 2 - 1
+	ldx	#nsd::TR_SE + nsd::SE_Track * 2
+	ldy	#nsd::SE_Track * 2
 @L_seCheck:
-	ora	__Sequence_ptr,x
+	ora	__Sequence_ptr-1,x
 	bne	@sePlaying
 	dex
+	dey
 
-	bpl	@L_seCheck
+	bne	@L_seCheck
 
 	lda	#nsd_flag::SE
 	ora	__flag
