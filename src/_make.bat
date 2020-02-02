@@ -1,4 +1,4 @@
-
+py freqTableGen.py -f 442 -o nsd\
 rem --- nsd.lib ---
 pushd nsd
 	call _make

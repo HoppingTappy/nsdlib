@@ -2500,611 +2500,35 @@ Exit:
 ;---------------------------------------
 ;APU, MMC5, VRC6, FME7 Frequency table
 Freq:
-	.word	$0D4D	;C
-	.word	$0D35
-	.word	$0D1D
-	.word	$0D04
-	.word	$0CEC
-	.word	$0CD5
-	.word	$0CBD
-	.word	$0CA6
-	.word	$0C8E	;Cis / Ds
-	.word	$0C77
-	.word	$0C60
-	.word	$0C49
-	.word	$0C33
-	.word	$0C1C
-	.word	$0C06
-	.word	$0BF0
-	.word	$0BDA	;D
-	.word	$0BC4
-	.word	$0BAE
-	.word	$0B99
-	.word	$0B84
-	.word	$0B6E
-	.word	$0B59
-	.word	$0B44
-	.word	$0B30	;Dis / Es
-	.word	$0B1B
-	.word	$0B07
-	.word	$0AF2
-	.word	$0ADE
-	.word	$0ACA
-	.word	$0AB6
-	.word	$0AA2
-	.word	$0A8F	;E
-	.word	$0A7B
-	.word	$0A68
-	.word	$0A55
-	.word	$0A42
-	.word	$0A2F
-	.word	$0A1C
-	.word	$0A0A
-	.word	$09F7	;F
-	.word	$09E5
-	.word	$09D3
-	.word	$09C1
-	.word	$09AF
-	.word	$099D
-	.word	$098B
-	.word	$0979
-	.word	$0968	;Fis / Ges
-	.word	$0957
-	.word	$0945
-	.word	$0934
-	.word	$0923
-	.word	$0913
-	.word	$0902
-	.word	$08F1
-	.word	$08E1	;G
-	.word	$08D1
-	.word	$08C0
-	.word	$08B0
-	.word	$08A0
-	.word	$0890
-	.word	$0880
-	.word	$0871
-	.word	$0861	;Gis / As
-	.word	$0852
-	.word	$0843
-	.word	$0833
-	.word	$0824
-	.word	$0815
-	.word	$0806
-	.word	$07F8
-	.word	$07E9	;A
-	.word	$07DA
-	.word	$07CC
-	.word	$07BD
-	.word	$07AF
-	.word	$07A1
-	.word	$0793
-	.word	$0785
-	.word	$0777	;B
-	.word	$0769
-	.word	$075C
-	.word	$074E
-	.word	$0741
-	.word	$0733
-	.word	$0726
-	.word	$0719
-	.word	$070C	;H
-	.word	$06FF
-	.word	$06F2
-	.word	$06E5
-	.word	$06D9
-	.word	$06CC
-	.word	$06BF
-	.word	$06B3
-	.word	$06A7	;`C （線形補完用）
-
-
+;	.incbin	"freqTableApu.bin"
+	.include	"freqTableApu.inc"
 ;---------------------------------------
 ;FDS Frequency table
 .ifdef	FDS
 Freq_FDS:
-	.word	$09A0	;C
-	.word	$09B2
-	.word	$09C4
-	.word	$09D6
-	.word	$09E8
-	.word	$09FA
-	.word	$0A0D
-	.word	$0A1F
-	.word	$0A32	;Cis / Ds
-	.word	$0A45
-	.word	$0A58
-	.word	$0A6B
-	.word	$0A7F
-	.word	$0A92
-	.word	$0AA6
-	.word	$0ABA
-	.word	$0ACD	;D
-	.word	$0AE1
-	.word	$0AF6
-	.word	$0B0A
-	.word	$0B1E
-	.word	$0B33
-	.word	$0B48
-	.word	$0B5D
-	.word	$0B72	;Dis / Es
-	.word	$0B87
-	.word	$0B9C
-	.word	$0BB2
-	.word	$0BC8
-	.word	$0BDE
-	.word	$0BF4
-	.word	$0C0A
-	.word	$0C20	;E
-	.word	$0C37
-	.word	$0C4D
-	.word	$0C64
-	.word	$0C7B
-	.word	$0C92
-	.word	$0CA9
-	.word	$0CC1
-	.word	$0CD9	;F
-	.word	$0CF0
-	.word	$0D08
-	.word	$0D21
-	.word	$0D39
-	.word	$0D51
-	.word	$0D6A
-	.word	$0D83
-	.word	$0D9C	;Fis / Ges
-	.word	$0DB5
-	.word	$0DCF
-	.word	$0DE8
-	.word	$0E02
-	.word	$0E1C
-	.word	$0E36
-	.word	$0E51
-	.word	$0E6B	;G
-	.word	$0E86
-	.word	$0EA1
-	.word	$0EBC
-	.word	$0ED7
-	.word	$0EF3
-	.word	$0F0F
-	.word	$0F2B
-	.word	$0F47	;Gis / As
-	.word	$0F63
-	.word	$0F80
-	.word	$0F9C
-	.word	$0FB9
-	.word	$0FD6
-	.word	$0FF4
-	.word	$1011
-	.word	$102F	;A
-	.word	$104D
-	.word	$106C
-	.word	$108A
-	.word	$10A9
-	.word	$10C8
-	.word	$10E7
-	.word	$1106
-	.word	$1126	;B
-	.word	$1145
-	.word	$1165
-	.word	$1186
-	.word	$11A6
-	.word	$11C7
-	.word	$11E8
-	.word	$1209
-	.word	$122B	;H
-	.word	$124C
-	.word	$126E
-	.word	$1290
-	.word	$12B3
-	.word	$12D6
-	.word	$12F8
-	.word	$131C
-	.word	$133F	;`C （線形補完用）
+	.include	"freqTableFds.inc"
 .endif
 
 ;---------------------------------------
 ;SAW Frequency table
 .ifdef	VRC6
 Freq_SAW:
-	.word	$0F34	;C
-	.word	$0F18
-	.word	$0EFD
-	.word	$0EE1
-	.word	$0EC6
-	.word	$0EAA
-	.word	$0E8F
-	.word	$0E75
-	.word	$0E5A
-	.word	$0E40
-	.word	$0E25
-	.word	$0E0B
-	.word	$0DF1
-	.word	$0DD8
-	.word	$0DBE
-	.word	$0DA5
-	.word	$0D8C	;D
-	.word	$0D73
-	.word	$0D5A
-	.word	$0D42
-	.word	$0D29
-	.word	$0D11
-	.word	$0CF9
-	.word	$0CE1
-	.word	$0CC9
-	.word	$0CB2
-	.word	$0C9A
-	.word	$0C83
-	.word	$0C6C
-	.word	$0C55
-	.word	$0C3E
-	.word	$0C28
-	.word	$0C12	;E
-	.word	$0BFB
-	.word	$0BE5
-	.word	$0BCF
-	.word	$0BBA
-	.word	$0BA4
-	.word	$0B8F
-	.word	$0B79
-	.word	$0B64	;F
-	.word	$0B4F
-	.word	$0B3A
-	.word	$0B26
-	.word	$0B11
-	.word	$0AFD
-	.word	$0AE9
-	.word	$0AD4
-	.word	$0AC1
-	.word	$0AAD
-	.word	$0A99
-	.word	$0A86
-	.word	$0A72
-	.word	$0A5F
-	.word	$0A4C
-	.word	$0A39
-	.word	$0A26	;G
-	.word	$0A13
-	.word	$0A01
-	.word	$09EE
-	.word	$09DC
-	.word	$09CA
-	.word	$09B8
-	.word	$09A6
-	.word	$0994
-	.word	$0983
-	.word	$0971
-	.word	$0960
-	.word	$094E
-	.word	$093D
-	.word	$092C
-	.word	$091B
-	.word	$090B	;A
-	.word	$08FA
-	.word	$08E9
-	.word	$08D9
-	.word	$08C9
-	.word	$08B9
-	.word	$08A9
-	.word	$0899
-	.word	$0889	;B
-	.word	$0879
-	.word	$0869
-	.word	$085A
-	.word	$084B
-	.word	$083B
-	.word	$082C
-	.word	$081D
-	.word	$080E	;H
-	.word	$07FF
-	.word	$07F1
-	.word	$07E2
-	.word	$07D3
-	.word	$07C5
-	.word	$07B7
-	.word	$07A9
-	.word	$079A	;`C （線形補完用）
+	.include	"freqTableVrc6.inc"
 .endif
 
 ;---------------------------------------
 ;VRC7 Frequency table
 .if	.defined(VRC7) || .defined(OPLL)
 Freq_VRC7:
-	.byte	$AD	;C
-	.byte	$AE
-	.byte	$B0
-	.byte	$B1
-	.byte	$B2
-	.byte	$B4
-	.byte	$B5
-	.byte	$B6
-	.byte	$B8
-	.byte	$B9
-	.byte	$BA
-	.byte	$BC
-	.byte	$BD
-	.byte	$BE
-	.byte	$C0
-	.byte	$C1
-	.byte	$C2	;D
-	.byte	$C4
-	.byte	$C5
-	.byte	$C7
-	.byte	$C8
-	.byte	$CA
-	.byte	$CB
-	.byte	$CD
-	.byte	$CE
-	.byte	$CF
-	.byte	$D1
-	.byte	$D3
-	.byte	$D4
-	.byte	$D6
-	.byte	$D7
-	.byte	$D9
-	.byte	$DA	;E
-	.byte	$DC
-	.byte	$DD
-	.byte	$DF
-	.byte	$E1
-	.byte	$E2
-	.byte	$E4
-	.byte	$E6
-	.byte	$E7	;F
-	.byte	$E9
-	.byte	$EB
-	.byte	$EC
-	.byte	$EE
-	.byte	$F0
-	.byte	$F1
-	.byte	$F3
-	.byte	$F5
-	.byte	$F7
-	.byte	$F9
-	.byte	$FA
-	.byte	$FC
-	.byte	$FE
-	.byte	$00
-	.byte	$02
-	.byte	$04	;G
-	.byte	$05
-	.byte	$07
-	.byte	$09
-	.byte	$0B
-	.byte	$0D
-	.byte	$0F
-	.byte	$11
-	.byte	$13
-	.byte	$15
-	.byte	$17
-	.byte	$19
-	.byte	$1B
-	.byte	$1D
-	.byte	$1F
-	.byte	$21
-	.byte	$23	;A
-	.byte	$25
-	.byte	$28
-	.byte	$2A
-	.byte	$2C
-	.byte	$2E
-	.byte	$30
-	.byte	$32
-	.byte	$35	;B
-	.byte	$37
-	.byte	$39
-	.byte	$3B
-	.byte	$3E
-	.byte	$40
-	.byte	$42
-	.byte	$45
-	.byte	$47	;H
-	.byte	$49
-	.byte	$4C
-	.byte	$4E
-	.byte	$51
-	.byte	$53
-	.byte	$55
-	.byte	$58
-	.byte	$5A	;`C （線形補完用）
+	.include	"freqTableVrc7.inc"
 .endif
 
 ;---------------------------------------
 ;N163 Frequency table
 .ifdef	N163
 Freq_N163:
-	.word	$4169
-	.word	$4380
-	.word	$4598
-	.word	$47B3
-	.word	$49CF
-	.word	$4BED
-	.word	$4E0E
-	.word	$5030
-	.word	$5254
-	.word	$547B
-	.word	$56A3
-	.word	$58CD
-	.word	$5AF9
-	.word	$5D28
-	.word	$5F58
-	.word	$618A
-	.word	$63BF
-	.word	$65F5
-	.word	$682E
-	.word	$6A68
-	.word	$6CA5
-	.word	$6EE3
-	.word	$7124
-	.word	$7367
-	.word	$75AC
-	.word	$77F3
-	.word	$7A3C
-	.word	$7C87
-	.word	$7ED4
-	.word	$8124
-	.word	$8375
-	.word	$85C9
-	.word	$881F
-	.word	$8A77
-	.word	$8CD1
-	.word	$8F2E
-	.word	$918C
-	.word	$93ED
-	.word	$9650
-	.word	$98B5
-	.word	$9B1D
-	.word	$9D86
-	.word	$9FF2
-	.word	$A260
-	.word	$A4D1
-	.word	$A743
-	.word	$A9B8
-	.word	$AC30
-	.word	$AEA9
-	.word	$B125
-	.word	$B3A3
-	.word	$B623
-	.word	$B8A6
-	.word	$BB2B
-	.word	$BDB2
-	.word	$C03C
-	.word	$C2C8
-	.word	$C556
-	.word	$C7E7
-	.word	$CA7A
-	.word	$CD10
-	.word	$CFA8
-	.word	$D242
-	.word	$D4DF
-	.word	$D77E
-	.word	$DA1F
-	.word	$DCC3
-	.word	$DF6A
-	.word	$E213
-	.word	$E4BE
-	.word	$E76C
-	.word	$EA1C
-	.word	$ECCF
-	.word	$EF84
-	.word	$F23C
-	.word	$F4F6
-	.word	$F7B3
-	.word	$FA72
-	.word	$FD34
-	.word	$FFF9
-Freq_N163_50:
-	.word	$02C0
-	.word	$058A
-	.word	$0856
-	.word	$0B24
-	.word	$0DF6
-	.word	$10CA
-	.word	$13A0
-	.word	$167A
-	.word	$1956
-	.word	$1C34
-	.word	$1F15
-	.word	$21F9
-	.word	$24E0
-	.word	$27C9
-	.word	$2AB5
-	.word	$2DA3
-	.word	$3095
-	.word	$3389
-	.word	$367F
-	.word	$3979
-	.word	$3C75
-	.word	$3F74
-	.word	$4276
-	.word	$457B
-	.word	$4882
-	.word	$4B8C
-	.word	$4E99
-	.word	$51A9
-	.word	$54BC
-	.word	$57D1
-	.word	$5AEA
-	.word	$5E05
-	.word	$6123
-	.word	$6444
-	.word	$6768
-	.word	$6A8F
-	.word	$6DB8
-	.word	$70E5
-	.word	$7415
-	.word	$7747
-	.word	$7A7D
-	.word	$7DB5
-	.word	$80F1
-	.word	$842F
-	.word	$8771
-	.word	$8AB5
-	.word	$8DFD
-	.word	$9147
-	.word	$9495
-	.word	$97E5
-	.word	$9B39
-	.word	$9E90
-	.word	$A1EA
-	.word	$A547
-	.word	$A8A7
-	.word	$AC0A
-	.word	$AF70
-	.word	$B2DA
-	.word	$B646
-	.word	$B9B6
-	.word	$BD29
-	.word	$C09F
-	.word	$C419
-	.word	$C795
-	.word	$CB15
-	.word	$CE98
-	.word	$D21F
-	.word	$D5A8
-	.word	$D935
-	.word	$DCC5
-	.word	$E059
-	.word	$E3F0
-	.word	$E78A
-	.word	$EB27
-	.word	$EEC8
-	.word	$F26C
-	.word	$F614
-	.word	$F9BF
-	.word	$FD6D
-	.word	$011F
-	.word	$04D4
-	.word	$088C
-	.word	$0C48
-	.word	$1008
-	.word	$13CB
-	.word	$1791
-	.word	$1B5B
-	.word	$1F28
-	.word	$22F9
-	.word	$26CE
-	.word	$2AA6
-	.word	$2E81
-	.word	$3260
-	.word	$3643
-	.word	$3A29
-	.word	$3E13
-	.word	$4201
-	.word	$45F2
-	.word	$49E7
-	.word	$4DE0
-	.word	$51DC
-	.word	$55DC
-	.word	$59DF
-	.word	$5DE6
-	.word	$61F1
-	.word	$6600
-	.word	$6A13
-	.word	$6E29
-	.word	$7243
-	.word	$7661
-	.word	$7A83
-	.word	$7EA8
+	.include	"freqTablen163.inc"
+
 .endif
 
 .segment "PRG_AUDIO_CODE"
@@ -3615,7 +3039,7 @@ Detune:
 	;除算
 	jsr	_nsd_div192		;Wait変わりに使える？
 	stx	__tmp + 1
-	cmp	#$6C
+	cmp	#(Freq_VRC7_Carry_00 - Freq_VRC7) * 2
 	rol	__tmp + 1		;__tmp + 1 = (Octave << 1) + Note_MSB
 
 	shr	a, 1			;
@@ -3640,7 +3064,7 @@ Detune:
 	;除算
 	jsr	_nsd_div192		;Wait変わりに使える？
 	stx	__tmp + 1
-	cmp	#$6D
+	cmp	#(Freq_VRC7_Carry_00 - Freq_VRC7) * 2
 	rol	__tmp + 1		;__tmp + 1 = (Octave << 1) + Note_MSB
 
 	shr	a, 1			;
@@ -3662,7 +3086,7 @@ Detune:
 	;除算
 	jsr	_nsd_div192		;Wait変わりに使える？
 	stx	__tmp + 1
-	cmp	#$6D
+	cmp	#(Freq_VRC7_Carry_00 - Freq_VRC7) * 2
 	rol	__tmp + 1		;__tmp + 1 = (Octave << 1) + Note_MSB
 
 	shr	a, 1			;
@@ -3711,7 +3135,7 @@ Detune:
 	;除算
 	jsr	_nsd_div192		;Wait変わりに使える？
 	stx	__tmp + 1
-	cmp	#$6D
+	cmp	#(Freq_VRC7_Carry_00 - Freq_VRC7) * 2
 	rol	__tmp + 1		;__tmp + 1 = (Octave << 1) + Note_MSB
 
 	shr	a, 1			;
@@ -3765,7 +3189,7 @@ Exit:
 	;除算
 	jsr	_nsd_div192		;Wait変わりに使える？
 	stx	__tmp + 1
-	cmp	#$6D
+	cmp	#(Freq_VRC7_Carry_00 - Freq_VRC7) * 2
 	rol	__tmp + 1		;__tmp + 1 = (Octave << 1) + Note_MSB
 
 	shr	a, 1			;
@@ -4184,23 +3608,25 @@ Exit:
 .proc	N163_frequency
 
 	jsr	_nsd_div192		; 
-	cmp	#$50
-	bcc	@L50
-	cmp	#$9F
-	bcc	@L9F
+	cmp	#(Freq_N163_Carry_00 - Freq_N163)/2
+	bcc	@Lcarry00
+	cmp	#(Freq_N163_Carry_01 - Freq_N163)/2
+	bcc	@Lcarry01
 	ldy	#4
 	bne	@L
-@L9F:	ldy	#3
+@Lcarry01:
+	ldy	#3
 @L:	sty	__ptr		;frequency HSB
-	sub	#$50
+	sub	#(Freq_N163_Carry_00 - Freq_N163)/2
 	shl	a, 1
 	tay
-	lda	Freq_N163_50 + 1,y
+	lda	Freq_N163_Carry_00 + 1,y
 	sta	__tmp + 1	;frequency MSB
-	lda	Freq_N163_50,y	;frequency LSB
+	lda	Freq_N163_Carry_00,y	;frequency LSB
 	jmp	@L2
 
-@L50:	ldy	#2
+@Lcarry00:
+	ldy	#2
 	sty	__ptr		;frequency HSB
 	shl	a, 1
 	tay
