@@ -364,7 +364,8 @@ _Play:
 	jsr	_nsd_play_bgm
 	jmp	@E
 @L:	jsr	_nsd_play_se
-@E:	rts
+@E:	cli
+	rts
 .endproc
 
 ; ------------------------------------------------------------------------
