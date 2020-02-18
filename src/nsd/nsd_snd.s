@@ -146,6 +146,8 @@
 .ifdef	N163
 ;	lda	#$20
 ;	sta				; namco t163 sound enable
+;	lda	#$70
+;	sta	__n163_num
 .endif
 
 .ifdef	FDS
@@ -285,7 +287,11 @@ JMPTBL:	.addr	_nsd_apu_ch1_keyon		;BGM ch1 Pulse
 .ifdef	SE
 	.addr	_nsd_apu_dpcm_keyon_se		;BGM ch5 DPCM
 .endif
-
+.ifdef	SE_N163
+	.repeat nsd::SE_N163_Track
+		.addr	_nsd_keyon_exit
+	.endrepeat
+.endif
 ;---------------------------------------
 .segment "PRG_AUDIO_CODE"
 .ifdef	MASK
@@ -742,7 +748,11 @@ JMPTBL:	.addr	Exit			;BGM ch1 Pulse		-- no process --
 .ifdef	SE
 	.addr	_nsd_apu_dpcm_keyoff_se
 .endif
-
+.ifdef	SE_N163
+	.repeat nsd::SE_N163_Track
+		.addr	Exit
+	.endrepeat
+.endif
 ;---------------------------------------
 .segment "PRG_AUDIO_CODE"
 	ldy	JMPTBL,x		;[]
@@ -952,7 +962,11 @@ JMPTBL:	.addr	_nsd_apu_ch1_voice	;BGM ch1 Pulse
 .ifdef	SE
 	.addr	Exit				;SE  ch5 DPCM
 .endif
-
+.ifdef	SE_N163
+	.repeat ::nsd::SE_N163_Track,cnt
+		.addr	.ident(.concat("_nsd_n163_ch",.string(cnt+1),"_voice_se"))
+	.endrepeat
+.endif
 ;---------------------------------------
 .segment "PRG_AUDIO_CODE"
 	ldy	JMPTBL,x
@@ -1354,65 +1368,56 @@ _nsd_opll_voice:
 ;---------------------------------------
 .ifdef	N163
 _nsd_n163_ch1_voice:
+	.if (nsd::SE_N163_Track>=1)
+		ldy	__Sequence_ptr + 1 + nsd::TR_SE_N163 + (0) * 2
+		bne	_nsd_n163_ch1_voice_exit
+	.endif
 	ldy	#N163_Waveform - (8 * 0)
 
 _nsd_n163_ch1_voice_set:
 	sty	N163_Resister
 	shl	a, 2
 	sta	N163_Data
-
+.ifdef	SE_N163
+	sta	__n163_voice-nsd::TR_N163,x
+.endif
 _nsd_n163_ch1_voice_exit:
 	rts
 
-_nsd_n163_ch2_voice:
+.repeat 7,cnt
+	.ident( .concat("_nsd_n163_ch",.string(cnt+2),"_voice")):
 	ldy	__n163_num
-	cpy	#$10
+	cpy	#cnt*$10+$10
 	bcc	_nsd_n163_ch1_voice_exit	;1未満だったら終了
-	ldy	#N163_Waveform - (8 * 1)
+	.if (nsd::SE_N163_Track>=cnt+2)
+		ldy	__Sequence_ptr + 1 + nsd::TR_SE_N163 + (cnt+1) * 2
+		bne	_nsd_n163_ch1_voice_exit
+	.endif
+	ldy	#N163_Waveform - (8 * (cnt+1))
 	bne	_nsd_n163_ch1_voice_set
+.endrepeat
 
-_nsd_n163_ch3_voice:
+.ifdef	SE_N163
+_nsd_n163_ch1_voice_se:
+	ldy	#N163_Waveform - (8 * 0)
+
+_nsd_n163_ch1_voice_set_se:
+	sty	N163_Resister
+	shl	a, 2
+	sta	N163_Data
+
+_nsd_n163_ch1_voice_exit_se:
+	rts
+
+.repeat 7,cnt
+	.ident( .concat("_nsd_n163_ch",.string(cnt+2),"_voice_se")):
 	ldy	__n163_num
-	cpy	#$20
-	bcc	_nsd_n163_ch1_voice_exit	;1未満だったら終了
-	ldy	#N163_Waveform - (8 * 2)
-	bne	_nsd_n163_ch1_voice_set
-
-_nsd_n163_ch4_voice:
-	ldy	__n163_num
-	cpy	#$30
-	bcc	_nsd_n163_ch1_voice_exit	;1未満だったら終了
-	ldy	#N163_Waveform - (8 * 3)
-	bne	_nsd_n163_ch1_voice_set
-
-_nsd_n163_ch5_voice:
-	ldy	__n163_num
-	cpy	#$40
-	bcc	_nsd_n163_ch1_voice_exit	;1未満だったら終了
-	ldy	#N163_Waveform - (8 * 4)
-	bne	_nsd_n163_ch1_voice_set
-
-_nsd_n163_ch6_voice:
-	ldy	__n163_num
-	cpy	#$50
-	bcc	_nsd_n163_ch1_voice_exit	;1未満だったら終了
-	ldy	#N163_Waveform - (8 * 5)
-	bne	_nsd_n163_ch1_voice_set
-
-_nsd_n163_ch7_voice:
-	ldy	__n163_num
-	cpy	#$60
-	bcc	_nsd_n163_ch1_voice_exit	;1未満だったら終了
-	ldy	#N163_Waveform - (8 * 6)
-	bne	_nsd_n163_ch1_voice_set
-
-_nsd_n163_ch8_voice:
-	ldy	__n163_num
-	cpy	#$70
-	bcc	_nsd_n163_ch1_voice_exit	;1未満だったら終了
-	ldy	#N163_Waveform - (8 * 7)
-	bne	_nsd_n163_ch1_voice_set
-
+	cpy	#cnt*$10+$10
+	bcc	_nsd_n163_ch1_voice_exit_se	;1未満だったら終了
+	ldy	#N163_Waveform - (8 * (cnt+1))
+	bne	_nsd_n163_ch1_voice_set_se
+.endrepeat
+.endif
 .endif
 
 ;---------------------------------------
@@ -1604,7 +1609,11 @@ JMPTBL:	.addr	_nsd_apu_ch1_volume	;BGM ch1 Pulse
 .ifdef	SE
 	.addr	Exit
 .endif
-
+.ifdef	SE_N163
+	.repeat nsd::SE_N163_Track,cnt
+		.addr	.ident(.concat("_nsd_n163_ch",.string(cnt+1),"_volume_se"))
+	.endrepeat
+.endif
 ;---------------------------------------
 .segment "PRG_AUDIO_CODE"
 .ifdef	MASK
@@ -2098,7 +2107,20 @@ _nsd_mmc5_ch2_volume:
 ;---------------------------------------
 .ifdef	N163
 _nsd_n163_ch1_volume:
+	.if (nsd::SE_N163_Track>=1)
+		ldy	__Sequence_ptr + 1 + nsd::TR_SE_N163 + 0 * 2
+		bne	_nsd_n163_ch1_volume_Exit
+	.endif
 	ldy	#N163_Volume - (8 * 0)
+.ifdef	SE_N163
+	pha
+	dey
+	sty	N163_Resister
+	lda	__n163_voice-nsd::TR_N163,x
+	sta	N163_Data
+	iny
+	pla
+.endif
 	sty	N163_Resister
 	and	#$0F
 	ora	__n163_num
@@ -2110,9 +2132,23 @@ _nsd_n163_ch2_volume:
 	ldy	__n163_num
 	cpy	#$10
 	bcc	_nsd_n163_ch1_volume_Exit	;1未満だったら終了
+	.if (nsd::SE_N163_Track>=2)
+		ldy	__Sequence_ptr + 1 + nsd::TR_SE_N163 + 1 * 2
+		bne	_nsd_n163_ch1_volume_Exit
+	.endif
 	ldy	#N163_Volume - (8 * 1)
 
 _nsd_n163_ch1_volume_Set:
+.ifdef	SE_N163
+	pha
+	dey
+	sty	N163_Resister
+	lda	__n163_voice-nsd::TR_N163,x
+	sta	N163_Data
+	iny
+	pla
+.endif
+@seTrack:
 	sty	N163_Resister
 	and	#$0F
 	sta	N163_Data
@@ -2120,54 +2156,61 @@ _nsd_n163_ch1_volume_Set:
 _nsd_n163_ch1_volume_Exit:
 	rts
 
-;---------------------------------------
-_nsd_n163_ch3_volume:
+.repeat 6,cnt
+	.ident( .concat("_nsd_n163_ch",.string(cnt+3),"_volume")):
 	ldy	__n163_num
-	cpy	#$20
+	cpy	#cnt*$10+$20
 	bcc	_nsd_n163_ch1_volume_Exit	;1未満だったら終了
-	ldy	#N163_Volume - (8 * 2)
+
+	.if (nsd::SE_N163_Track>=cnt+3)
+		ldy	__Sequence_ptr + 1 + nsd::TR_SE_N163 + (cnt+2) * 2
+		bne	_nsd_n163_ch1_volume_Exit
+	.endif
+
+	ldy	#N163_Volume - (8 * (cnt+2))
 	bne	_nsd_n163_ch1_volume_Set
 
-;---------------------------------------
-_nsd_n163_ch4_volume:
-	ldy	__n163_num
-	cpy	#$30
-	bcc	_nsd_n163_ch1_volume_Exit	;1未満だったら終了
-	ldy	#N163_Volume - (8 * 3)
-	bne	_nsd_n163_ch1_volume_Set
+.endrepeat
+
+
+.ifdef SE_N163
+
+_nsd_n163_ch1_volume_se:
+	ldy	#N163_Volume - (8 * 0)
+	sty	N163_Resister
+	and	#$0F
+	ora	__n163_num
+	sta	N163_Data
+	rts
 
 ;---------------------------------------
-_nsd_n163_ch5_volume:
+_nsd_n163_ch2_volume_se:
 	ldy	__n163_num
-	cpy	#$40
-	bcc	_nsd_n163_ch1_volume_Exit	;1未満だったら終了
-	ldy	#N163_Volume - (8 * 4)
-	bne	_nsd_n163_ch1_volume_Set
+	cpy	#$10
+	bcc	_nsd_n163_ch1_volume_Exit_se	;1未満だったら終了
+	ldy	#N163_Volume - (8 * 1)
 
-;---------------------------------------
-_nsd_n163_ch6_volume:
+_nsd_n163_ch1_volume_Set_se:
+	sty	N163_Resister
+	and	#$0F
+	sta	N163_Data
+
+_nsd_n163_ch1_volume_Exit_se:
+	rts
+
+
+.repeat 6,cnt
+	.ident( .concat("_nsd_n163_ch",.string(cnt+3),"_volume_se")):
 	ldy	__n163_num
-	cpy	#$50
-	bcc	_nsd_n163_ch1_volume_Exit	;1未満だったら終了
-	ldy	#N163_Volume - (8 * 5)
-	bne	_nsd_n163_ch1_volume_Set
+	cpy	#cnt*$10+$20
+	bcc	_nsd_n163_ch1_volume_Exit_se	;1未満だったら終了
 
-;---------------------------------------
-_nsd_n163_ch7_volume:
-	ldy	__n163_num
-	cpy	#$60
-	bcc	_nsd_n163_ch1_volume_Exit	;1未満だったら終了
-	ldy	#N163_Volume - (8 * 6)
-	bne	_nsd_n163_ch1_volume_Set
+	ldy	#N163_Volume - (8 * (cnt+2))
+	bne	_nsd_n163_ch1_volume_Set_se
 
-;---------------------------------------
-_nsd_n163_ch8_volume:
-	ldy	__n163_num
-	cpy	#$70
-	bcc	_nsd_n163_ch1_volume_Exit	;1未満だったら終了
-	ldy	#N163_Volume - (8 * 7)
-	bne	_nsd_n163_ch1_volume_Set
+.endrepeat
 
+.endif
 .endif
 
 ;---------------------------------------
@@ -2279,6 +2322,13 @@ JMPTBL:	.addr	_nsd_apu_ch1_sweep	;BGM ch1 Pulse
 .ifdef	SE
 	.addr	Exit			;SE  ch5 DPCM		-- no process --
 .endif
+
+.ifdef	SE_N163
+	.repeat nsd::SE_N163_Track
+		.addr	_nsd_n163_sample_length_se
+	.endrepeat
+.endif
+
 
 ;---------------------------------------
 .segment "PRG_AUDIO_CODE"
@@ -2451,19 +2501,52 @@ Exit:
 ;---------------------------------------
 .ifdef	N163
 .proc	_nsd_n163_sample_length
+.if	0
 	shl	a, 2
 ;	ora	#$E0
 	sta	__tmp
 	txa
 	sub	#nsd::TR_N163
+.ifndef	SE_N163
 	shr	a, 1
+.endif
 	tay
 	lda	__tmp
 	sta	__n163_frequency,y
 	rts
-.endproc
+.else
+	shl	a, 2
+	sta	__n163_frequency-nsd::TR_N163,x
+	rts
+
 .endif
 
+.endproc
+.endif
+.ifdef	SE_N163
+.proc	_nsd_n163_sample_length_se
+.if	0
+	shl	a, 2
+;	ora	#$E0
+	sta	__tmp
+	txa
+	sub	#nsd::TR_SE_N163
+.ifndef	SE_N163
+	shr	a, 1
+.endif
+	tay
+	lda	__tmp
+	sta	__n163_frequency,y
+	rts
+.else
+	shl	a, 2
+	sta	__n163_frequency-nsd::TR_SE_N163,x
+	rts
+
+.endif
+
+.endproc
+.endif
 ;---------------------------------------
 .ifdef	PSG
 .proc	_nsd_psg_envelop
@@ -2603,7 +2686,11 @@ JMPTBL:	.addr	_nsd_apu_ch1_frequency		;BGM ch1 Pulse
 .ifdef	SE
 	.addr	Exit			;SE  ch5 Pulse
 .endif
-
+.ifdef	SE_N163
+	.repeat ::nsd::SE_N163_Track,cnt
+		.addr	.ident(.concat("_nsd_n163_ch",.string(cnt+1),"_frequency_se"))
+	.endrepeat
+.endif
 ;---------------------------------------
 .segment "PRG_AUDIO_CODE"
 	;-----------
@@ -3279,91 +3366,46 @@ Exit:
 
 ;---------------------------------------
 .ifdef	N163
+
+.proc	_nsd_n163_frequency_Exit
+	rts
+.endproc
+
 .proc	_nsd_n163_ch1_frequency
+
+	.if (nsd::SE_N163_Track>=1)
+		ldy	__Sequence_ptr + 1 + nsd::TR_SE_N163 + (0) * 2
+		jne	_nsd_n163_frequency_Exit
+	.endif
 
 	jsr	N163_frequency
 	ldy	#N163_Frequency_Low - (8 * 0)
 	bne	_nsd_n163_frequency
 .endproc
 
-.proc	_nsd_n163_ch2_frequency
-	ldy	__n163_num
-	cpy	#$10
-	bcc	_nsd_n163_frequency_Exit	;1未満だったら終了
 
-	jsr	N163_frequency
+.repeat 7,cnt
+	.proc	.ident( .concat("_nsd_n163_ch",.string(cnt+2),"_frequency"))
+		ldy	__n163_num
+		cpy	#cnt*$10+$10
+		bcc	_nsd_n163_frequency_Exit	;1未満だったら終了
 
-	ldy	#N163_Frequency_Low - (8 * 1)
-	bne	_nsd_n163_frequency
-.endproc
+		.if (nsd::SE_N163_Track>=cnt+2)
+			ldy	__Sequence_ptr + 1 + nsd::TR_SE_N163 + (cnt+1) * 2
+			bne	_nsd_n163_frequency_Exit
+		.endif
 
-.proc	_nsd_n163_ch3_frequency
-	ldy	__n163_num
-	cpy	#$20
-	bcc	_nsd_n163_frequency_Exit	;1未満だったら終了
+		jsr	N163_frequency
+		ldy	#N163_Frequency_Low - (8 * (cnt+1))
 
-	jsr	N163_frequency
-
-	ldy	#N163_Frequency_Low - (8 * 2)
-	bne	_nsd_n163_frequency
-.endproc
-
-.proc	_nsd_n163_ch4_frequency
-	ldy	__n163_num
-	cpy	#$30
-	bcc	_nsd_n163_frequency_Exit	;1未満だったら終了
-
-	jsr	N163_frequency
-
-	ldy	#N163_Frequency_Low - (8 * 3)
-	bne	_nsd_n163_frequency
-.endproc
-
-.proc	_nsd_n163_ch5_frequency
-	ldy	__n163_num
-	cpy	#$40
-	bcc	_nsd_n163_frequency_Exit	;1未満だったら終了
-
-	jsr	N163_frequency
-
-	ldy	#N163_Frequency_Low - (8 * 4)
-	bne	_nsd_n163_frequency
-.endproc
-
-.proc	_nsd_n163_ch6_frequency
-	ldy	__n163_num
-	cpy	#$50
-	bcc	_nsd_n163_frequency_Exit	;1未満だったら終了
-
-	jsr	N163_frequency
-
-	ldy	#N163_Frequency_Low - (8 * 5)
-	bne	_nsd_n163_frequency
-.endproc
-
-.proc	_nsd_n163_ch7_frequency
-	ldy	__n163_num
-	cpy	#$60
-	bcc	_nsd_n163_frequency_Exit	;1未満だったら終了
-
-	jsr	N163_frequency
-
-	ldy	#N163_Frequency_Low - (8 * 6)
-	bne	_nsd_n163_frequency
-.endproc
-
-.proc	_nsd_n163_ch8_frequency
-	ldy	__n163_num
-	cpy	#$70
-	bcc	_nsd_n163_frequency_Exit	;1未満だったら終了
-
-	jsr	N163_frequency
-
-	ldy	#N163_Frequency_Low - (8 * 7)
-;	bne	_nsd_n163_frequency
-.endproc
+		.if (cnt <= 5)
+			bne	_nsd_n163_frequency
+		.endif
+	.endproc
+.endrepeat
 
 .proc	_nsd_n163_frequency
+.if	0
 	sty	N163_Resister
 	lda	__tmp
 	sta	N163_Data
@@ -3377,20 +3419,115 @@ Exit:
 	iny
 	iny
 	sty	N163_Resister
-
 	txa
 	sub	#nsd::TR_N163
+.ifndef	SE_N163
 	shr	a, 1
+.endif
 	tay
-
 	lda	__ptr
 	ora	__n163_frequency,y
 	sta	N163_Data
+	rts
+
+.else
+	sty	N163_Resister
+	lda	__tmp
+	sta	N163_Data
+
+	iny
+	iny
+	sty	N163_Resister
+	lda	__tmp + 1
+	sta	N163_Data
+
+	iny
+	iny
+	sty	N163_Resister
+	lda	__ptr
+	ora	__n163_frequency-nsd::TR_N163,x
+	sta	N163_Data
+	rts
+.endif
+
 .endproc
 
-.proc	_nsd_n163_frequency_Exit
+
+
+
+.endif
+.ifdef	SE_N163
+.proc	_nsd_n163_frequency_Exit_se
 	rts
 .endproc
+.proc	_nsd_n163_ch1_frequency_se
+
+	jsr	N163_frequency
+	ldy	#N163_Frequency_Low - (8 * 0)
+	bne	_nsd_n163_frequency_se
+.endproc
+
+.repeat 7,cnt
+	.proc	.ident( .concat("_nsd_n163_ch",.string(cnt+2),"_frequency_se"))
+		ldy	__n163_num
+		cpy	#cnt*$10+$10
+		bcc	_nsd_n163_frequency_Exit_se	;1未満だったら終了
+
+		jsr	N163_frequency
+		ldy	#N163_Frequency_Low - (8 * (cnt+1))
+
+		.if (cnt <= 5)
+			bne	_nsd_n163_frequency_se
+		.endif
+	.endproc
+.endrepeat
+
+.proc	_nsd_n163_frequency_se
+.if 0
+	sty	N163_Resister
+	lda	__tmp
+	sta	N163_Data
+
+	iny
+	iny
+	sty	N163_Resister
+	lda	__tmp + 1
+	sta	N163_Data
+
+	iny
+	iny
+	sty	N163_Resister
+	txa
+	sub	#nsd::TR_SE_N163
+.ifndef	SE_N163
+	shr	a, 1
+.endif
+	tay
+	lda	__ptr
+	ora	__n163_frequency,y
+	sta	N163_Data
+	rts
+.else
+	sty	N163_Resister
+	lda	__tmp
+	sta	N163_Data
+
+	iny
+	iny
+	sty	N163_Resister
+	lda	__tmp + 1
+	sta	N163_Data
+
+	iny
+	iny
+	sty	N163_Resister
+	lda	__ptr
+	ora	__n163_frequency-nsd::TR_SE_N163,x
+	sta	N163_Data
+	rts
+.endif
+.endproc
+
 
 .endif
 

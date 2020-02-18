@@ -41,7 +41,9 @@
 ;	nothing
 ;=======================================================================
 .proc	_nsd_play_se: near
-
+.ifdef	SE_STOP_NUM
+	sty	__se_stop_num
+.endif
 	pha
 	lda	#nsd_flag::Disable
 	ora	__flag
@@ -156,6 +158,16 @@ Loop:
 .ifdef TRACK_PRIORITY
 	lda	__tmp + 1
 	sta	__priority,x
+.endif
+.ifdef	SE_STOP_NUM
+	txa
+	lsr	a
+	tax
+	lda	__se_stop_num
+	sta	__req_num-nsd::TR_SE/2,x
+	txa
+	asl	a
+	tax
 .endif
 	jsr	_nsd_play
 

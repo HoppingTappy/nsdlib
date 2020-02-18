@@ -27,8 +27,11 @@
 	BANK_SWITCH = 0
 .endif
 
-	PRIORITY_EXTEND		= 0
-	TRACK_PRIORITY		= 0
+;	PRIORITY_EXTEND		= 0
+;	TRACK_PRIORITY		= 0
+;	SE_NO_POR		= 0
+;	SE_STOP_NUM		= 0
+
 ;****************************************************************
 ;*	Sound I/O Device address defines			*
 ;****************************************************************
@@ -246,9 +249,15 @@ PSG_Envelope_Form	= $0D
 
 	BGM_Track	= APU_Track + FDS_Track + VRC6_Track + VRC7_Track + OPLL_Track + MMC5_Track + N163_Track + PSG_Track + NULL_Track
 	.ifdef	SE
-	  SE_Track	= 5		;
+		SE_Track	.set 5		;
 	.else
-	  SE_Track	= 2		;
+		SE_Track	.set 2		;
+	.endif
+
+	.ifdef	SE_N163
+		SE_APU_Track	= SE_Track
+		SE_Track	.set(SE_Track + ::SE_N163)
+		SE_N163_Track	= ::SE_N163
 	.endif
 
 	Track		= BGM_Track + SE_Track
@@ -265,9 +274,11 @@ PSG_Envelope_Form	= $0D
 	TR_SE_Tri	= TR_SE + 4
 	TR_SE_Noise	= TR_SE + 6
 	TR_SE_Dpcm	= TR_SE + 8
+	TR_SE_N163	= TR_SE_Dpcm +2
 	.else
 	TR_SE_Pluse2	= TR_SE + 0
 	TR_SE_Noise	= TR_SE + 2
+	TR_SE_N163	= TR_SE_Noise + 2
 	.endif
 
 .endscope
@@ -441,6 +452,14 @@ PSG_Envelope_Form	= $0D
 	.Endstruct
 .endif
 
+.ifdef	SE_N163
+	.Struct		NSD_N163_Freq
+		Freq	.byte		;
+		Voice	.byte		;
+	.Endstruct
+.endif
+
+
 .Struct		NSD_work
 .ifdef PRIORITY_EXTEND
 	Priority_Value	.byte
@@ -472,12 +491,31 @@ PSG_Envelope_Form	= $0D
 	Gatetime	.tag	NSD_gatetime	nsd::Track	;gate time [tick]
 	Note		.tag	NSD_note	nsd::Track	;octave and note command
 	Detune		.tag	NSD_Detune	nsd::Track	;detune
+.ifdef	SE_NO_POR
+	Por_Lv		.tag	NSD_Por_Lv	nsd::BGM_Track	;Portamento / TR5: BGM1 & BGM2 frequency
+	Por_Co		.tag	NSD_Por_Co	nsd::BGM_Track	;Portamento / TR5: BGM3 & SE1  frequency
+	Por_now		.word			nsd::BGM_Track	;Portamento / TR5: SE2  & SE3  frequency
+.else
 	Por_Lv		.tag	NSD_Por_Lv	nsd::Track	;Portamento / TR5: BGM1 & BGM2 frequency
 	Por_Co		.tag	NSD_Por_Co	nsd::Track	;Portamento / TR5: BGM3 & SE1  frequency
 	Por_now		.word			nsd::Track	;Portamento / TR5: SE2  & SE3  frequency
+.endif
 	Trans		.tag	NSD_Trans	nsd::Track	;Transpose
 	Repeat		.tag	NSD_Repeat	nsd::Track	;Repeat
 	Volume		.tag	NSD_volume	nsd::Track	;volume	/ TR3: BGM1 sweep / TR5: BGM2 sweep
+.ifdef	SE_NO_ENV
+	Env_F_Now	.tag	NSD_Env_F_Now	nsd::BGM_Track	;Now value of envelop
+	Env_V_Ptr	.tag	NSD_Env_V_Ptr	nsd::BGM_Track	;Address of envelop / TR5:DPCM info
+	Env_F_Ptr	.tag	NSD_Env_F_Ptr	nsd::BGM_Track	;Address of envelop
+.if	.defined(ENVELOPE_MODE) .or .defined(TRACK_PRIORITY)
+	Env_Flag	.tag	NSD_Env_Flag	nsd::BGM_Track
+.endif
+	Envelop_Volume	.word			nsd::BGM_Track	;Pointer of envelop
+	Envelop_Voice	.word			nsd::BGM_Track	;Pointer of envelop
+	Envelop_Freq	.word			nsd::BGM_Track	;Pointer of envelop
+	Envelop_Note	.word			nsd::BGM_Track	;Pointer of envelop
+
+.else
 	Env_F_Now	.tag	NSD_Env_F_Now	nsd::Track	;Now value of envelop
 	Env_V_Ptr	.tag	NSD_Env_V_Ptr	nsd::Track	;Address of envelop / TR5:DPCM info
 	Env_F_Ptr	.tag	NSD_Env_F_Ptr	nsd::Track	;Address of envelop
@@ -488,6 +526,7 @@ PSG_Envelope_Form	= $0D
 	Envelop_Voice	.word			nsd::Track	;Pointer of envelop
 	Envelop_Freq	.word			nsd::Track	;Pointer of envelop
 	Envelop_Note	.word			nsd::Track	;Pointer of envelop
+.endif
 	Frequency	.word			nsd::Track	;Setting frequency
 	SubRoutine	.word			nsd::Track	;Pointer of sub-routine return address
 	Repeat2		.word			nsd::Track	;Pointer of repeat2 goto point
@@ -527,11 +566,21 @@ PSG_Envelope_Form	= $0D
 
 .ifdef	N163
 	N163_num	.byte					;N163 ch number
-	N163_Frequency	.byte			nsd::N163_Track	;N163 frequency
+	.ifdef	SE_N163
+		N163_Frequency	.tag	NSD_N163_Freq	nsd::N163_Track	;N163 frequency
+;		N163_Voice	.byte			nsd::N163_Track
+	.else
+		N163_Frequency	.byte			nsd::N163_Track		;N163 frequency
+	.endif
 .endif
 
 .ifdef	PSG
 	PSG_switch	.byte					;PSG switch
+.endif
+
+.ifdef	SE_STOP_NUM
+	SE_Stop_num	.byte
+	Req_num		.byte			nsd::SE_Track
 .endif
 
 .Endstruct
@@ -725,16 +774,25 @@ PSG_Envelope_Form	= $0D
 .endif
 
 .ifdef	N163
+	.ifdef	SE_N163
+		__n163_num		=	nsd_work + NSD_work::N163_num
+		__n163_frequency	=	nsd_work + NSD_work::N163_Frequency + NSD_N163_Freq::Freq
+		__n163_voice		=	nsd_work + NSD_work::N163_Frequency + NSD_N163_Freq::Voice
+
+	.else
 		__n163_num		=	nsd_work + NSD_work::N163_num
 		__n163_frequency	=	nsd_work + NSD_work::N163_Frequency
+	.endif
 .endif
 
 .ifdef	PSG
 		__psg_switch		=	nsd_work + NSD_work::PSG_switch
 .endif
 
-
-
+.ifdef	SE_STOP_NUM
+		__se_stop_num		=	nsd_work + NSD_work::SE_Stop_num
+		__req_num		=	nsd_work + NSD_work::Req_num
+.endif
 
 
 ;=======================================================================
@@ -960,7 +1018,9 @@ SE4:
 .endif
 	beq	@L
 	jsr	nsd_sequence
+.ifndef	SE_NO_ENV
 	jsr	nsd_envelop
+.endif
 @L:
 
 ;---------------------------------------
@@ -976,7 +1036,22 @@ SE5:
 @L:
 .endif
 ;---------------------------------------
-
+.ifdef	SE_N163
+	.repeat	nsd::SE_N163_Track,cnt
+		ldx	#nsd::TR_SE_N163 + cnt*2
+		lda	__Sequence_ptr + 1,x
+	.ifdef	DPCMBank
+		ora	__Sequence_ptr,x
+	.endif
+		beq	:+
+		jsr	nsd_sequence
+.ifndef	SE_NO_ENV
+		jsr	nsd_envelop
+.endif
+	:
+	.endrepeat
+.endif
+;---------------------------------------
 ;	lda	__Sequence_ptr + 1 + nsd::TR_SE_Pluse2
 ;	ora	__Sequence_ptr + 1 + nsd::TR_SE_Noise
 ;.ifdef	SE

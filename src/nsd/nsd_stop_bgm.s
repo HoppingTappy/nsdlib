@@ -54,6 +54,7 @@
 	;Init the channel structure
 	ldx	#nsd::TR_BGM1
 Loop:
+	stx	__channel
 ;	jsr	_nsd_stop	
 
 	jsr	_nsd_snd_keyoff		;[6]
