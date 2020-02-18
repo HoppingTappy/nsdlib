@@ -156,7 +156,11 @@ Loop_End:
 .ifdef	N163
 	lda	#$E0			;56(0x38) << 2
 	.repeat ::nsd::N163_Track,cnt
-		sta	__n163_frequency + cnt
+		.ifdef	SE_N163
+			sta	__n163_frequency + cnt * 2
+		.else
+			sta	__n163_frequency + cnt
+		.endif
 	.endrepeat
 .endif
 
@@ -173,6 +177,12 @@ Loop_End:
 	sta	__fo_add
 .endif
 
+.ifdef	AUTO_GROOVE
+	lda	#$00
+	sta	__grv_value
+	sta	__grv_length
+	sta	__grv_ctr
+.endif
 	rts
 .endproc
 

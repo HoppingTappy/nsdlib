@@ -50,6 +50,10 @@
 	.local	exit
 
 	;Portamento
+.ifdef	SE_NO_POR
+	cpx	#nsd::TR_SE
+	bcs	@L
+.endif
 	lda	__por_depth,x
 	bne	@L		;ポルタメントが終了していたら、無効化する。
 	lda	#0
@@ -804,12 +808,11 @@ nsd_op00:
 	ldx	__tmp
 	rts
 
-@seTrack:
-
 ;
 ;	Sweepの状態を元に戻す。
 ;
 
+@seTrack:
 .ifdef	SE
 @SE1:	
 	cpx	#nsd::TR_SE_Pluse1
@@ -878,11 +881,21 @@ nsd_op00:
 
 .ifdef	SE
 @SE5:
-	cpx	#nsd::TR_SE_Dpcm
-	bne	@SE5_E
+;	cpx	#nsd::TR_SE_Dpcm
+;	bne	@SE5_E
 @SE5_E:
 .endif
-
+.ifdef	SE_N163
+	lda	#$FF
+	.repeat	::nsd::SE_N163_Track,cnt
+		cpx	#nsd::TR_SE_N163+cnt*2
+		bne	:+
+		sta	__frequency+nsd::TR_N163+cnt*2
+		sta	__frequency+1+nsd::TR_N163+cnt*2
+		jmp	@Exit
+	:
+	.endrepeat
+.endif
 
 @Exit:
 	lda	#$0
@@ -1543,6 +1556,13 @@ nsd_op1F:
 	shl	a, 4
 	and	#$70
 	sta	__n163_num
+
+	lda	#$7f
+	sta	N163_Resister
+	lda	N163_Data
+	and	#$0f
+	ora	__n163_num
+	sta	N163_Data
 .endif
 	jmp	Sequence
 

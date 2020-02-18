@@ -183,6 +183,10 @@ Frequency:
 	;-------------------------------
 	;Por
 Portamento:
+.ifdef	SE_NO_POR
+	cpx	#nsd::TR_SE
+	jcs	F_Env
+.endif
 	lda	__por_target,x
 	jeq	F_Env			;ポルタメント中？
 
