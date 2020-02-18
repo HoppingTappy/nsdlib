@@ -393,13 +393,17 @@ Exit:
 ;---------------------------------------
 .proc	_nsd_apu_dpcm_keyon
 
+.ifdef	FO_MOD
+	ldy	__fo_value
+	beq	_nsd_keyon_exit
+.endif
+
 	;-------------------------------
 	;SE check
 .ifdef	SE
 	ldy	__Sequence_ptr + nsd::TR_SE_Dpcm + 1
 	bne	_nsd_keyon_exit
 .endif
-
 .endproc
 .proc	_nsd_apu_dpcm_keyon_se
 
@@ -407,10 +411,7 @@ Exit:
 	bit	__flag
 	bne	@E
 
-.ifdef	FO_MOD
-	ldy	__fo_value
-	beq	@E
-.endif
+
 
 	lda	#$0F
 	sta	APU_CHANCTRL
