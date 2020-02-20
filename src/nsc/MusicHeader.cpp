@@ -121,6 +121,15 @@ void	MusicHeader::Set_Number_BGM(MMLfile* MML)
 	iBGM = (unsigned char)_n;
 }
 
+void	MusicHeader::Set_Number_BGM(MMLfile* MML, int _n)
+{
+
+	if ((_n > 255) || (_n < 0)) {
+		MML->Err(_T("#BGMは0～255の範囲で指定してください。"));
+	}
+	iBGM = (unsigned char)_n;
+}
+
 void	MusicHeader::Set_Number_SE(MMLfile* MML)
 {
 	int	_n = MML->GetInt();
@@ -130,6 +139,15 @@ void	MusicHeader::Set_Number_SE(MMLfile* MML)
 	}
 	iSE = (unsigned char)_n;
 }
+
+void	MusicHeader::Set_Number_SE(MMLfile* MML, int _n)
+{
+	if ((_n > 255) || (_n < 0)) {
+		MML->Err(_T("#SEは0～255の範囲で指定してください。"));
+	}
+	iSE = (unsigned char)_n;
+}
+
 
 void	MusicHeader::Set_External(MMLfile* MML)
 {

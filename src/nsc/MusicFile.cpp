@@ -454,7 +454,8 @@ const	static	Command_Info	Command[] = {
 				}
 				//範囲チェック
 				if((Header.iBGM <= i) || (i<0)){
-					MML->Err(_T("BGM()ブロックで指定できる範囲を超えています。\n#BGMの数値を確認してください。"));
+					//MML->Err(_T("BGM()ブロックで指定できる範囲を超えています。\n#BGMの数値を確認してください。"));
+					Header.Set_Number_BGM(MML, i);
 				}
 				_bgm = new BGM(MML, i);
 				ptcItem.push_back(_bgm);
@@ -469,7 +470,8 @@ const	static	Command_Info	Command[] = {
 				}
 				//範囲チェック
 				if((Header.iSE <= i) || (i<0)){
-					MML->Err(_T("SE()ブロックで指定できる範囲を超えています。\n#SEの数値を確認してください。"));
+					//MML->Err(_T("SE()ブロックで指定できる範囲を超えています。\n#SEの数値を確認してください。"));
+					Header.Set_Number_SE(MML, i);
 				}
 				_se = new SE(MML, i);
 				ptcItem.push_back(_se);

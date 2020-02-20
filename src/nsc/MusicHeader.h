@@ -44,7 +44,9 @@ public:
 		void	Set_OffsetPCM(MMLfile* MML);
 		void	Set_RomCode(MMLfile* MML);
 		void	Set_Number_BGM(MMLfile* MML);
+		void	Set_Number_BGM(MMLfile* MML, int);
 		void	Set_Number_SE(MMLfile* MML);
+		void	Set_Number_SE(MMLfile* MML, int);
 		void	Set_External(MMLfile* MML);
 		void	Set_Bank(void);
 };
