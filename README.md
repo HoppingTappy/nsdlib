@@ -46,3 +46,5 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 [FDS] @FS*      FDS同期モードオン  
 [All] ENK       キーオン有効  
 [All] DSK       キーオン無効  
+[All] D_n       相対デチューン(cent)  
+[All] D%_n      相対デチューン(register)  
