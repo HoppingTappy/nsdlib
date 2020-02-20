@@ -447,32 +447,36 @@ const	static	Command_Info	Command[] = {
 				iSize += _sub->getSize();	//BGMのサイズを更新
 				break;
 			case(id_BGM):
-				i = MML->GetNum();
+				//i = MML->GetNum();
 				//重複チェック
-				if(ptcBGM.count(i) != 0){
-					MML->Err(_T("BGM()ブロックで同じ番号が指定されました。"));
-				}
+				//if(ptcBGM.count(i) != 0){
+					//MML->Err(_T("BGM()ブロックで同じ番号が指定されました。"));
+				//}
 				//範囲チェック
-				if((Header.iBGM <= i) || (i<0)){
+				//if((Header.iBGM <= i) || (i<0)){
 					//MML->Err(_T("BGM()ブロックで指定できる範囲を超えています。\n#BGMの数値を確認してください。"));
-					Header.Set_Number_BGM(MML, i+1);
-				}
+					//Header.Set_Number_BGM(MML, i+1);
+				//}
+				i = Header.iBGM;
+				Header.iBGM++;
 				_bgm = new BGM(MML, i);
 				ptcItem.push_back(_bgm);
 				ptcBGM[i] = _bgm;
 				iSize += _bgm->getSize();	//BGMのサイズを更新
 				break;
 			case(id_SE):
-				i = MML->GetNum();
-				//重複チェック
-				if(ptcSE.count(i) != 0){
-					MML->Err(_T("SE()ブロックで同じ番号が指定されました。"));
-				}
-				//範囲チェック
-				if((Header.iSE <= i) || (i<0)){
-					//MML->Err(_T("SE()ブロックで指定できる範囲を超えています。\n#SEの数値を確認してください。"));
-					Header.Set_Number_SE(MML, i+1);
-				}
+				//i = MML->GetNum();
+				////重複チェック
+				//if(ptcSE.count(i) != 0){
+				//	MML->Err(_T("SE()ブロックで同じ番号が指定されました。"));
+				//}
+				////範囲チェック
+				//if((Header.iSE <= i) || (i<0)){
+				//	//MML->Err(_T("SE()ブロックで指定できる範囲を超えています。\n#SEの数値を確認してください。"));
+				//	Header.Set_Number_SE(MML, i+1);
+				//}
+				i = Header.iSE;
+				Header.iSE++;
 				_se = new SE(MML, i);
 				ptcItem.push_back(_se);
 				ptcSE[i] = _se;

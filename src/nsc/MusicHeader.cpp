@@ -20,7 +20,7 @@
 //				–³‚µ
 //==============================================================
 MusicHeader::MusicHeader(string _code):
-	iBGM(1),
+	iBGM(0),
 	iSE(0),
 	iExternal(-1),
 	bank(false),
