@@ -278,10 +278,10 @@ const	static	Command_Info	Command[] = {
 				MML->include();
 				break;
 			case(id_bgm_num):
-				Header.Set_Number_BGM(MML);
+				//Header.Set_Number_BGM(MML);
 				break;
 			case(id_se_num):
-				Header.Set_Number_SE(MML);
+				//Header.Set_Number_SE(MML);
 				break;
 			case(id_timebase):
 				MML->timebase = MML->GetInt();	//これは、MMLファイルの属性。
