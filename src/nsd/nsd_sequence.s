@@ -1824,13 +1824,13 @@ _sub_op_adr:
 	.addr	nsd_op2F_05
 	.addr	nsd_op2F_06
 	.addr	nsd_op2F_07
-.ifdef FDS_SYNC
+;.ifdef FDS_SYNC
 	.addr	nsd_op2F_08
 	.addr	nsd_op2F_09
-.endif
-.ifdef	SEND_SIGNAL
+;.endif
+;.ifdef	SEND_SIGNAL
 	.addr	nsd_op2F_0A
-.endif
+;.endif
 ;	.addr	nsd_op2F_0B
 ;	.addr	nsd_op2F_0C
 ;	.addr	nsd_op2F_0D
@@ -1973,21 +1973,24 @@ nsd_op2F_07:
 	sta	__env_flag,x
 	jmp	Sequence
 
-.ifdef FDS_SYNC
 nsd_op2F_08:
+.ifdef FDS_SYNC
+
 	lda	__chflag,x
 	ora	#nsd_chflag::FdsSync
 	sta	__chflag,x
 	jmp	Sequence
+.endif
 nsd_op2F_09:
+.ifdef FDS_SYNC
 	lda	__chflag,x
 	and	#<~nsd_chflag::FdsSync
 	sta	__chflag,x
 	jmp	Sequence
 
 .endif
-.ifdef	SEND_SIGNAL
 nsd_op2F_0A:
+.ifdef	SEND_SIGNAL
 	jsr	nsd_load_sequence
 	sta	__signal
 	jmp	Sequence
