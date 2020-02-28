@@ -27,6 +27,7 @@ typedef	struct{
 	unsigned	int		iSub;		//
 	unsigned	int		iGate_q;	//
 	unsigned	int		iGate_u;	//
+	unsigned	int		iSign;
 
 	//設定するかどうか（defailt = false）
 				bool	fVoi;		//
@@ -40,6 +41,7 @@ typedef	struct{
 				bool	fSub_opt;	//trueで最適化無効
 				bool	fGate_q;	//
 				bool	fGate_u;	//
+				bool	fSign;
 
 	//エンベロープのsw（有る場合 true）
 				bool	sw_Evoi;	//
@@ -91,6 +93,7 @@ public:
 	unsigned	int		get_iSub(void){		return(m_now_Patch->iSub);};
 	unsigned	int		get_iGate_q(void){	return(m_now_Patch->iGate_q);};
 	unsigned	int		get_iGate_u(void){	return(m_now_Patch->iGate_u);};
+	unsigned	int		get_iSign(void){	return(m_now_Patch->iSign);};
 
 				bool	get_fVoi(void){		return(m_now_Patch->fVoi);};
 				bool	get_fEvoi(void){	return(m_now_Patch->fEvoi);};
@@ -103,6 +106,7 @@ public:
 				bool	get_fSub_opt(void){	return(m_now_Patch->fSub_opt);};
 				bool	get_fGate_q(void){	return(m_now_Patch->fGate_q);};
 				bool	get_fGate_u(void){	return(m_now_Patch->fGate_u);};
+				bool	get_fSign(void) {	return(m_now_Patch->fSign); };
 
 				bool	get_sw_Evoi(void){	return(m_now_Patch->sw_Evoi);};
 				bool	get_sw_Evol(void){	return(m_now_Patch->sw_Evol);};

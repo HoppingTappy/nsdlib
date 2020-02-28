@@ -1366,6 +1366,10 @@ void	MusicTrack::CallPatch(MMLfile* MML, char _note)
 			SetSubWithParch(MML->ptcPatch[i_Patch]->get_iSub(), MML->ptcPatch[i_Patch]->get_fSub_opt());
 		}
 
+		if (MML->ptcPatch[i_Patch]->get_fSign() == true) {
+			Set_Sign(MML->ptcPatch[i_Patch]->get_iSign());
+		}
+
 		if(	MML->ptcPatch[i_Patch]->get_fGate_q() == true){
 			Set_q(MML->ptcPatch[i_Patch]->get_iGate_q());
 		}
@@ -3904,5 +3908,12 @@ void	MusicTrack::Set_Sign(MMLfile* MML)
 {
 
 	SetEvent(new mml_general(nsd_SubCommand, (const char)nsd_sub_Sign, (char)MML->GetInt(), _T("Send signal")));
+
+}
+
+void	MusicTrack::Set_Sign(int i)
+{
+
+	SetEvent(new mml_general(nsd_SubCommand, (const char)nsd_sub_Sign, (char)i, _T("Send signal")));
 
 }

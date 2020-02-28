@@ -409,6 +409,7 @@ public:
 				void	SetVolumeDec(MMLfile* MML);
 
 				void	Set_Sign(MMLfile* MML);
+				void	Set_Sign(int i);
 
 //	unsigned	int		GetDefaultLength(void){return(nsd.length);};
 

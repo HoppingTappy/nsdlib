@@ -60,6 +60,8 @@ enum	Command_ID_mml {
 	Patch_Em,
 	Patch_En,
 
+	Patch_Sign,
+
 	Patch_Gate_q,
 	Patch_Gate_u,
 
@@ -148,6 +150,8 @@ const	static	Command_Info	Command[] = {
 
 		{	"n",	Patch_Note	},
 
+		{	"SG",	Patch_Sign				},
+		{	"sg",	Patch_Sign				},
 
 		{	"E@*",	Patch_Off_Evoi	},
 		{	"Ev*",	Patch_Off_Evol	},
@@ -344,6 +348,14 @@ const	static	Command_Info	Command[] = {
 				m_now_Patch->iEn		= MML->GetInt();
 				m_now_Patch->fEn		= true;
 				m_now_Patch->sw_En		= true;
+				break;
+
+			case(Patch_Sign):
+				if (m_now_Patch->fSign == true) {
+					MML->Err(_T("sgコマンドの２重定義です。"));
+				}
+				m_now_Patch->iSign = MML->GetInt();
+				m_now_Patch->fSign = true;
 				break;
 
 			case(Patch_Gate_q):
@@ -543,6 +555,7 @@ void	Patch::DebugMsg(void)
 			if(get_fSweep()){cout	<<	"  s"	<<	(int)get_iSweep();	};
 			if(get_fVoi()){	cout	<<	"  @"	<<	get_iVoi();		};
 			if(get_fEvoi()){cout	<<	" E@"	<<	get_iEvoi();	};
+			if(get_fSign()) { cout	<<	" sg"	<<	get_iSign(); };
 
 			if(get_fEvol()){
 				if(get_sw_Evol()){
