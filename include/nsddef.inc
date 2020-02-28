@@ -258,6 +258,8 @@ PSG_Envelope_Form	= $0D
 		SE_APU_Track	= SE_Track
 		SE_Track	.set(SE_Track + ::SE_N163)
 		SE_N163_Track	= ::SE_N163
+	.else
+		SE_N163_Track	= 0
 	.endif
 
 	Track		= BGM_Track + SE_Track
