@@ -100,6 +100,7 @@
 #define	nsd_sub_Env_No_Sync_Off	0x07
 #define	nsd_sub_Fds_Sync_On		0x08
 #define	nsd_sub_Fds_Sync_Off	0x09
+#define	nsd_sub_Sign			0x0a
 
 /****************************************************************/
 /*																*/

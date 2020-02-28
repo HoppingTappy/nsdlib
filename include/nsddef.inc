@@ -464,7 +464,9 @@ PSG_Envelope_Form	= $0D
 .ifdef PRIORITY_EXTEND
 	Priority_Value	.byte
 .endif
-
+.ifdef	SEND_SIGNAL
+	Signal		.byte
+.endif
 .ifdef	FO_MOD
 	Fo_Value	.word
 	Fo_Add		.byte
@@ -622,6 +624,9 @@ PSG_Envelope_Form	= $0D
 ;RAM Works
 .ifdef	PRIORITY_EXTEND
 		__priority_value	=	nsd_work + NSD_work::Priority_Value
+.endif
+.ifdef	SEND_SIGNAL
+		__signal		=	nsd_work + NSD_work::Signal
 .endif
 .ifdef	FO_MOD
 		__fo_value		=	nsd_work + NSD_work::Fo_Value

@@ -408,6 +408,8 @@ public:
 				void	SetVolumeInc(MMLfile* MML);
 				void	SetVolumeDec(MMLfile* MML);
 
+				void	Set_Sign(MMLfile* MML);
+
 //	unsigned	int		GetDefaultLength(void){return(nsd.length);};
 
 				void	Reset_opt(void){

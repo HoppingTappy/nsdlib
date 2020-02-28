@@ -1828,7 +1828,9 @@ _sub_op_adr:
 	.addr	nsd_op2F_08
 	.addr	nsd_op2F_09
 .endif
-;	.addr	nsd_op2F_0A
+.ifdef	SEND_SIGNAL
+	.addr	nsd_op2F_0A
+.endif
 ;	.addr	nsd_op2F_0B
 ;	.addr	nsd_op2F_0C
 ;	.addr	nsd_op2F_0D
@@ -1981,6 +1983,13 @@ nsd_op2F_09:
 	lda	__chflag,x
 	and	#<~nsd_chflag::FdsSync
 	sta	__chflag,x
+	jmp	Sequence
+
+.endif
+.ifdef	SEND_SIGNAL
+nsd_op2F_0A:
+	jsr	nsd_load_sequence
+	sta	__signal
 	jmp	Sequence
 
 .endif

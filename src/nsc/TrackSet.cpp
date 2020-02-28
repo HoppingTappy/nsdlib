@@ -165,7 +165,9 @@ enum	Command_ID_mml {
 
 	mml_Priority,
 
-	mml_Bar
+	mml_Bar,
+
+	mml_Sign
 };
 
 //	これらは、MML構文で使えるコマンド。
@@ -190,6 +192,9 @@ const	static	Command_Info	Command[] = {
 		{	"hminor",	mml_HMinor				},
 		{	"MMinor",	mml_MMinor				},
 		{	"mminor",	mml_MMinor				},
+
+		{	"SG",	mml_Sign				},
+		{	"sg",	mml_Sign				},
 
 		{	"K",		mml_KeySignature		},
 		{	"調",		mml_KeySignature		},
@@ -394,7 +399,9 @@ const	static	Command_Info	Command[] = {
 
 		{	"　",	mml_Bar					},
 		{	"|",	mml_Bar					},
-		{	"｜",	mml_Bar					}
+		{	"｜",	mml_Bar					},
+
+
 };
 
 	unsigned	char	cData;
@@ -890,19 +897,19 @@ const	static	Command_Info	Command[] = {
 				break;
 
 			case(mml_Detune_Cent):
-				SetEvent(new mml_general(nsd_Detune_Cent, MML, _T("Detune Cent")));
+				nowTrack->SetEvent(new mml_general(nsd_Detune_Cent, MML, _T("Detune Cent")));
 				break;
 
 			case(mml_Detune_Register):
-				SetEvent(new mml_general(nsd_Derune_Register, MML, _T("Derune Register")));
+				nowTrack->SetEvent(new mml_general(nsd_Derune_Register, MML, _T("Derune Register")));
 				break;
 
 			case(mml_Detune_Cent_Relative):
-				SetEvent(new mml_general(nsd_SubCommand, (const char)nsd_sub_Detune_Cent, (char)MML->GetInt(), _T("Relative Detune Cent")));
+				nowTrack->SetEvent(new mml_general(nsd_SubCommand, (const char)nsd_sub_Detune_Cent, (char)MML->GetInt(), _T("Relative Detune Cent")));
 				break;
 
 			case(mml_Detune_Register_Relative):
-				SetEvent(new mml_general(nsd_SubCommand, (const char)nsd_sub_Derune_Register, (char)MML->GetInt(), _T("Relative Detune Register")));
+				nowTrack->SetEvent(new mml_general(nsd_SubCommand, (const char)nsd_sub_Derune_Register, (char)MML->GetInt(), _T("Relative Detune Register")));
 				break;
 	
 			case(mml_Transpose):
@@ -965,6 +972,10 @@ const	static	Command_Info	Command[] = {
 
 			case(mml_Priority):
 				Set_Priority(MML);
+				break;
+
+			case(mml_Sign):
+				nowTrack->Set_Sign(MML);
 				break;
 
 			case(mml_Bar):
@@ -1621,3 +1632,5 @@ void	TrackSet::Set_FME7_Frequency(MMLfile* MML)
 		MML->Err(_T("SUNSOFT 5bのハードウェアエンベロープ周波数は0～65535の範囲で指定して下さい。"));
 	}
 }
+
+

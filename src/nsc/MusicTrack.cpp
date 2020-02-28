@@ -3891,3 +3891,18 @@ void	MusicTrack::SetVolumeDec(MMLfile* MML)
 		opt_volume = nsd.volume;
 	}
 }
+
+//==============================================================
+//			シグナル送信
+//--------------------------------------------------------------
+//	●引数
+//		MMLfile*	MML		MMLファイルのオブジェクト
+//	●返値
+//				無し
+//==============================================================
+void	MusicTrack::Set_Sign(MMLfile* MML)
+{
+
+	SetEvent(new mml_general(nsd_SubCommand, (const char)nsd_sub_Sign, (char)MML->GetInt(), _T("Send signal")));
+
+}
