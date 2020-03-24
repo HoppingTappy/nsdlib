@@ -639,6 +639,7 @@ void	Patch::setN(MMLfile* MML, int note)
 		m_now_Patch->fSub_opt= false;
 		m_now_Patch->fGate_q = false;
 		m_now_Patch->fGate_u = false;
+		m_now_Patch->fSign  = false;
 
 		m_now_Patch->sw_Evoi= false;
 		m_now_Patch->sw_Evol= false;
