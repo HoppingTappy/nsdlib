@@ -1781,7 +1781,7 @@ _nsd_apu_ch3_volume_se:
 	bne	@skip
 	ldy	__Sequence_ptr + nsd::TR_BGM3 + 1
 	bne	@end
-	jsr	_nsd_apu_ch3_Counter_Set
+	jmp	_nsd_apu_ch3_Counter_Set
 @skip:
 	cmp	#4
 	bcc	@L
