@@ -19,13 +19,24 @@ if %ERRORLEVEL% neq 0 (
 	echo ErrorLevel:%ERRORLEVEL%
 	echo ビルド失敗
 )
-
-
-
 rem --- nsc.exe ---
 pushd nsc\release
 	copy *.exe ..\..\..\bin\
 popd
+
+
+cd %~dp0
+MSBuild "nsc64\nsc64.sln" /t:clean;rebuild /p:Configuration=Release;Platform="x64"
+if %ERRORLEVEL% neq 0 (
+	echo ErrorLevel:%ERRORLEVEL%
+	echo ビルド失敗
+)
+
+rem --- nsc.exe ---
+pushd nsc64\release
+	copy *.exe ..\..\..\bin\
+popd
+
 
 rem --- rom.bin ---
 pushd rom

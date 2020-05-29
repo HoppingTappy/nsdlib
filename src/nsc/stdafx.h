@@ -13,6 +13,8 @@
 //
 
 #pragma once
+#define		segmentOutput
+#define _CRT_SECURE_NO_WARNINGS
 
 #ifdef	_UNICODE
 	#define	_CHAR	wchar_t
@@ -64,8 +66,8 @@ class	MMLfile;
 class	Sub;
 
 typedef struct {
-	char*	str;
-	int		id;
+	const char*	str;
+	int			id;
 } Command_Info;
 
 #include "SearchPass.h"			//åüçıÉpÉX

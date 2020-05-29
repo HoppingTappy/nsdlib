@@ -20,11 +20,11 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 //--------------------------------------------------------------
 //	●引数
 //		MMLfile*			MML			MMLファイルのオブジェクト
-//					int		_id			パッチ番号
+//					size_t	_id			パッチ番号
 //	●返値
 //					無し
 //==============================================================
-Patch::Patch(MMLfile* MML, int _id):
+Patch::Patch(MMLfile* MML, size_t _id):
 	m_id(_id)
 {
 	//----------------------
@@ -493,7 +493,7 @@ const	static	Command_Info	Command[] = {
 	MML->DeleteMacro(1);
 
 	//Debug message　（うざい程出力するので注意。）
-	if(cOptionSW->cDebug & 0x01){
+	if(cOptionSW->cDebug & DEBUG_Macros){
 		DebugMsg();
 	}
 }
@@ -510,7 +510,7 @@ Patch::~Patch(void)
 {
 	//----------------------
 	//Local変数
-	map<unsigned int, patch_scrap*>::iterator	itPatch;
+	map<size_t, patch_scrap*>::iterator	itPatch;
 	
 	//----------------------
 	//Delete Class
@@ -536,7 +536,7 @@ void	Patch::DebugMsg(void)
 {
 	//----------------------
 	//Local変数
-	map<unsigned int, patch_scrap*>::iterator	itPatch;
+	map<size_t, patch_scrap*>::iterator	itPatch;
 	
 	//----------------------
 	//Delete Class
@@ -659,13 +659,10 @@ void	Patch::setN(MMLfile* MML, int note)
 //==============================================================
 void	Patch::setNote(int i)
 {
-	bool	f_set = false;
-
 	m_kn = i;
 
 	while(m_kn > 0){
 		if(m_Patch.count(m_kn) != 0){
-			f_set = true;
 			break;
 		} else {
 			m_kn--;

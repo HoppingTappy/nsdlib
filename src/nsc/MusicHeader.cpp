@@ -20,12 +20,12 @@
 //				無し
 //==============================================================
 MusicHeader::MusicHeader(string _code):
-	iBGM(0),
-	iSE(0),
-	iExternal(-1),
 	bank(false),
 	op_code(false),
+	iBGM(0),
+	iSE(0),
 	offsetPCM(0x10000),
+	iExternal(-1),
 	Label("_nsd_"),
 	title(""),
 	copyright(""),
@@ -113,12 +113,12 @@ void	MusicHeader::Set_RomCode(MMLfile* MML)
 
 void	MusicHeader::Set_Number_BGM(MMLfile* MML)
 {
-	int	_n = MML->GetInt();
+	size_t	_n = MML->GetInt();
 
-	if((_n > 255) || (_n < 0)){
+	if ((_n > 255) || (_n < 0)) {
 		MML->Err(_T("#BGMは0～255の範囲で指定してください。"));
 	}
-	iBGM = (unsigned char)_n;
+	iBGM = _n;
 }
 
 void	MusicHeader::Set_Number_BGM(MMLfile* MML, int _n)
@@ -127,17 +127,17 @@ void	MusicHeader::Set_Number_BGM(MMLfile* MML, int _n)
 	if ((_n > 255) || (_n < 0)) {
 		MML->Err(_T("#BGMは0～255の範囲で指定してください。"));
 	}
-	iBGM = (unsigned char)_n;
+	iBGM = (size_t)_n;
 }
 
 void	MusicHeader::Set_Number_SE(MMLfile* MML)
 {
-	int	_n = MML->GetInt();
+	size_t	_n = MML->GetInt();
 
 	if((_n > 255) || (_n < 0)){
 		MML->Err(_T("#SEは0～255の範囲で指定してください。"));
 	}
-	iSE = (unsigned char)_n;
+	iSE = _n;
 }
 
 void	MusicHeader::Set_Number_SE(MMLfile* MML, int _n)
@@ -145,7 +145,7 @@ void	MusicHeader::Set_Number_SE(MMLfile* MML, int _n)
 	if ((_n > 255) || (_n < 0)) {
 		MML->Err(_T("#SEは0～255の範囲で指定してください。"));
 	}
-	iSE = (unsigned char)_n;
+	iSE = (size_t)_n;
 }
 
 

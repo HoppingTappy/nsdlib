@@ -35,7 +35,6 @@
 
 // nsc.cpp : コンソール アプリケーションのエントリ ポイントを定義します。
 //
-//#define		segmentOutput
 #include "StdAfx.h"
 
 /****************************************************************/
@@ -66,10 +65,10 @@ void nsc_exit(int no)
 //==============================================================
 int	main(int argc, char* argv[])
 {
-	unsigned	int	i;
-				int	iResult	= EXIT_SUCCESS;
-	MMLfile			*cMML	= NULL;
-    MusicFile		*cSND	= NULL;
+		size_t	i;
+		int		iResult	= EXIT_SUCCESS;
+	MMLfile		*cMML	= NULL;
+	MusicFile	*cSND	= NULL;
 
 	try {
 
@@ -87,7 +86,7 @@ int	main(int argc, char* argv[])
 		//==================================
 		_COUT	<<	_T("MML Compiler for NES Sound Driver & Library (NSD.Lib)\n")
 					_T("    Version 1.28\n")
-					_T("        Copyright (c) 2012-2018 S.W.\n")	<<	endl;
+					_T("        Copyright (c) 2012-2020 S.W.\n")	<<	endl;
 
 
 		//==================================
@@ -131,8 +130,6 @@ int	main(int argc, char* argv[])
 
 		_COUT << endl;
 
-
-
 		//==================================
 		//保存
 		if((cOptionSW->saveNSF == true) || ((cOptionSW->saveNSF == false)&&(cOptionSW->saveASM == false))){
@@ -151,7 +148,7 @@ int	main(int argc, char* argv[])
 
 	} catch (int no) {
 		if (no != EXIT_SUCCESS){
-            _COUT	<<	_T("Error!:") << no << endl;
+			_COUT	<<	_T("Error!:") << no << endl;
 			iResult	= EXIT_FAILURE;
 		}
 	}
