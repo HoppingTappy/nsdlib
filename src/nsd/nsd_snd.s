@@ -1777,8 +1777,12 @@ _nsd_apu_ch3_Counter_Set:
 .ifdef	SE
 _nsd_apu_ch3_volume_se:
 
-	cmp	#0
-	beq	_nsd_apu_ch3_Counter_Set
+	cmp	#0	; volume
+	bne	@skip
+	ldy	__Sequence_ptr + nsd::TR_BGM3 + 1
+	bne	@end
+	jmp	_nsd_apu_ch3_Counter_Set
+@skip:
 	cmp	#4
 	bcc	@L
 	lda	#$FF
@@ -1787,7 +1791,7 @@ _nsd_apu_ch3_volume_se:
 	lda	__se_frequency3
 	sta	APU_TRIFREQ2
 	rts
-
+@end:
 .endif
 
 ;---------------------------------------
