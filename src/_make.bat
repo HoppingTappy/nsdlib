@@ -34,7 +34,7 @@ if %ERRORLEVEL% neq 0 (
 
 rem --- nsc.exe ---
 pushd nsc64\x64\Release
-	copy *.exe ..\..\..\bin\
+	copy *.exe ..\..\..\..\bin\
 popd
 
 
