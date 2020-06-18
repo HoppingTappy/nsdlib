@@ -713,22 +713,18 @@ const	static	Command_Info	Command[] = {
 
 			case(mml_Envelop_Voice):
 				nowTrack->SetEnvelop_Evoi(MML->GetInt() + MML->offset_Ei);
-			//	nowTrack->SetEnvelop(nsd_Envelop_Voice, MML, MML->offset_Ei);
 				break;
 
 			case(mml_Envelop_Volume):
 				nowTrack->SetEnvelop_Evol(MML->GetInt() + MML->offset_Ev);
-			//	nowTrack->SetEnvelop(nsd_Envelop_Volume, MML, MML->offset_Ev);
 				break;
 
 			case(mml_Envelop_Frequency):
 				nowTrack->SetEnvelop_Em(MML->GetInt() + MML->offset_Em);
-			//	nowTrack->SetEnvelop(nsd_Envelop_Frequency, MML, MML->offset_Em);
 				break;
 
 			case(mml_Envelop_Note):
 				nowTrack->SetEnvelop_En(MML->GetInt() + MML->offset_En);
-			//	nowTrack->SetEnvelop(nsd_Envelop_Note, MML, MML->offset_En);
 				break;
 
 			case(mml_Envelop_Note_Abs):
@@ -742,17 +738,14 @@ const	static	Command_Info	Command[] = {
 
 			case(mml_Envelop_Off_Volume):
 				nowTrack->SetEnvelop_Evol();
-			//	SetEvent(new mml_Address(nsd_Envelop_Volume));
 				break;
 
 			case(mml_Envelop_Off_Frequency):
 				nowTrack->SetEnvelop_Em();
-			//	SetEvent(new mml_Address(nsd_Envelop_Frequency));
 				break;
 
 			case(mml_Envelop_Off_Note):
 				nowTrack->SetEnvelop_En();
-			//	SetEvent(new mml_Address(nsd_Envelop_Note));
 				break;
 
 			case(mml_Envelop_Off_Note_Abs):
@@ -819,7 +812,6 @@ const	static	Command_Info	Command[] = {
 
 			case(mml_Voice):
 				nowTrack->SetVoice(MML->GetInt());
-			//	SetEvent(new mml_general(nsd_Voice, MML, _T("Voice")));
 				break;
 
 			case(mml_FDSC):
@@ -920,12 +912,10 @@ const	static	Command_Info	Command[] = {
 					MML->Err(_T("ˆÚ’²‚Í-127`128‚Ì”ÍˆÍ‚ÅŽw’è‚µ‚Ä‚­‚¾‚³‚¢B"));
 				}
 				nowTrack->SetTranspose(i);
-				//SetEvent(new mml_general(nsd_Transpose, MML, _T("Transpose")));
 				break;
 
 			case(mml_Transpose_Relative):
 				nowTrack->SetTranspose_Relative(MML->GetInt());
-				//SetEvent(new mml_general(nsd_Relative_Transpose, MML, _T("Relative Transpose")));
 				break;
 
 			case(mml_KeyShift):

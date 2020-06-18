@@ -17,22 +17,22 @@
 class NSD_WORK{
 
 public:
-	int	gatemode;
-	int	length;
-	int	gate_q;
-	int	gate_u;
+	int		gatemode;
+	int		length;
+	int		gate_q;
+	int		gate_u;
 
-	int	octave;
-	int	octave1;		//One time octave
-	int	detune_cent;
-	int	detune_reg;
+	int		octave;
+	int		octave1;		//One time octave
+	int		detune_cent;
+	int		detune_reg;
 
-	int	trans;
+	int		trans;
 
-	int	voice;
-	int	voice_rel;
-	int	volume;
-	int	volume_rel;
+	int		voice;
+	int		voice_rel;
+	int		volume;
+	int		volume_rel;
 
 	size_t	env_volume;
 	size_t	env_voice;
@@ -91,10 +91,6 @@ public:
 		voice_rel		= -1;
 		volume			= 15;
 		volume_rel		=  2;
-	//	env_volume		= -1;
-	//	env_voice		= -1;
-	//	env_frequency	= -1;
-	//	env_note		= -1;
 		sw_Evoi			= false;
 		sw_Evol			= false;
 		sw_Em			= false;
@@ -109,11 +105,8 @@ public:
 		fds_frequency	= -1;
 		fds_sweepbias	= 0;
 		fds_sync_switch = -1;
-	//	vrc7_voice		= -1;
 		sw_vrc7_voice	= false;
-	//	n163_voice		= -1;
 		sw_n163_voice	= false;
-		n163_num		= -1;
 		psg_switch		= -1;
 		psg_frequency	= -1;
 	}
@@ -158,7 +151,6 @@ public:
 		psg_switch		=	work->psg_switch;
 		psg_frequency	=	work->psg_frequency;
 
-
 	}
 
 	void	get(NSD_WORK* work){work->set(this);};
@@ -192,27 +184,13 @@ private:
 
 	//----------------------------------
 	//音長
-	//			int		DefaultLength;			//l
-				int		opt_DefaultLength;
-	
+				int		opt_DefaultLength;		//音長省略時の処理用
+
 	//----------------------------------
 	//クオンタイズ
 				int		QMax;					//QMax
 				int		gatetime_q;				//q
 				int		gatetime_Q;				//Q
-				int		opt_gatetime_q;			//
-				int		opt_gatetime_u;			//
-
-	//----------------------------------
-	//音量
-//				char	volume;					//現在の音量
-				int		opt_volume;
-
-	//----------------------------------
-	//オクターブ
-//				char	octave;					//現在のオクターブ
-//				char	octave1;				//一次的な相対オクターブ　計算用
-				int		opt_octave;
 
 	//----------------------------------
 	//ノート
@@ -226,9 +204,7 @@ private:
 				
 	//----------------------------------
 	//移調
-				int		iKeyShift;				//k
-				
-//				int		iTranspose;				//_
+				int		iKeyShift;				//k (コンパイラレベル)
 
 	//----------------------------------
 	//疑似エコー
@@ -252,39 +228,16 @@ private:
 				bool	f_Patch;				//パッチ処理中？
 	unsigned	int		i_Patch;
 
-	//現在の状態（設定数値）
-//	unsigned	int		iVoi;			//
-//	unsigned	int		iEvoi;			//
-//	unsigned	int		iEvol;			//
-//	unsigned	int		iEm;			//
-//	unsigned	int		iEn;			//
-	unsigned	char	iSweep;			//
-				size_t	iSub;			//サブルーチン用
-
-	//設定するかどうか（defailt = false）
-				bool	f_opt_Voi;		//
-				bool	f_opt_Evoi;		//
-				bool	f_opt_Evol;		//
-				bool	f_opt_Em;		//
-				bool	f_opt_En;		//
-				bool	f_opt_EN;		//
-				bool	f_opt_Key;		//
-				bool	f_opt_Sweep;	//
-				bool	f_opt_Sub;		//サブルーチン（パッチ用）
-
 	//----------------------------------
-	//無限ループ
+	//無限ループ・リピート関係
+
 				bool	is_loop;				//	L	コマンド出現したか？
-
-	//----------------------------------
-	//リピート関係
-	mml_repeat*			_old_repeat;
-
 				bool	is_repeat_a_s;			//	[	コマンドが出現したか？
 				bool	is_repeat_a_b;			//	:	コマンドが出現したか？
 				bool	is_repeat_b_s;			//	|:	コマンドが出現したか？
 				bool	is_repeat_b_b;			//	\	コマンドが出現したか？
 				int		count_repeat_a;
+	mml_repeat*			_old_repeat;
 
 			vector<	int			>			repeat_type;		//どのリピートを使っているか？
 			vector<	int			>::iterator	it_repeat_type;
@@ -299,8 +252,6 @@ private:
 	list<	list<	MusicItem*>::iterator>::iterator	it_it_repeat_c_s;
 	list<	list<	MusicItem*>::iterator>::iterator	it_it_repeat_c_b;
 	list<	list<	MusicItem*>::iterator>::iterator	it_it_repeat_c_e;
-
-
 
 	//----------------------------------
 	//オブジェクト
@@ -376,8 +327,9 @@ public:
 				void	SetRepeat_C_Start(MMLfile* MML);
 				void	SetRepeat_C_End(MMLfile* MML);
 
-				void	CopyAddressEvent(unsigned char cOpCode, string* sOpCode, list<MusicItem*>::iterator pt_itMusic);
-				void	CopyEnvEvent(unsigned char cOpCode, string* sOpCode, list<MusicItem*>::iterator pt_itMusic);
+				void	CopyAddressEvent(string* sOpCode, list<MusicItem*>::iterator pt_itMusic);
+				void	CopySubEvent(	 string* sOpCode, list<MusicItem*>::iterator pt_itMusic);
+				void	CopyEnvEvent(	 string* sOpCode, list<MusicItem*>::iterator pt_itMusic);
 
 				void	SetSE(MMLfile* MML);
 				void	SetSubroutine(size_t _no);
@@ -484,24 +436,9 @@ public:
 				void	Set_Sign(MMLfile* MML);
 				void	Set_Sign(int i);
 
-//	unsigned	int		GetDefaultLength(void){return(nsd.length);};
-
 				void	Reset_opt(void){
-					opt_octave			= -1;
-					opt_volume			= -1;
-					opt_gatetime_q		= -1;
-					opt_gatetime_u		= -1;
+					//リピート終了時に、デフォルト音長情報をリセットする
+					//分岐時に l コマンドがあった場合、その値から色々と計算してしまうため。
 					opt_DefaultLength	= -1;
-					f_opt_Voi			= false;	//
-					f_opt_Evoi			= false;	//
-					f_opt_Evol			= false;	//
-					f_opt_Em			= false;	//
-					f_opt_En			= false;	//
-					f_opt_Key			= false;	//
-					f_opt_Sweep			= false;	//
-					f_opt_Sub			= false;	//
-			//		if((echo_flag == true) && (echo_slur == false)){
-			//			echo_vol_ret	= true;		//
-			//		}
 				}
 };
