@@ -148,6 +148,14 @@
 ;	sta				; namco t163 sound enable
 ;	lda	#$70
 ;	sta	__n163_num
+	lda	#$00
+	ldy	#$80
+	sty	N163_Resister
+@initN163:
+	sta	N163_Data
+	dey
+	bne	@initN163
+
 .endif
 
 .ifdef	FDS
