@@ -1,50 +1,36 @@
 
-mkdir ..\bin
-pushd	..\bin
-	del /q *.*
-popd
 
-py freqTableGen.py -f 442 -o nsd\
+SET PATH_BACK=%PATH%
+
 rem --- nsd.lib ---
 pushd nsd
-	call _make
-	copy *.lib ..\..\lib\
+py freqTableGen.py -f 442 -o nsd\
+call _make
+copy *.lib ..\..\lib\
 popd
-
-call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\Common7\Tools\VsDevCmd.bat"
-
-cd %~dp0
-MSBuild "nsc\nsc.sln" /t:clean;rebuild /p:Configuration=Release;Platform="x86"
-if %ERRORLEVEL% neq 0 (
-	echo ErrorLevel:%ERRORLEVEL%
-	echo ƒrƒ‹ƒhŽ¸”s
-)
 rem --- nsc.exe ---
+rem call "C:\Program Files (x86)\Microsoft Visual Studio .NET 2003\Common7\Tools\vsvars32.bat"
+rem devenv nsc.sln /build Release
 pushd nsc\release
-	copy *.exe ..\..\..\bin\
+copy *.exe ..\..\..\bin\
 popd
+SET PATH=%PATH_BACK%
 
-
-cd %~dp0
-MSBuild "nsc64\nsc64.sln" /t:clean;rebuild /p:Configuration=Release;Platform="x64"
-if %ERRORLEVEL% neq 0 (
-	echo ErrorLevel:%ERRORLEVEL%
-	echo ƒrƒ‹ƒhŽ¸”s
-)
-
-rem --- nsc.exe ---
-pushd nsc64\x64\Release
-	copy *.exe ..\..\..\..\bin\
+rem --- nsc64.exe ---
+call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+pushd nsc64\
+MSBuild -t:Build -p:Configuration=Release;Platform="x64"
+cd x64\Release
+copy *.exe ..\..\..\..\bin\
 popd
-
+SET PATH=%PATH_BACK%
 
 rem --- rom.bin ---
 pushd rom
-	call _make
-	copy *.bin ..\..\bin\
+call _make
+copy *.bin ..\..\bin\
 popd
-
 rem --- nsdl.chm ---
 pushd help
-	copy *.chm ..\..\doc\
+copy *.chm ..\..\doc\
 popd

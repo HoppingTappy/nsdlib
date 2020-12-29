@@ -53,6 +53,7 @@ INC_FILES =	nsd.inc
 ########################################
 
 PROJ      =	NSD
+PROJ_PAL  =	NSD_PAL
 PROJ_SE   =	NSD_SE
 PROJ_FDS  =	NSD_FDS
 PROJ_VRC6 =	NSD_VRC6
@@ -68,6 +69,7 @@ PROJ_HFE4 =	NSD_HFE4
 PROJ_HFX4 =	NSD_HFX4
 
 PROJ_LIST =	$(PROJ).lib		\
+		$(PROJ_PAL).lib		\
 		$(PROJ_SE).lib		\
 		$(PROJ_FDS).lib		\
 		$(PROJ_VRC6).lib	\
@@ -89,7 +91,7 @@ PROJ_LIST =	$(PROJ).lib		\
 #---------------------------------------
 
 AMOD  = -D AUTO_GROOVE -D ENV_NOTE_ABS -D ENVELOPE_MODE -D FDS_SYNC -D SEND_SIGNAL
-
+APAL  = -D PAL $(AMOD)
 ASE   = -D SE $(AMOD)
 AFDS  = -D FDS $(AMOD)
 AVRC6 = -D VRC6 $(AMOD)
@@ -107,6 +109,7 @@ AHFX4 = -D FDS  -D VRC6 -D OPLL -D VRC7 -D MMC5 -D N163=8 -D PSG -D NULL -D DPCM
 
 
 $(PROJ).lib :		ASFLAGS += $(AMOD)
+$(PROJ_PAL).lib :	ASFLAGS += $(APAL)
 $(PROJ_SE).lib :	ASFLAGS += $(ASE)
 $(PROJ_FDS).lib :	ASFLAGS += $(AFDS)
 $(PROJ_VRC6).lib :	ASFLAGS += $(AVRC6)

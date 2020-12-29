@@ -35,7 +35,8 @@ INC_FILES =
 ########################################
 
 PROJ      =	nsd
-PROJ_SE  =	nsd_se
+PROJ_PAL  =	nsd_pal
+PROJ_SE   =	nsd_se
 PROJ_FDS  =	nsd_fds
 PROJ_VRC6 =	nsd_vrc6
 PROJ_VRC7 =	nsd_vrc7
@@ -50,6 +51,7 @@ PROJ_HFE4 =	nsd_hfe4
 PROJ_HFX4 =	nsd_hfx4
 
 PROJ_LIST =	$(PROJ).bin		\
+		$(PROJ_PAL).bin		\
 		$(PROJ_SE).bin		\
 		$(PROJ_FDS).bin		\
 		$(PROJ_VRC6).bin	\
@@ -74,6 +76,7 @@ PROJ_LIST =	$(PROJ).bin		\
 #; アセンブラの設定
 AMOD  = -D AUTO_GROOVE -D ENV_NOTE_ABS -D ENVELOPE_MODE -D FDS_SYNC -D SEND_SIGNAL
 
+APAL  = -D PAL $(AMOD)
 ASE   = -D SE $(AMOD)
 AFDS  = -D FDS $(AMOD)
 AVRC6 = -D VRC6 $(AMOD)
@@ -90,6 +93,7 @@ AALL2 = -D FDS  -D VRC6         -D VRC7 -D MMC5 -D N163=8 -D PSG -D NULL -D DPCM
 AHFX4 = -D FDS  -D VRC6 -D OPLL -D VRC7 -D MMC5 -D N163=8 -D PSG -D NULL -D DPCMBank -D HFX4 $(AMOD)
 
 
+$(PROJ_PAL).bin :	ASFLAGS += $(APAL)
 $(PROJ_SE).bin :	ASFLAGS += $(ASE)
 $(PROJ_FDS).bin :	ASFLAGS += $(AFDS)
 $(PROJ_VRC6).bin :	ASFLAGS += $(AVRC6)
@@ -105,6 +109,7 @@ $(PROJ_HFX4).bin :	ASFLAGS += $(AHFX4)
 $(PROJ_HFE4).bin :	ASFLAGS += $(AHFE4)
 
 $(PROJ).bin :		CFG_FILE = default.cfg
+$(PROJ_PAL).bin :	CFG_FILE = default.cfg
 $(PROJ_SE).bin :	CFG_FILE = default.cfg
 $(PROJ_FDS).bin :	CFG_FILE = default.cfg
 $(PROJ_VRC6).bin :	CFG_FILE = default.cfg
@@ -122,7 +127,7 @@ $(PROJ_HFX4).bin :	CFG_FILE = opllall.cfg
 #---------------
 #; リンカーの設定
 MAP_FILE   =	$*.map
-
+DBG_FILE   =	$*.dbg
 
 
 ########################################
@@ -141,6 +146,7 @@ all:	$(PROJ_LIST)
 clean:
 	@$(RM) *.bak
 	@$(RM) *.o
+	@$(RM) *.dbg
 	@$(RM) *.map
 	@$(RM) *.lst
 	@$(RM) *.bin

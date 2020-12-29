@@ -80,6 +80,7 @@
 				FavorSizeOrSpeed="2"
 				OmitFramePointers="TRUE"
 				EnableFiberSafeOptimizations="TRUE"
+				OptimizeForProcessor="0"
 				OptimizeForWindowsApplication="TRUE"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				StringPooling="TRUE"
@@ -101,7 +102,7 @@
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				OptimizeForWindows98="2"
+				OptimizeForWindows98="0"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -184,7 +185,13 @@
 					RelativePath=".\MusicItem.cpp">
 				</File>
 				<File
+					RelativePath=".\MusicNote.cpp">
+				</File>
+				<File
 					RelativePath=".\N163.cpp">
+				</File>
+				<File
+					RelativePath=".\nsd_work.cpp">
 				</File>
 				<File
 					RelativePath=".\Patch.cpp">
@@ -218,6 +225,9 @@
 						RelativePath=".\mml_Address.cpp">
 					</File>
 					<File
+						RelativePath=".\mml_CallSub.cpp">
+					</File>
+					<File
 						RelativePath=".\mml_general.cpp">
 					</File>
 					<File
@@ -231,6 +241,58 @@
 					</File>
 					<File
 						RelativePath=".\MusicEvent.cpp">
+					</File>
+				</Filter>
+				<Filter
+					Name="Meta"
+					Filter="">
+					<File
+						RelativePath=".\Meta_auth.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_BANK.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_DATA.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_fade.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_INFO.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_mixe.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_NEND.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_NSF2.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_plst.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_psfx.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_taut.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_text.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_time.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_tlbl.cpp">
+					</File>
+					<File
+						RelativePath=".\Meta_VRC7.cpp">
+					</File>
+					<File
+						RelativePath=".\MetaItem.cpp">
 					</File>
 				</Filter>
 			</Filter>
@@ -281,7 +343,58 @@
 				RelativePath=".\FileOutput.h">
 			</File>
 			<File
+				RelativePath=".\Meta_auth.h">
+			</File>
+			<File
+				RelativePath=".\Meta_BANK.h">
+			</File>
+			<File
+				RelativePath=".\Meta_DATA.h">
+			</File>
+			<File
+				RelativePath=".\Meta_fade.h">
+			</File>
+			<File
+				RelativePath=".\Meta_INFO.h">
+			</File>
+			<File
+				RelativePath=".\Meta_mixe.h">
+			</File>
+			<File
+				RelativePath=".\Meta_NEND.h">
+			</File>
+			<File
+				RelativePath=".\Meta_NSF2.h">
+			</File>
+			<File
+				RelativePath=".\Meta_plst.h">
+			</File>
+			<File
+				RelativePath=".\Meta_psfx.h">
+			</File>
+			<File
+				RelativePath=".\Meta_taut.h">
+			</File>
+			<File
+				RelativePath=".\Meta_text.h">
+			</File>
+			<File
+				RelativePath=".\Meta_time.h">
+			</File>
+			<File
+				RelativePath=".\Meta_tlbl.h">
+			</File>
+			<File
+				RelativePath=".\Meta_VRC7.h">
+			</File>
+			<File
+				RelativePath=".\MetaItem.h">
+			</File>
+			<File
 				RelativePath=".\mml_Address.h">
+			</File>
+			<File
+				RelativePath=".\mml_CallSub.h">
 			</File>
 			<File
 				RelativePath=".\mml_general.h">
@@ -311,10 +424,19 @@
 				RelativePath=".\MusicItem.h">
 			</File>
 			<File
+				RelativePath=".\MusicNote.h">
+			</File>
+			<File
 				RelativePath=".\MusicTrack.h">
 			</File>
 			<File
 				RelativePath=".\N163.h">
+			</File>
+			<File
+				RelativePath=".\nsd_work.h">
+			</File>
+			<File
+				RelativePath=".\NSF_Header.h">
 			</File>
 			<File
 				RelativePath=".\Option.h">
