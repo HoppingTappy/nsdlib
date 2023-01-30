@@ -8,7 +8,7 @@ cd..
 
 rem --- nsc64.exe ---
 cd nsc64\
-call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars64.bat"
+call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
 MSBuild -t:Clean -p:Configuration=Release;Platform="x64"
 cd..
 SET PATH=%PATH_BACK%

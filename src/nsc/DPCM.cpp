@@ -26,40 +26,46 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 //					無し
 //==============================================================
 DPCM::DPCM(MMLfile* MML, const char* dmcfile, size_t _id, const _CHAR _strName[]):
-	MusicItem(_id, _strName)
+	MusicItem(_id, _strName),
+	_DPCM_size(0)
 {
-	//----------------------
-	//Local変数
-	size_t	_size;
-	size_t	i = 0;
-
 	fileopen(dmcfile, &cOptionSW->m_pass_dmc);
-	_size = GetSize();
-	if(_size > 4081){
-		MML->Err(_T("⊿PCMは4081Byte以下にしてください。"));
-	}
 
-	if((_size & 0x000F) != 0x01){
-		iSize = (_size & 0x0FF0) + 0x0011;
+	if(f_error == true){
+		string	errMsg = "\"";
+		errMsg += dmcfile;
+		errMsg += "\" :";
+		errMsg += strerror(errno);
+		MML->Err(errMsg);
 	} else {
-		iSize = _size;
-	}
-	_DPCM_size = (char)(iSize >> 4);
+		//----------------------
+		//Local変数
+		std::streamsize	_size	= GetSize();
 
-	code.resize(iSize);
+		if(_size > 0x0FF1){
+			MML->Warning(_T("⊿PCMのファイルサイズが大きすぎます。4081Byteにカットします。"));
+			iSize = 0x0FF1;
+			_size = 0x0FF1;
+		} else {
+			if((_size & 0x000F) != 0x01){
+				iSize = (_size & 0x0FF0) + 0x0011;
+			} else {
+				iSize = _size;
+			}
+		}
+		_DPCM_size = (unsigned char)(iSize >> 4);
 
-	//⊿PCM実体を転送
-	while(i < _size){
-		code[i] = cRead();
-		i++;
-	}
-	//Padding
-	while(i < iSize){
-		code[i] = (unsigned char)0xAA;
-		i++;
-	}
+		code.resize(iSize);
 
-	close();
+		//⊿PCM実体を転送
+		read((char*)code.c_str(), _size);
+
+		//Padding
+		for(size_t i = _size; i<iSize; i++){
+			code[i] = (unsigned char)0xAA;
+		}
+		close();
+	}
 }
 
 //==============================================================
@@ -73,6 +79,7 @@ DPCM::DPCM(MMLfile* MML, const char* dmcfile, size_t _id, const _CHAR _strName[]
 DPCM::~DPCM(void)
 {
 }
+
 //==============================================================
 //		コードの取得
 //--------------------------------------------------------------

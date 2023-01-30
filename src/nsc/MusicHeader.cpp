@@ -24,7 +24,7 @@ extern	OPSW*			cOptionSW;	//オプション情報へのポインタ変数
 //	●返値
 //				無し
 //==============================================================
-MusicHeader::MusicHeader(string _code) :
+MusicHeader::MusicHeader(string& _code) :
 	MetaItem("NSFE"),
 	bank(false),
 	op_code(false),
@@ -81,25 +81,29 @@ MusicHeader::~MusicHeader(void)
 //--------------------------------------------------------------
 void	MusicHeader::Set_Title(MMLfile* MML)
 {
-	title = MML->GetString(true);
+	title.clear();
+	MML->GetString(&title, true);
 }
 
 //--------------------------------------------------------------
 void	MusicHeader::Set_Copyright(MMLfile* MML)
 {
-	copyright = MML->GetString(true);
+	copyright.clear();
+	MML->GetString(&copyright, true);
 }
 
 //--------------------------------------------------------------
 void	MusicHeader::Set_Composer(MMLfile* MML)
 {
-	composer = MML->GetString(true);
+	composer.clear();
+	MML->GetString(&composer, true);
 }
 
 //--------------------------------------------------------------
 void	MusicHeader::Set_Maker(MMLfile* MML)
 {
-	maker = MML->GetString(true);
+	maker.clear();
+	MML->GetString(&maker, true);
 }
 
 //--------------------------------------------------------------
@@ -109,7 +113,7 @@ void	MusicHeader::Text_Append(MMLfile* MML)
 		text.push_back(0x0D);
 		text.push_back(0x0A);
 	}
-	text.append(MML->GetString(true));
+	MML->GetString(&text, true);
 }
 
 
@@ -206,7 +210,7 @@ void	MusicHeader::Set_plst(MMLfile* MML)
 	};
 
 				size_t	i;
-	unsigned	char	cData;
+				char	cData;
 
 	//------------------------------
 	//コンパイル
@@ -218,20 +222,11 @@ void	MusicHeader::Set_plst(MMLfile* MML)
 	setItem(meta_plst);
 
 	// { の検索
-	while(MML->cRead() != '{'){
-		if(MML->eof()){
-			MML->Err(_T("ブロックの開始を示す{が見つかりません。"));
-		}
-	}
+	MML->ChkBlockStart();
 
 	// } が来るまで、記述ブロック内をコンパイルする。
-	while((cData = MML->GetChar()) != '}'){
-		
-		// } が来る前に、[EOF]が来たらエラー
-		if( MML->eof() ){
-			MML->Err(_T("ブロックの終端を示す`}'がありません。"));
-		}
-
+	while(MML->GetChar_With_ChkEOF(&cData)){
+	
 		//１つ戻る
 		MML->Back();
 
@@ -249,7 +244,7 @@ void	MusicHeader::Set_plst(MMLfile* MML)
 				break;
 			//unknown command
 			default:
-				MML->Err(_T("unknown command"));
+				MML->ErrUnknownCmd();
 				break;
 		}
 	}
@@ -282,7 +277,7 @@ void	MusicHeader::Set_psfx(MMLfile* MML)
 	};
 
 				size_t	i;
-	unsigned	char	cData;
+				char	cData;
 
 	//------------------------------
 	//コンパイル
@@ -294,19 +289,10 @@ void	MusicHeader::Set_psfx(MMLfile* MML)
 	setItem(meta_psfx);
 
 	// { の検索
-	while(MML->cRead() != '{'){
-		if(MML->eof()){
-			MML->Err(_T("ブロックの開始を示す{が見つかりません。"));
-		}
-	}
+	MML->ChkBlockStart();
 
 	// } が来るまで、記述ブロック内をコンパイルする。
-	while((cData = MML->GetChar()) != '}'){
-		
-		// } が来る前に、[EOF]が来たらエラー
-		if( MML->eof() ){
-			MML->Err(_T("ブロックの終端を示す`}'がありません。"));
-		}
+	while(MML->GetChar_With_ChkEOF(&cData)){
 
 		//１つ戻る
 		MML->Back();
@@ -325,7 +311,7 @@ void	MusicHeader::Set_psfx(MMLfile* MML)
 				break;
 			//unknown command
 			default:
-				MML->Err(_T("unknown command"));
+				MML->ErrUnknownCmd();
 				break;
 		}
 	}
@@ -439,7 +425,7 @@ const	static	Command_Info	Command[] = {
 	};
 
 				int		i;
-	unsigned	char	cData;
+				char	cData;
 	unsigned	char	id = 0;
 
 	//------------------------------
@@ -453,19 +439,10 @@ const	static	Command_Info	Command[] = {
 	}
 
 	// { の検索
-	while(MML->cRead() != '{'){
-		if(MML->eof()){
-			MML->Err(_T("ブロックの開始を示す{が見つかりません。"));
-		}
-	}
+	MML->ChkBlockStart();
 
 	// } が来るまで、記述ブロック内をコンパイルする。
-	while((cData = MML->GetChar()) != '}'){
-		
-		// } が来る前に、[EOF]が来たらエラー
-		if( MML->eof() ){
-			MML->Err(_T("ブロックの終端を示す`}'がありません。"));
-		}
+	while(MML->GetChar_With_ChkEOF(&cData)){
 
 		//１つ戻る
 		MML->Back();
@@ -505,7 +482,7 @@ const	static	Command_Info	Command[] = {
 				break;
 			//unknown command
 			default:
-				MML->Err(_T("unknown command"));
+				MML->ErrUnknownCmd();
 				break;
 		}
 	}
@@ -514,19 +491,22 @@ const	static	Command_Info	Command[] = {
 //==============================================================
 void	MusicHeader::Set_SegmentSEQ(MMLfile* MML)
 {
-	segmentSEQ = MML->GetString(false);
+	segmentSEQ.clear();
+	MML->GetString(&segmentSEQ, false);
 }
 
 //==============================================================
 void	MusicHeader::Set_SegmentPCM(MMLfile* MML)
 {
-	segmentPCM = MML->GetString(false);
+	segmentPCM.clear();
+	MML->GetString(&segmentPCM, false);
 }
 
 //==============================================================
 void	MusicHeader::Set_Label(MMLfile* MML)
 {
-	Label = MML->GetString(false);
+	Label.clear();
+	MML->GetString(&Label, false);
 }
 
 //==============================================================
@@ -552,10 +532,12 @@ void	MusicHeader::Set_OffsetPCM(MMLfile* MML)
 void	MusicHeader::Set_RomCode(MMLfile* MML)
 {
 	if(op_code == true){
+		string	_str = "";
 		MML->Warning(_T("オプションスイッチでリンクするコードが指定されているので、#codeコマンドは無視します。"));
-		MML->GetString(false);
+		MML->GetString(&_str, false);
 	} else {
-		romcode = MML->GetString(false);
+		romcode.clear();
+		MML->GetString(&romcode, false);
 	}
 }
 

@@ -3,9 +3,12 @@ import argparse
 import re
 
 
-def tableTxtGen(freqA,freqType,outPath):
+def tableTxtGen(freqA,freqType,outPath,isPal=False):
 
 	clock = 1789773
+
+	if isPal:
+		clock = 1662607
 
 	freqC = 1.189206818181 * freqA
 
@@ -68,41 +71,32 @@ def freqCalc(baseFreq,div,offset):
 	return baseFreq * (2 ** (offset/div))
 
 def main():
-	# パーサーを作る
-	parser =	argparse.ArgumentParser(
-				prog=__file__, # プログラム名
-				usage="%(prog)s [options]", # プログラムの利用方法
-#				formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-#				description='description', # 引数のヘルプの前に表示
-#				epilog='end', # 引数のヘルプの後で表示
-				add_help=True, # -h/–help オプションの追加
-				)
-
-	# 引数の追加
-	parser.add_argument(	'-o', '--outFile', #help='output file name',
-							required=True)
-
-	parser.add_argument(	'-f', '--freq', #help='output file name',
-							required=True, type=float)
-
-
-	# 引数を解析する
+	parser = argparse.ArgumentParser()
+	parser.add_argument(	"-o", "--outDir", required=True)
+	parser.add_argument(	"-f", "--freq", required=True, type=float)
 	args = parser.parse_args()
 
-	outDir = Path(args.outFile)
+	outDir = Path(args.outDir)
 
 	freqA = args.freq
 
-	dictOfFileName = {	"apu":"freqTableApu.inc",
-						"fds":"freqTableFds.inc",
-						"vrc6":"freqTableVrc6.inc",
-						"vrc7":"freqTableVrc7.inc",
-						"n163":"freqTableN163.inc",
-	}
+	dataList = [
+		["apu",  "freqTableApu.inc",  False],
+		["fds",  "freqTableFds.inc",  False],
+		["vrc6", "freqTableVrc6.inc", False],
+		["vrc7", "freqTableVrc7.inc", False],
+		["n163", "freqTableN163.inc", False],
+		["apu",  "freqTablePalApu.inc",  True],
+#		["fds",  "freqTablePalFds.inc",  True],
+#		["vrc6", "freqTablePalVrc6.inc", True],
+#		["vrc7", "freqTablePalVrc7.inc", True],
+#		["n163", "freqTablePalN163.inc", True],
+	]
 
 
-	for i in dictOfFileName.items():
-		tableTxtGen(freqA,i[0],outDir / Path(i[1]))
+	for data in dataList:
+		tableTxtGen(freqA,data[0],outDir / Path(data[1]), data[2])
+		tableTxtGen(freqA,data[0],outDir / Path(data[1]), data[2])
 
 	return
 

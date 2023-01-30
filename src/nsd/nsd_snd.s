@@ -2596,8 +2596,13 @@ Exit:
 ;---------------------------------------
 ;APU, MMC5, VRC6, FME7 Frequency table
 Freq:
+.ifdef	PAL
 ;	.incbin	"freqTableApu.bin"
+	.include	"freqTablePalApu.inc"
+.else
 	.include	"freqTableApu.inc"
+.endif
+
 ;---------------------------------------
 ;FDS Frequency table
 .ifdef	FDS
@@ -2860,10 +2865,12 @@ Exit:
 
 Exit:
 	rts
+.ifdef	FO_MOD
 fadeOutZero:
 	lda	#$80
 	sta	APU_TRICTRL1
 	rts
+.endif
 .endproc
 
 ;---------------------------------------

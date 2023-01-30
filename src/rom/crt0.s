@@ -106,14 +106,14 @@ _play:	.byte	0
 .segment	"DRVINFO"
 DRV_Name:	.byte	$4E, $53, $44, $4C, $20, $20
 DRV_Version:	.byte	1
-		.byte	30
+		.byte	31
 ;		.byte	0,0,0,0,0,0,0,0		;TNS-HFCóp GAP
 
 .ifdef	DPCMBank
 .segment	"STARTUP"
 DRV_Name2:	.byte	$4E, $53, $44, $4C, $20, $20
 DRV_Version2:	.byte	1
-		.byte	30
+		.byte	31
 .endif
 
 ; ------------------------------------------------------------------------
@@ -178,6 +178,12 @@ DRV_Version2:	.byte	1
 	sta	$0104
 	lda	$FFFD
 	sta	$0105
+
+	;NSF2ópÇÃê›íË
+	lda	#<_irq_main
+	sta	$FFFE
+	lda	#>_irq_main
+	sta	$FFFF
 
 	;Bank change (CODE)
 	lda	#$00

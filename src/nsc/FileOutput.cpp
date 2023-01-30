@@ -18,7 +18,8 @@
 //	●返値
 //				無し
 //==============================================================
-FileOutput::FileOutput(void)
+FileOutput::FileOutput(void):
+	f_error(false)
 {
 //#ifdef	_WIN32
 	imbue( std::locale::classic() );
@@ -45,22 +46,20 @@ void	FileOutput::fileopen(const char*	strFileName){
 	//File open
 	open(strFileName,ios_base::out | ios_base::binary);
 	if(good()==false){
-		perror(strFileName);
-		nsc_exit(EXIT_FAILURE);
-	};
+		f_error	= true;
+	}
 };
 
 //--------------------------------
 //相対シーク
 //--------------------------------
-void	FileOutput::StreamPointerAdd(std::streamoff iSize){
+void	FileOutput::StreamPointerAdd(fstream::off_type iSize){
 	seekp(iSize,ios::cur);
 };
 
 //--------------------------------
 //絶対シーク
 //--------------------------------
-void	FileOutput::StreamPointerMove(std::streamoff iSize){
-	seekp(iSize,ios::beg);
+void	FileOutput::StreamPointerMove(fstream::pos_type iSize){
+	seekp(iSize);
 };
-

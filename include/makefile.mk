@@ -50,7 +50,7 @@ LDFLAGS = -C $(CFG_FILE) -L$(LIB_PASS) -v -m $(MAP_FILE) -vm --dbgfile $(DBG_FIL
 
 #---------------
 #;  File delete
-RM      = del
+RM      = rm -f
 
 #---------------
 #;  File copy
