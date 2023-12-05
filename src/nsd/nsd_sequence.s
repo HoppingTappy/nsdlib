@@ -1952,7 +1952,7 @@ nsd_op2F_04:
 .endif
 
 ;=======================================================================
-;		opcode	0x2F 04:	Auto Groove
+;		opcode	0x2F 05:	Envelope Key Sync Off
 ;-----------------------------------------------------------------------
 nsd_op2F_05:
 .ifdef	ENVELOPE_MODE
@@ -1962,17 +1962,19 @@ nsd_op2F_05:
 .endif
 
 nsd_op2F_06:
+.ifdef	ENVELOPE_MODE
 	jsr	nsd_load_sequence
 	ora	__env_flag,x
 	sta	__env_flag,x
 	jmp	Sequence
-
+.endif
 nsd_op2F_07:
+.ifdef	ENVELOPE_MODE
 	jsr	nsd_load_sequence
 	and	__env_flag,x
 	sta	__env_flag,x
 	jmp	Sequence
-
+.endif
 nsd_op2F_08:
 .ifdef FDS_SYNC
 
