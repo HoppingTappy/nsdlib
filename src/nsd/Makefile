@@ -90,7 +90,7 @@ PROJ_LIST =	$(PROJ).lib		\
 #;	Define option
 #---------------------------------------
 
-AMOD  = -D AUTO_GROOVE -D ENV_NOTE_ABS -D ENVELOPE_MODE -D FDS_SYNC -D SEND_SIGNAL
+AMOD  = -D AUTO_GROOVE -D ENV_NOTE_ABS -D ENVELOPE_MODE -D FDS_SYNC -D SEND_SIGNAL -D DPCM_PITCH
 APAL  = -D PAL $(AMOD)
 ASE   = -D SE $(AMOD)
 AFDS  = -D FDS $(AMOD)

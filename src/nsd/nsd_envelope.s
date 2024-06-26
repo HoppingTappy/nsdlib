@@ -170,7 +170,10 @@ Frequency:
 @NOENV:
 	lda	__note,x
 @Note_Exit:
-
+.ifdef	DPCM_PITCH
+	cpx	#nsd::TR_BGM5
+	jeq	DPCM_Note
+.endif
 	;-------------------------------
 	; __tmp = (__note,x + __trans,x) << 4;
 	sta	__tmp + 1
@@ -293,7 +296,15 @@ Detune:
 	sta	__tmp
 	tya
 	adc	__tmp + 1		;__tmp += (signed int)__detune_cent
-
+.ifdef	DPCM_PITCH
+	cpx	#nsd::TR_BGM5
+	jne	@Skip
+	lda	__frequency + 1,x	; ノートナンバーだけが変化しているかどうかを調べるために __tmp + 1 に前回の frequency + 1 を入れる
+	sta	__tmp + 1
+	pla				; ノートナンバーをプル
+					; この後 a = Em + detune, x = note number
+@Skip:
+.endif
 	;-----------------------
 	;Setting device (APU)
 	tax				;
@@ -301,7 +312,10 @@ Detune:
 	jsr	_nsd_snd_frequency	;nsd_snd_frequency(ax);
 	ldx	__channel		;チャンネルの復帰（※必要）
 
-
+.ifdef DPCM_PITCH
+	cpx	#nsd::TR_BGM5
+	beq	Exit
+.endif
 
 ;	----------------------------------------
 ;	mode	env	voi	vol
@@ -351,9 +365,14 @@ Mode1:	;-----------------------
 	jmp	_nsd_snd_volume
 
 Exit:	rts
-
-
-
+.ifdef DPCM_PITCH
+DPCM_Note:
+	pha				; ノートナンバーをプッシュ
+	lda	#0
+	sta	__tmp
+	sta	__tmp + 1
+	jmp	F_Env
+.endif
 	;-----------------------
 	;Envelope mode	(Mode2&3)
 V_Envelope:

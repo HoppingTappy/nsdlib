@@ -179,11 +179,16 @@
 ;	y
 ;=======================================================================
 .proc	_nsd_dpcm_calc
-
+.ifdef DPCM_PITCH
+	pha
+.endif
 	lda	#0
 	sta	__tmp + 1
+.ifdef DPCM_PITCH
+	pla
+.else
 	lda	__note,x
-
+.endif
 	asl	a
 	rol	__tmp + 1
 
@@ -423,7 +428,10 @@ Exit:
 
 	lda	#$0F
 	sta	APU_CHANCTRL
-
+.ifdef DPCM_PITCH
+	lda	__note,x
+	add	__trans,x
+.endif
 	jsr	_nsd_dpcm_calc
 
 .ifdef	DPCMBank
@@ -437,8 +445,10 @@ Exit:
 	;Set the DPCM resister
 	;CTRL (note etc..)
 	ldy	#0
+.ifndef DPCM_PITCH
 	lda	(__ptr),y
 	sta	APU_MODCTRL
+.endif
 
 	;volume
 	iny
@@ -446,6 +456,7 @@ Exit:
 	bmi	@L			;if 0x80 >= a then skip
 	sta	APU_MODDA
 @L:
+;.ifndef DPCM_PITCH
 	;address
 	iny
 	lda	(__ptr),y
@@ -455,7 +466,7 @@ Exit:
 	iny
 	lda	(__ptr),y
 	sta	APU_MODLEN
-
+;.endif
 	lda	#$1F
 	sta	APU_CHANCTRL
 @E:
@@ -2642,7 +2653,11 @@ JMPTBL:	.addr	_nsd_apu_ch1_frequency		;BGM ch1 Pulse
 	.addr	_nsd_apu_ch2_frequency		;BGM ch2 Pulse
 	.addr	_nsd_apu_ch3_frequency		;BGM ch3 Triangle
 	.addr	_nsd_apu_ch4_frequency		;BGM ch4 Noise
+.ifdef	DPCM_PITCH
+	.addr	_nsd_apu_ch5_frequency		;BGM ch5 DPCM
+.else
 	.addr	Exit				;BGM ch5 DPCM
+.endif
 .ifdef	FDS
 	.addr	_nsd_fds_frequency
 .endif
@@ -2953,7 +2968,83 @@ Exit:
 Exit:
 	rts
 .endproc
+.ifdef DPCM_PITCH
+;---------------------------------------
+.proc	_nsd_apu_ch5_frequency
+.ifdef	SE
+	;-------------------------------
+	;SE check
+	ldy	__Sequence_ptr + nsd::TR_SE_Dpcm + 1
+	bne	Exit
+.endif
+	txa
+	ldx	__channel
+	cmp	__tmp + 1
+	beq	skipGetDpcmInfo
+	sta	__tmp + 1
 
+	lda	__chflag,x
+	and	#nsd_chflag::KeyOff
+	cmp	#nsd_chflag::KeyOff
+	bne	Exit
+	lda	__tmp + 1
+
+	jsr	_nsd_dpcm_calc
+
+.ifdef	DPCMBank
+	jsr	_nsd_ptr_bank
+	;bank number
+	ldy	#4
+	lda	(__ptr),y
+	jsr	_nsd_bank_change
+.endif
+
+	lda	#$0F
+	sta	APU_CHANCTRL
+
+	;Set the DPCM resister
+	;length
+	ldy	#3
+	lda	(__ptr),y
+	sta	APU_MODLEN
+
+	;address
+	dey
+	lda	(__ptr),y
+	sta	APU_MODADDR
+
+	dey
+	dey
+
+	;CTRL (note etc..)
+;	ldy	#0
+	lda	(__ptr),y
+	sta	__dpcm_freq
+writeCtrl:
+	and	#$f0
+	sta	__tmp + 1
+	lda	(__ptr),y
+	add	__tmp
+	and	#$0f
+	ora	__tmp + 1
+	sta	APU_MODCTRL
+
+	lda	#$1F
+	sta	APU_CHANCTRL
+
+Exit:
+	rts
+skipGetDpcmInfo:
+	lda	__chflag,x
+	and	#nsd_chflag::KeyOff
+	cmp	#nsd_chflag::KeyOff
+	bne	Exit
+
+	lda	__dpcm_freq
+	ldy	#0
+	jmp	writeCtrl
+.endproc
+.endif
 ;---------------------------------------
 .ifdef	FDS
 .proc	_nsd_fds_frequency

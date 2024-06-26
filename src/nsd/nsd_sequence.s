@@ -74,10 +74,12 @@
 	ora	#nsd_chflag::KeyOff
 	sta	__chflag,x
 
+.ifndef DPCM_PITCH
 	;-----------------------
 	;以降は、⊿PCMでは不要
 	cpx	#nsd::TR_BGM5
 	beq	exit
+.endif
 
 	;周波数設定を必ず呼ぶように。
 	lda	#$FF
@@ -101,6 +103,12 @@
 .endif
 	sta	__env_note_ptr,x
 @SkipNote:
+
+.ifdef DPCM_PITCH
+	cpx	#nsd::TR_BGM5		;-----------------------
+	beq	exit			;以降は、DPCM では不要
+.endif
+
 .ifdef	ENVELOPE_MODE
 	lsr	__tmp
 	bcs	@SkipVolume
@@ -172,12 +180,12 @@ exit:
 
 	;Hardware key off
 	jsr	_nsd_snd_keyoff
-
+.ifndef DPCM_PITCH
 	;-----------------------
 	;以降は、⊿PCMでは不要
 	cpx	#nsd::TR_BGM5
 	jeq	exit
-
+.endif
 	;---------------
 	;Portamento
 	lda	#$00
@@ -240,7 +248,12 @@ Freq_End:
 	and	#$0F
 	sta	__Envelop_F,x
 Note_End:
-
+.ifdef DPCM_PITCH
+	;-----------------------
+	;以降は、⊿PCMでは不要
+	cpx	#nsd::TR_BGM5
+	jeq	exit
+.endif
 	;---------------
 	;Volume Envelop keyoff
 .ifdef	ENVELOPE_MODE
@@ -1203,10 +1216,10 @@ nsd_op11:
 ;-----------------------------------------------------------------------
 nsd_op12:
 	jsr	nsd_load_ptr
-
+.ifndef DPCM_PITCH
 	cpx	#nsd::TR_BGM5
 	beq	@Exit
-
+.endif
 ;	lda	__tmp + 1
 	ora	__tmp
 .ifdef	DPCMBank
@@ -1232,10 +1245,10 @@ nsd_op12:
 ;-----------------------------------------------------------------------
 nsd_op13:
 	jsr	nsd_load_ptr
-
+.ifndef DPCM_PITCH
 	cpx	#nsd::TR_BGM5
 	beq	@Exit
-
+.endif
 ;	lda	__tmp + 1
 	ora	__tmp
 .ifdef	DPCMBank

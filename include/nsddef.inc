@@ -21,6 +21,7 @@
 	.ifdef FDS
 		FDS_SYNC		= 0
 	.endif
+	DPCM_PITCH		= 0
 ;	Sequence_ptr_bss = 1
 .endif
 .if	.defined(MMC3_BANK) .or .defined(VRC6_BANK) .or .defined(N163_BANK)
@@ -333,6 +334,10 @@ PSG_Envelope_Form	= $0D
 .endif
 .ifndef	DIET_ZP
 	Envelop		.tag	NSD_Envelop	nsd::Track	;26 Envelop counter
+.ifdef DPCM_PITCH
+	Tempo		.byte
+	TempoCtr	.byte
+.endif
 .endif
 
 .Endstruct
@@ -377,8 +382,13 @@ PSG_Envelope_Form	= $0D
 		__Envelop_V	=	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V	;upper 4bit Voice / lower 4bit:Volume
 		__Envelop_F	=	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::F	;upper 4bit:Note  / lower 4bit:Frequency
 ;		__flag	=		nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM3
+.ifdef DPCM_PITCH
+		__Tempo	=		nsd_work_zp + NSD_work_zp::Tempo
+		__Tempo_ctr	=	nsd_work_zp + NSD_work_zp::TempoCtr
+.else
 		__Tempo	=		nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::F + nsd::TR_BGM5
 		__Tempo_ctr	=	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM5
+.endif
 .endif
 
 
@@ -502,6 +512,14 @@ PSG_Envelope_Form	= $0D
 .endif
 .ifdef	DIET_ZP
 	Envelop		.tag	NSD_Envelop	nsd::Track	;26 Envelop counter
+.ifdef DPCM_PITCH
+	Tempo		.byte
+	TempoCtr	.byte
+.endif
+.endif
+.ifdef DPCM_PITCH
+	VoiceSet	.byte			8
+	ApuFreq		.byte			6
 .endif
 	Length		.tag	NSD_length	nsd::Track	;note length [tick]
 	Gatetime	.tag	NSD_gatetime	nsd::Track	;gate time [tick]
@@ -563,6 +581,12 @@ PSG_Envelope_Form	= $0D
 .ifdef	MMC5
 	MMC5_VoiceSet	.byte			nsd::MMC5_Track
 	MMC5_Frequency	.byte			nsd::MMC5_Track	;MMC5 frequecny
+.endif
+
+.ifdef DPCM_PITCH
+.ifdef	VRC6
+	VRC6_VoiceSet	.byte			nsd::VRC6_Track-1
+.endif
 .endif
 
 .ifdef	VRC7
@@ -670,8 +694,13 @@ PSG_Envelope_Form	= $0D
 		__Envelop_V		=	nsd_work + NSD_work::Envelop + NSD_Envelop::V	;upper 4bit Voice / lower 4bit:Volume
 		__Envelop_F		=	nsd_work + NSD_work::Envelop + NSD_Envelop::F	;upper 4bit:Note  / lower 4bit:Frequency
 ;		__flag			=	nsd_work_zp + NSD_work_zp::Envelop + NSD_Envelop::V + nsd::TR_BGM3
+.ifdef DPCM_PITCH
+		__Tempo			=	nsd_work + NSD_work::Tempo
+		__Tempo_ctr		=	nsd_work + NSD_work::TempoCtr
+.else
 		__Tempo			=	nsd_work + NSD_work::Envelop + NSD_Envelop::F + nsd::TR_BGM5
 		__Tempo_ctr		=	nsd_work + NSD_work::Envelop + NSD_Envelop::V + nsd::TR_BGM5
+.endif
 .endif
 		__chflag		=	nsd_work + NSD_work::Flag + NSD_Flag::flag
 		__gatemode		=	nsd_work + NSD_work::Flag + NSD_Flag::gatemode
@@ -719,7 +748,9 @@ PSG_Envelope_Form	= $0D
 ;---------------
 ;áôPCM
 		__dpcm_info		=	nsd_work + NSD_work::Env_V_Ptr + nsd::TR_BGM5		;.word
-
+.ifdef DPCM_PITCH
+		__dpcm_freq		=	nsd_work + NSD_work::Envelop_Volume + nsd::TR_BGM5
+.endif
 ;Sweep
 		__sweep_ch1		=	nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM3
 		__sweep_ch2		=	nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM3 + 1
@@ -732,11 +763,28 @@ PSG_Envelope_Form	= $0D
 ;		__apu_voice_set4	=	nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM5 + 1
 ;		__se_voice_set1	=		nsd_work + NSD_work::Env_F_Ptr + NSD_Env_F_Ptr::Frequency  + nsd::TR_BGM5
 ;		__se_voice_set2	=		nsd_work + NSD_work::Env_F_Ptr + NSD_Env_F_Ptr::Note       + nsd::TR_BGM5
+.ifdef DPCM_PITCH
+		__apu_voice_set1	=	nsd_work + NSD_work::VoiceSet + 0
+		__apu_voice_set2	=	nsd_work + NSD_work::VoiceSet + 1
+		__apu_tri_time		=	nsd_work + NSD_work::VoiceSet + 2
+		__apu_voice_set4	=	nsd_work + NSD_work::VoiceSet + 3
+.else
 		__apu_voice_set1	=	nsd_work + NSD_work::Envelop_Volume + nsd::TR_BGM5
 		__apu_voice_set2	=	nsd_work + NSD_work::Envelop_Volume + nsd::TR_BGM5 + 1
 		__apu_tri_time		=	nsd_work + NSD_work::Envelop_Freq   + nsd::TR_BGM5
 		__apu_voice_set4	=	nsd_work + NSD_work::Envelop_Freq   + nsd::TR_BGM5 + 1
+.endif
 
+.ifdef DPCM_PITCH
+.ifdef	SE
+		__se_voice_set1		=	nsd_work + NSD_work::VoiceSet + 4
+.endif
+		__se_voice_set2		=	nsd_work + NSD_work::VoiceSet + 5
+.ifdef	SE
+		__se_tri_time		=	nsd_work + NSD_work::VoiceSet + 6
+.endif
+		__se_voice_set4		=	nsd_work + NSD_work::VoiceSet + 7
+.else
 .ifdef	SE
 		__se_voice_set1		=	nsd_work + NSD_work::Frequency      + nsd::TR_BGM5
 .endif
@@ -745,8 +793,21 @@ PSG_Envelope_Form	= $0D
 		__se_tri_time		=	nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM5
 .endif
 		__se_voice_set4		=	nsd_work + NSD_work::Envelop_Voice  + nsd::TR_BGM5 + 1
+.endif
 
 ;Frequency	ÅiÉvÉ`ÉmÉCÉYñhé~Åj
+.ifdef DPCM_PITCH
+		__apu_frequency1	=	nsd_work + NSD_work::ApuFreq + 0		;.byte
+		__apu_frequency2	=	nsd_work + NSD_work::ApuFreq + 1		;.byte
+		__apu_frequency3	=	nsd_work + NSD_work::ApuFreq + 2		;.byte
+.ifdef	SE
+		__se_frequency1		=	nsd_work + NSD_work::ApuFreq + 3		;.byte
+.endif
+		__se_frequency2		=	nsd_work + NSD_work::ApuFreq + 4		;.byte
+.ifdef	SE
+		__se_frequency3		=	nsd_work + NSD_work::ApuFreq + 5		;.byte
+.endif
+.else
 		__apu_frequency1	=	nsd_work + NSD_work::Por_Lv    + nsd::TR_BGM5		;.byte
 		__apu_frequency2	=	nsd_work + NSD_work::Por_Lv    + nsd::TR_BGM5 + 1	;.byte
 		__apu_frequency3	=	nsd_work + NSD_work::Por_Co    + nsd::TR_BGM5		;.byte
@@ -757,7 +818,7 @@ PSG_Envelope_Form	= $0D
 .ifdef	SE
 		__se_frequency3		=	nsd_work + NSD_work::Por_now   + nsd::TR_BGM5 + 1	;.byte
 .endif
-
+.endif
 .ifdef	FDS
 		__fds_frequency		=	nsd_work + NSD_work::FDS_Frequency
 		__fds_sweepbias		=	nsd_work + NSD_work::FDS_SweepBias
@@ -773,8 +834,13 @@ PSG_Envelope_Form	= $0D
 .endif
 
 .ifdef	VRC6
+.ifdef DPCM_PITCH
+		__vrc6_voice_set1	=	nsd_work + NSD_work::VRC6_VoiceSet		;.byte
+		__vrc6_voice_set2	=	nsd_work + NSD_work::VRC6_VoiceSet + 1		;.byte
+.else
 		__vrc6_voice_set1	=	nsd_work + NSD_work::Envelop_Note   + nsd::TR_BGM5	;.byte
 		__vrc6_voice_set2	=	nsd_work + NSD_work::Envelop_Note   + nsd::TR_BGM5 + 1	;.byte
+.endif
 .endif
 
 .ifdef	VRC7
@@ -948,11 +1014,16 @@ BGM_SEQ_Exit:
 	;-------
 	;Envelop
 	.repeat	nsd::BGM_Track, I
+.ifdef DPCM_PITCH
+	ldx	#I*2 + nsd::TR_BGM1
+	jsr	nsd_envelop
+.else
 	  ;No envelope: DPCM, NULL
 	  .if	(I <> 4) && (!(.defined(NULL) && (I = (nsd::TR_NULL / 2))))
 		ldx	#I*2 + nsd::TR_BGM1
 		jsr	nsd_envelop
 	  .endif
+.endif
 	.endrepeat
 
 .ifdef FO_MOD
