@@ -63,3 +63,9 @@ Copyright &copy; 2012, S.W. All rights reserved.
 [All] DSK       キーオン無効  
 [All] D_n       相対デチューン(cent)  
 [All] D%_n      相対デチューン(register)  
+
+## 追加機能
+
+コントローラ A+L テンポ-1  
+コントローラ A+R テンポ+1  
+コントローラ A+D テンポリセット  
