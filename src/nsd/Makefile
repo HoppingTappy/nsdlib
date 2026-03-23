@@ -34,7 +34,8 @@ FILES =		nsd_init.s		\
 		nsd_snd.s		\
 		nsd_math.s		\
 		nsd_work.s		\
-		nsd_irq.s		
+		nsd_irq.s		\
+		nsd_pad.s		
 
 OFILES =	$(FILES:.s=.o)
 
@@ -67,6 +68,7 @@ PROJ_ALL2 =	NSD_ALL2
 PROJ_OALL =	NSD_OALL
 PROJ_HFE4 =	NSD_HFE4
 PROJ_HFX4 =	NSD_HFX4
+PROJ_DPCM =	NSD_DPCM
 
 PROJ_LIST =	$(PROJ).lib		\
 		$(PROJ_PAL).lib		\
@@ -82,7 +84,8 @@ PROJ_LIST =	$(PROJ).lib		\
 		$(PROJ_ALL2).lib	\
 		$(PROJ_OALL).lib	\
 		$(PROJ_HFX4).lib	\
-		$(PROJ_HFE4).lib
+		$(PROJ_HFE4).lib	\
+		$(PROJ_DPCM).lib
 
 
 
@@ -91,6 +94,7 @@ PROJ_LIST =	$(PROJ).lib		\
 #---------------------------------------
 
 AMOD  = -D AUTO_GROOVE -D ENV_NOTE_ABS -D ENVELOPE_MODE -D FDS_SYNC -D SEND_SIGNAL -D DPCM_PITCH -D ENABLE_PAD
+
 APAL  = -D PAL $(AMOD)
 ASE   = -D SE $(AMOD)
 AFDS  = -D FDS $(AMOD)
@@ -106,6 +110,7 @@ AALL  =         -D VRC6         -D VRC7 -D MMC5 -D N163=8 -D PSG -D NULL -D DPCM
 AOALL =         -D VRC6 -D OPLL         -D MMC5 -D N163=8 -D PSG -D NULL -D DPCMBank $(AMOD)
 AALL2 = -D FDS  -D VRC6         -D VRC7 -D MMC5 -D N163=8 -D PSG -D NULL -D DPCMBank $(AMOD)
 AHFX4 = -D FDS  -D VRC6 -D OPLL -D VRC7 -D MMC5 -D N163=8 -D PSG -D NULL -D DPCMBank -D HFX4 $(AMOD)
+ADPCM =                                                          -D NULL -D DPCMBank $(AMOD)
 
 
 $(PROJ).lib :		ASFLAGS += $(AMOD)
@@ -123,6 +128,7 @@ $(PROJ_ALL2).lib :	ASFLAGS += $(AALL2)
 $(PROJ_OALL).lib :	ASFLAGS += $(AOALL)
 $(PROJ_HFX4).lib :	ASFLAGS += $(AHFX4)
 $(PROJ_HFE4).lib :	ASFLAGS += $(AHFE4)
+$(PROJ_DPCM).lib :	ASFLAGS += $(ADPCM)
 
 
 

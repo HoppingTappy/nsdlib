@@ -49,6 +49,7 @@ PROJ_ALL2 =	nsd_all2
 PROJ_OALL =	nsd_oall
 PROJ_HFE4 =	nsd_hfe4
 PROJ_HFX4 =	nsd_hfx4
+PROJ_DPCM =	nsd_dpcm
 
 PROJ_LIST =	$(PROJ).bin		\
 		$(PROJ_PAL).bin		\
@@ -64,7 +65,8 @@ PROJ_LIST =	$(PROJ).bin		\
 		$(PROJ_ALL2).bin	\
 		$(PROJ_OALL).bin	\
 		$(PROJ_HFX4).bin	\
-		$(PROJ_HFE4).bin
+		$(PROJ_HFE4).bin	\
+		$(PROJ_DPCM).bin
 
 
 
@@ -74,7 +76,7 @@ PROJ_LIST =	$(PROJ).bin		\
 
 #---------------
 #; アセンブラの設定
-AMOD  = -D AUTO_GROOVE -D ENV_NOTE_ABS -D ENVELOPE_MODE -D FDS_SYNC -D SEND_SIGNAL
+AMOD  = 
 
 APAL  = -D PAL $(AMOD)
 ASE   = -D SE $(AMOD)
@@ -91,6 +93,7 @@ AALL  =         -D VRC6         -D VRC7 -D MMC5 -D N163=8 -D PSG -D NULL -D DPCM
 AOALL =         -D VRC6 -D OPLL         -D MMC5 -D N163=8 -D PSG -D NULL -D DPCMBank $(AMOD)
 AALL2 = -D FDS  -D VRC6         -D VRC7 -D MMC5 -D N163=8 -D PSG -D NULL -D DPCMBank $(AMOD)
 AHFX4 = -D FDS  -D VRC6 -D OPLL -D VRC7 -D MMC5 -D N163=8 -D PSG -D NULL -D DPCMBank -D HFX4 $(AMOD)
+ADPCM =                                                          -D NULL -D DPCMBank $(AMOD)
 
 
 $(PROJ_PAL).bin :	ASFLAGS += $(APAL)
@@ -107,6 +110,7 @@ $(PROJ_ALL2).bin :	ASFLAGS += $(AALL2)
 $(PROJ_OALL).bin :	ASFLAGS += $(AOALL)
 $(PROJ_HFX4).bin :	ASFLAGS += $(AHFX4)
 $(PROJ_HFE4).bin :	ASFLAGS += $(AHFE4)
+$(PROJ_DPCM).bin :	ASFLAGS += $(ADPCM)
 
 $(PROJ).bin :		CFG_FILE = default.cfg
 $(PROJ_PAL).bin :	CFG_FILE = default.cfg
@@ -123,6 +127,7 @@ $(PROJ_ALL2).bin :	CFG_FILE = all.cfg
 $(PROJ_HFE4).bin :	CFG_FILE = all.cfg
 $(PROJ_OALL).bin :	CFG_FILE = opllall.cfg
 $(PROJ_HFX4).bin :	CFG_FILE = opllall.cfg
+$(PROJ_DPCM).bin :	CFG_FILE = all.cfg
 
 #---------------
 #; リンカーの設定

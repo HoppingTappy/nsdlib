@@ -19,6 +19,8 @@
 
 	.import		nsd_sequence
 	.import		nsd_envelop
+	.import		nsd_pad_routine
+	.import		nsd_pad_effect
 
 	.include	"nes.inc"
 	.include	"nsddef.inc"
