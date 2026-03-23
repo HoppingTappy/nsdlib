@@ -360,6 +360,7 @@ KEY_REPEAT_WAIT_SECOND	=	4
 	TempoAdd	.byte
 	Key1_Rpt	.byte
 	Key1_RptTimer	.byte
+	NoteAdd		.byte
 .endif
 .endif
 
@@ -422,6 +423,7 @@ KEY_REPEAT_WAIT_SECOND	=	4
 		__Tempo_add		=	nsd_work_zp + NSD_work_zp::TempoAdd
 		__key1_rpt		=	nsd_work_zp + NSD_work_zp::Key1_Rpt
 		__key1_rpt_timer	=	nsd_work_zp + NSD_work_zp::Key1_RptTimer
+		__note_add		=	nsd_work_zp + NSD_work_zp::NoteAdd
 .endif
 .endif
 
@@ -966,19 +968,6 @@ KEY_REPEAT_WAIT_SECOND	=	4
 CalcTempo:
 	lda	__Tempo
 	add	__Tempo_add
-;	bcs	@clamp
-;	bne	:+
-;@clamp:
-;	cmp	__Tempo
-;	bcc	@clampMax
-;@clampMin:
-;	inc	__Tempo_add
-;	lda	#$00
-;	beq	:+		; bra
-;@clampMax:
-;	dec	__Tempo_add
-;	lda	#$FF
-;:
 	add	__Tempo_ctr
 .else
 	lda	__Tempo_ctr
@@ -1174,32 +1163,69 @@ read_pad:
 	lda	__key1
 	and	#PAD_1_A
 	beq	@skipHoldA
-	lda	__key1_rpt
-	and	#PAD_1_R
-	beq	:+
-	lda	__Tempo
-	clc
-	adc	__Tempo_add
-	cmp	#$FF
-	bcs	:+
-	inc	__Tempo_add
-:
-	lda	__key1_rpt
-	and	#PAD_1_L
-	beq	:+
-	lda	__Tempo
-	clc
-	adc	__Tempo_add
-	beq	:+
-	dec	__Tempo_add
-:
-	lda	__key1_trg
-	and	#PAD_1_D
-	beq	:+
-	lda	#0
-	sta	__Tempo_add
-:
+		lda	__key1_rpt
+		and	#PAD_1_R
+		beq	:+
+		lda	__Tempo
+		clc
+		adc	__Tempo_add
+		cmp	#$FF
+		bcs	:+
+		inc	__Tempo_add
+	:
+		lda	__key1_rpt
+		and	#PAD_1_L
+		beq	:+
+		lda	__Tempo
+		clc
+		adc	__Tempo_add
+		beq	:+
+		dec	__Tempo_add
+	:
+		lda	__key1
+		and	#PAD_1_START
+		beq	:+
+		lda	#0
+		sta	__Tempo_add
+	:
+
 @skipHoldA:
+	lda	__key1
+	and	#PAD_1_B
+	beq	@skipHoldB
+		lda	__key1_rpt
+		and	#PAD_1_U
+		beq	:+
+		inc	__note_add
+	:
+		lda	__key1_rpt
+		and	#PAD_1_D
+		beq	:+
+		dec	__note_add
+	:
+		lda	__key1_rpt
+		and	#PAD_1_R
+		beq	:+
+		lda	__note_add
+		clc
+		adc	#12
+		sta	__note_add
+	:
+		lda	__key1_rpt
+		and	#PAD_1_L
+		beq	:+
+		lda	__note_add
+		sec
+		sbc	#12
+		sta	__note_add
+	:
+		lda	__key1
+		and	#PAD_1_START
+		beq	:+
+		lda	#0
+		sta	__note_add
+	:
+@skipHoldB:
 	rts
 .endproc
 

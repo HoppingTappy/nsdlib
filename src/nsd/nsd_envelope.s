@@ -166,9 +166,21 @@ Frequency:
 	bcc	@Sigh
 	ora	#$80
 @Sigh:	add	__note,x
+.ifdef ENABLE_PAD
+	cpx	#nsd::TR_BGM4
+	beq	:+
+	add	__note_add
+:
+.endif
 	jmp	@Note_Exit
 @NOENV:
 	lda	__note,x
+.ifdef ENABLE_PAD
+	cpx	#nsd::TR_BGM4
+	beq	:+
+	add	__note_add
+:
+.endif
 @Note_Exit:
 .ifdef	DPCM_PITCH
 	cpx	#nsd::TR_BGM5
