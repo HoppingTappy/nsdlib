@@ -19,6 +19,7 @@
 
 	.importzp	nsd_work_zp
 	.import		nsd_work
+	.import		_nsd_snd_keyoff
 
 	.include	"nes.inc"
 	.include	"nsddef.inc"
@@ -32,7 +33,23 @@
 	lda	__key2
 	sta	__key2_rec
 
+@retry:
 	jsr	read_pad
+
+	lda	__key1
+	sta	__tmp + 0
+	lda	__key2
+	sta	__tmp + 1
+
+	jsr	read_pad
+
+	lda	__key1
+	cmp	__tmp + 0
+	bne	@retry
+
+	lda	__key2
+	cmp	__tmp + 1
+	bne	@retry
 
 	; PAD1 trigger
 	lda	__key1
@@ -79,6 +96,8 @@
 	rts
 
 read_pad:
+	lda	#0
+	sta	__key1
 	lda	#1
 	sta	__key2
 	sta	APU_PAD1
@@ -99,7 +118,202 @@ read_pad:
 
 .endproc
 
+.proc muteClearAll
+	ldx	#nsd::BGM_Track * 2
+@loop:
+	lda	__chflag,x
+	and	#<~nsd_chflag::Mask
+	sta	__chflag,x
+	dex
+	dex
+	bpl	@loop
+	rts
+.endproc
+
+.proc solo
+	txa
+	sta	__tmp
+	ldx	#nsd::BGM_Track * 2
+@loop:
+	lda	__chflag,x
+	ora	#nsd_chflag::Mask
+	cpx	__tmp
+	bne	:+
+	and	#<~nsd_chflag::Mask
+:
+	sta	__chflag,x
+	dex
+	dex
+	bpl	@loop
+	rts
+.endproc
+
+.proc toggleMask
+		lda	__chflag,x
+		eor	#nsd_chflag::Mask
+		sta	__chflag,x
+		bpl	:+
+		jsr	_nsd_snd_keyoff
+:
+		rts
+.endproc
+
 .proc	nsd_pad_effect
+	lda	__key1
+	and	#PAD_1_SELECT
+	beq	@skipHoldSelect
+		lda	__key1_trg
+		and	#PAD_1_U
+		beq	:+
+		ldx	#nsd::TR_BGM1
+		jmp	solo
+	:
+		lda	__key1_trg
+		and	#PAD_1_R
+		beq	:+
+		ldx	#nsd::TR_BGM2
+		jmp	solo
+	:
+		lda	__key1_trg
+		and	#PAD_1_D
+		beq	:+
+		ldx	#nsd::TR_BGM3
+		jmp	solo
+	:
+		lda	__key1_trg
+		and	#PAD_1_L
+		beq	:+
+		ldx	#nsd::TR_BGM4
+		jmp	solo
+	:
+		lda	__key1_trg
+		and	#PAD_1_A
+		beq	:+
+		ldx	#nsd::TR_BGM5
+		jmp	solo
+	:
+.if (nsd::BGM_Track > 5)
+		lda	__key2_trg
+		and	#PAD_1_U
+		beq	:+
+		ldx	#10
+		jmp	solo
+	:
+		lda	__key2_trg
+		and	#PAD_1_R
+		beq	:+
+		ldx	#12
+		jmp	solo
+	:
+		lda	__key2_trg
+		and	#PAD_1_D
+		beq	:+
+		ldx	#14
+		jmp	solo
+	:
+		lda	__key2_trg
+		and	#PAD_1_L
+		beq	:+
+		ldx	#16
+		jmp	solo
+	:
+		lda	__key2_trg
+		and	#PAD_1_A
+		beq	:+
+		ldx	#18
+		jmp	solo
+	:
+		lda	__key2_trg
+		and	#PAD_1_B
+		beq	:+
+		ldx	#20
+		jmp	solo
+	:
+.endif
+		lda	__key1_trg
+		and	#PAD_1_START
+		beq	:+
+		jmp	muteClearAll
+	:
+@skipHoldSelect:
+	lda	__key1
+	and	#PAD_1_START
+	beq	@skipHoldStart
+		lda	__key1_trg
+		and	#PAD_1_U
+		beq	:+
+		ldx	#nsd::TR_BGM1
+		jmp	toggleMask
+	:
+		lda	__key1_trg
+		and	#PAD_1_R
+		beq	:+
+		ldx	#nsd::TR_BGM2
+		jmp	toggleMask
+	:
+		lda	__key1_trg
+		and	#PAD_1_D
+		beq	:+
+		ldx	#nsd::TR_BGM3
+		jmp	toggleMask
+	:
+		lda	__key1_trg
+		and	#PAD_1_L
+		beq	:+
+		ldx	#nsd::TR_BGM4
+		jmp	toggleMask
+	:
+		lda	__key1_trg
+		and	#PAD_1_A
+		beq	:+
+		ldx	#nsd::TR_BGM5
+		jmp	toggleMask
+	:
+.if (nsd::BGM_Track > 5)
+		lda	__key2_trg
+		and	#PAD_1_U
+		beq	:+
+		ldx	#10
+		jmp	toggleMask
+	:
+		lda	__key2_trg
+		and	#PAD_1_R
+		beq	:+
+		ldx	#12
+		jmp	toggleMask
+	:
+		lda	__key2_trg
+		and	#PAD_1_D
+		beq	:+
+		ldx	#14
+		jmp	toggleMask
+	:
+		lda	__key2_trg
+		and	#PAD_1_L
+		beq	:+
+		ldx	#16
+		jmp	toggleMask
+	:
+		lda	__key2_trg
+		and	#PAD_1_A
+		beq	:+
+		ldx	#18
+		jmp	toggleMask
+	:
+		lda	__key2_trg
+		and	#PAD_1_B
+		beq	:+
+		ldx	#20
+		jmp	toggleMask
+	:
+.endif
+		lda	__key1_trg
+		and	#PAD_1_SELECT
+		beq	:+
+		jmp	muteClearAll
+	:
+
+@skipHoldStart:
 	lda	__key1
 	and	#PAD_1_A
 	beq	@skipHoldA

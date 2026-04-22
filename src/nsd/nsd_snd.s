@@ -316,6 +316,10 @@ JMPTBL:	.addr	_nsd_apu_ch1_keyon		;BGM ch1 Pulse
 	ldy	JMPTBL + 1,x		;
 	sty	__ptr + 1		;
 	jmp	(__ptr)			;[5]
+.ifdef	MASK
+Exit:
+	rts
+.endif
 .endproc
 ;---------------------------------------
 .proc	_nsd_apu_ch1_keyon
@@ -828,9 +832,14 @@ _nsd_apu_dpcm_keyoff_se:
 
 	;r- ?
 	lda	__chflag,x
+.ifdef MASK
+	bmi	:+
+.endif
 	and	#nsd_chflag::KeyOff
 	bne	Exit
-
+.ifdef MASK
+:
+.endif
 	lda	#$0F
 	sta	APU_CHANCTRL
 
@@ -2984,6 +2993,9 @@ Exit:
 	sta	__tmp + 1
 
 	lda	__chflag,x
+.ifdef MASK
+	bmi	Exit
+.endif
 	and	#nsd_chflag::KeyOff
 	cmp	#nsd_chflag::KeyOff
 	bne	Exit
