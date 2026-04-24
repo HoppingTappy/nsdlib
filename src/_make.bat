@@ -1,7 +1,4 @@
 @echo off
-
-SET PATH_BACK=%PATH%
-
 rem --- nsd.lib ---
 py freqTableGen.py -f 442 -o nsd\
 cd nsd
@@ -17,13 +14,14 @@ rem popd
 rem SET PATH=%PATH_BACK%
 
 rem --- nsc64.exe ---
-call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
+if "%VCINSTALLDIR%"=="" (
+	call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvars64.bat"
+)
 pushd nsc64\
 	MSBuild -t:Build -p:Configuration=Release;Platform="x64"
 	cd x64\Release
 	copy *.exe ..\..\..\..\bin\
 popd
-SET PATH=%PATH_BACK%
 
 rem --- rom.bin ---
 cd rom
