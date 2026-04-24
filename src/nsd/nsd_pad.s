@@ -96,9 +96,8 @@
 	rts
 
 read_pad:
-	lda	#0
-	sta	__key1
 	lda	#1
+	sta	__key1
 	sta	__key2
 	sta	APU_PAD1
 	lsr	a
@@ -161,7 +160,7 @@ read_pad:
 .proc	nsd_pad_effect
 	lda	__key1
 	and	#PAD_1_SELECT
-	beq	@skipHoldSelect
+	jeq	@skipHoldSelect
 		lda	__key1_trg
 		and	#PAD_1_U
 		beq	:+
@@ -238,7 +237,7 @@ read_pad:
 @skipHoldSelect:
 	lda	__key1
 	and	#PAD_1_START
-	beq	@skipHoldStart
+	jeq	@skipHoldStart
 		lda	__key1_trg
 		and	#PAD_1_U
 		beq	:+
